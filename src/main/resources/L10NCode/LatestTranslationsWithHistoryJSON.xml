@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xwikidoc>
+<web>L10NCode</web>
+<name>LatestTranslationsWithHistoryJSON</name>
+<language></language>
+<defaultLanguage>en</defaultLanguage>
+<translation>0</translation>
+<parent></parent>
+<creator>XWiki.Admin</creator>
+<author>XWiki.Admin</author>
+<customClass></customClass>
+<contentAuthor>XWiki.Admin</contentAuthor>
+<creationDate>1325372400000</creationDate>
+<date>1325372400000</date>
+<contentUpdateDate>1325372400000</contentUpdateDate>
+<version>1.1</version>
+<title></title>
+<template></template>
+<defaultTemplate></defaultTemplate>
+<validationScript></validationScript>
+<comment></comment>
+<minorEdit>false</minorEdit>
+<syntaxId>xwiki/2.0</syntaxId>
+<hidden>false</hidden>
+<content>{{velocity output="false"}}
+#set($trans = $xwiki.parseGroovyFromPage("L10NCode.L10NGroovy"))
+$trans.setContext($context, $xwiki)
+
+#if(!$request.offset)
+ #set($offset = 0)
+#else
+ #set($offset = $xwiki.parseInt($request.offset))
+#end
+
+#if(!$request.limit)
+ #set($limit = 50)
+#else
+ #set($limit = $xwiki.parseInt($request.limit))
+#end
+
+#if($request.showtranslator == 'true')
+  #set($showtranslator = true)
+#else
+  #set($showtranslator = false)
+#end
+
+#set($countTrans = $trans.countTranslationsInHistory($request.application, null, null, $showtranslator, $request.transuser))
+#set($rows = $trans.getLatestTranslationsInHistory($request.application, $limit, $offset, $showtranslator, $transuser))
+{{/velocity}}
+
+{{velocity wiki="false"}}
+{
+  "totalrows": $countTrans,
+  "matchingtags": {
+    },
+  "returnedrows":  $rows.size(),
+  "offset": $offset,
+  #if ($request.reqNo)
+    "reqNo": $request.reqNo,
+  #end
+  "rows": [
+    #foreach($row in $rows)
+      #if ($foreach.count &gt; 1)
+        ,
+      #end
+      {
+        "doc_viewable" : true,
+        "doc_name" : "$escapetool.javascript($row.docName)",
+        "doc_space" : "$escapetool.javascript($row.docSpace)",
+        "doc_wiki" : "$escapetool.javascript($xcontext.database)"
+        ,
+        "application" : "$escapetool.javascript($row.application)",
+        "application_value" : "$escapetool.javascript($row.application)",
+        "application_url" : ""
+        ,
+        "key" : "$escapetool.javascript($row.key)",
+        "key_value" : "$escapetool.javascript($row.key)",
+        "key_url" : "$escapetool.javascript($row.key_url)"
+        ,
+        "author" : "$escapetool.javascript($row.author)",
+        "author_value" : "$escapetool.javascript($row.author)",
+        "author_url" : "$escapetool.javascript($row.author_url)"
+        ,
+        "date" : "$escapetool.javascript($row.date)",
+        "date_value" : "$escapetool.javascript($row.date)",
+        "date_url" : ""
+        ,
+        "language" : "$escapetool.javascript($row.language)",
+        "language_value" : "$escapetool.javascript($row.language)",
+        "language_url" : ""
+        ,
+        "english" : "$escapetool.javascript($row.origtext)",
+        "english_value" : "$escapetool.javascript($row.origtext)",
+        "english_url" : ""
+        ,
+        "translated" : "$escapetool.javascript($row.transtext)",
+        "translated_value" : "$escapetool.javascript($row.transtext)",
+        "translated_url" : ""
+      }
+    #end
+  ]
+}
+{{/velocity}}</content></xwikidoc>

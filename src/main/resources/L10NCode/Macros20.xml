@@ -1,0 +1,391 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xwikidoc>
+<web>L10NCode</web>
+<name>Macros20</name>
+<language></language>
+<defaultLanguage>en</defaultLanguage>
+<translation>0</translation>
+<parent></parent>
+<creator>XWiki.Admin</creator>
+<author>XWiki.Admin</author>
+<customClass></customClass>
+<contentAuthor>XWiki.Admin</contentAuthor>
+<creationDate>1325372400000</creationDate>
+<date>1325372400000</date>
+<contentUpdateDate>1325372400000</contentUpdateDate>
+<version>1.1</version>
+<title></title>
+<template></template>
+<defaultTemplate></defaultTemplate>
+<validationScript></validationScript>
+<comment></comment>
+<minorEdit>false</minorEdit>
+<syntaxId>xwiki/2.0</syntaxId>
+<hidden>false</hidden>
+<content>{{velocity output="false"}}
+#**
+  * L10N Macros
+  *#
+
+#macro(l10nView)
+  #if (!$request.start)
+    #set($start = 0)
+  #else
+    #set($start = $xwiki.parseInt($request.start))
+  #end
+  #if (!$request.nb)
+    #set($nb = 50)
+  #else
+    #set($nb = $xwiki.parseInt($request.nb))
+  #end
+  ##
+  #if ($request.action == "viewempty")
+    #l10nViewEmpty($nb,$start)
+  #elseif ($request.action=="viewoutdated")
+    #l10nViewOutdated($nb,$start)
+  #elseif($request.action=="viewall")
+    #l10nViewAll($nb,$start)
+  #elseif($request.action=="review")
+    #if ($request.startKey)
+      #l10nReviewFromKey($nb,$start,$request.startKey)
+    #else
+      #l10nReview($nb,$start)
+    #end
+  #elseif($request.action=="viewnonexistent")
+    #l10nViewNonExistent($nb,$start)
+  #elseif($request.action=="batchimport")
+    #l10nBatchImport()
+  #end
+#end
+
+#macro(l10nViewAll $nb $start)
+  #set($emptytrans = $trans.getAllTranslations($doc.space, $doc.fullName, $request.language, $nb,$start))
+  #set($count = $trans.countTranslations($doc.space, $doc.fullName, $request.language))
+  #l10nViewTranslations($emptytrans $nb $start $count)
+#end
+
+#macro(l10nViewEmpty $nb $start)
+  #set($emptytrans = $trans.getEmptyTranslations($doc.space, $doc.fullName, $request.language, $nb,$start))
+  #set($count = $trans.countEmptyTranslations($doc.space, $doc.fullName, $request.language))
+  #l10nViewTranslations($emptytrans $nb $start $count)
+#end
+
+#macro(l10nViewOutdated $nb $start)
+  #set($emptytrans = $trans.getOutdatedTranslations($doc.space, $doc.fullName, $request.language, $nb, $start))
+  #set($count = $trans.countOutdatedTranslations($doc.space, $doc.fullName, $request.language))
+  #l10nViewTranslations($emptytrans $nb $start $count)
+#end
+
+#macro(l10nViewNonExistent $nb $start)
+  {{warning}}Non existent translations are translations for keys that are not listing in the default language version. There is therefore a good chance that they are not used anymore.{{/warning}}
+
+  #set($emptytrans = $trans.getNonexistentTranslations($doc.space, $doc.fullName, $request.language, $nb, $start))
+  #set($count = $trans.countNonexistentTranslations($doc.space, $doc.fullName, $request.language))
+  #l10nViewTranslations($emptytrans $nb $start $count)
+#end
+
+#macro(l10nBatchImport)
+  Put one key=value pair by line. Both non ASCII characters and Java properties escaping are supported.
+
+  {{html}}
+    &lt;form action="$xwiki.getURL("L10NCode.UpdateTranslations")" method="post"&gt;
+      &lt;input type="hidden" name="name" value="$doc.fullName" /&gt;
+      &lt;input type="hidden" name="language" value="$request.language" /&gt;
+      &lt;textarea name="batchimportcontent" rows="25" cols="80"&gt;&lt;/textarea&gt;
+      &lt;br/&gt;
+
+      #if (!$isGuest)
+        &lt;input type="submit" value="Save translations" /&gt;
+      #end
+    &lt;/form&gt;
+  {{/html}}
+#end
+
+#macro(formfield $transpage $transtext $origtext)
+  #if ($origtext.length() &gt; 50)
+    #set($nbLines = 5)
+    #foreach ($char in $origtext.toCharArray())
+      #if ($char == $util.newline)
+        #set($nbLines = $nbLines+1)
+      #end
+    #end
+    &lt;textarea type="text" name="${transpage}_translatedtext" cols="40" rows="$nbLines"&gt;$xwiki.getFormEncoded($transtext)&lt;/textarea&gt;
+  #else
+    &lt;input type="text" name="${transpage}_translatedtext" size="45" value="$xwiki.getFormEncoded($transtext)" /&gt;
+  #end
+#end
+
+#macro(l10nViewTranslations $translist $nb $start $count)
+  #if ($translist &amp;&amp; $translist.size() &gt; 0)
+    {{html}}
+      &lt;div style="text-align: center; margin: auto;"&gt;
+        #paginator("" $start $nb $count "action=${request.action}&amp;language=${request.language}")
+      &lt;/div&gt;
+
+      &lt;form action="$xwiki.getURL("L10NCode.UpdateTranslations")" method="post"&gt;
+        &lt;input type="hidden" name="name" value="$doc.fullName" /&gt;
+        &lt;input type="hidden" name="language" value="$request.language" /&gt;
+        &lt;table&gt;
+          &lt;tr&gt;
+            &lt;th&gt;Key&lt;/th&gt;&lt;th&gt;Original language (current and previous text)&lt;/th&gt;&lt;th&gt;Current Translation&lt;/th&gt;#if(!$isGuest)&lt;th&gt;Validate with no change&lt;/th&gt;&lt;th&gt;Actions&lt;/th&gt;#end
+          &lt;tr&gt;
+#set($pages =  "")
+#foreach($transpage in $translist)
+#set($pages =  "${pages},$transpage")
+#set($transdoc = $xwiki.getDocument($transpage))
+#set($origtext = "")
+#set($origtext = $trans.getOriginalTranslation($transdoc))
+#set($transtext = "")
+#set($transtext = $transdoc.getValue("translatedtext"))
+&lt;tr&gt;&lt;td&gt; &lt;a href="$transdoc.getURL()"&gt;$transdoc.getValue("key")&lt;/a&gt;
+&lt;/td&gt;&lt;td&gt;
+$escapetool.html($origtext).replace($util.newline, "&lt;br/&gt;").replace("{{", "&amp;#123;&amp;#123;") &lt;input type="hidden" name="${transpage}_originaltext"value="$xwiki.getFormEncoded($origtext)" /&gt; #if($previousorigtext &amp;&amp; $previousorigtext != $origtext) &lt;br /&gt;Previous text: &lt;/br /&gt; $escapetool.html($previousorigtext).replace($util.newline, "&lt;br/&gt;").replace("{{", "&amp;#123;&amp;#123;")#end
+&lt;/td&gt;&lt;td&gt;
+#if($isGuest) $transtext #else #formfield($transpage $transtext $origtext) &lt;input type="hidden" name="${transpage}_previoustranslatedtext" value="$xwiki.getFormEncoded($transtext)" /&gt; #end
+&lt;/td&gt;
+#if(!$isGuest)
+  &lt;td&gt;
+    &lt;input type="checkbox" name="${transpage}_validatewithnochange" value="1" /&gt;
+  &lt;/td&gt;
+  &lt;td&gt;
+    &lt;a href="?action=deletetranslation&amp;page=$util.encodeURI($transdoc.fullName)"&gt;delete&lt;/a&gt;
+  &lt;/td&gt;
+#end
+&lt;/tr&gt;
+#end
+&lt;/table&gt;
+#if($pages!="")
+#set($pages = $pages.substring(1))
+#end
+&lt;input type="hidden" name="app" value="${doc.space}" /&gt;
+&lt;input type="hidden" name="pages" value="$pages" /&gt;
+#if(!$isGuest)
+&lt;input type="submit" value="Save translations" /&gt;
+#end
+&lt;/form&gt;
+{{/html}}
+#else
+No data matching filters
+#end
+#end
+
+#**
+  * Pagination macro with additional arguments
+  *
+  * @param $called Text to use in the pagination macro
+  * @param from start number
+  * @param $nbToDisplay number of elements to display
+  * @param $of Maximum number of elements
+  * @param $addargs Additional arguments for the url
+  * @author dward@curriki.org
+  *#
+#macro(paginator $called $from $nbToDisplay $of $addarg) ## {
+&lt;div id="paginator" class="table-results"&gt;
+## Make sure we have sane settings for $of
+#if($of &lt; 0) ## {
+#set($of = 0)
+#end ## }
+## We dont show the paginator if nothing to paginate
+#if($of != 0) ## {
+## Make sure we have sane settings for $from
+#if($from &lt; 0) ## {
+#set($from = 0)
+#end ## }
+#if($from &gt;= $of) ## {
+#set($from = $of - 1)
+#end ## }
+## Make sure we have sane settings for $nbToDisplay
+#if($nbToDisplay &lt; 1) ## {
+#set($nbToDisplay = 1)
+#end ## }
+#if("$called"=="") ## {
+#set($called = $msg.get("l10n.paginate.results"))
+#end ## }
+## Determine what $to sould be
+#set($to = ($from + $nbToDisplay) - 1)
+#if($to &gt;= $of) ## {
+#set($to = ($of - 1))
+#end ## }
+## Now figure out total, current, first, and last page
+#set($pages = (($of - 1) / $nbToDisplay) + 1)
+#set($cpage = ($from / $nbToDisplay) + 1)
+#set($fpage = ((($cpage - 1) / 10) * 10) + 1)
+#set($lpage = $fpage + 9)
+#if($lpage &gt; $pages) ## {
+#set($lpage = $pages)
+#end ## }
+&lt;div id="paginator-line1" class="table-results-title"&gt;
+## Display 1 -&gt; X+1 instead of 0 -&gt; X
+#set($dFrom = $from + 1)
+#set($dTo = $to + 1)
+$called $dFrom - $dTo $msg.get("l10n.paginate.of") $of
+&lt;/div&gt;
+&lt;div id="paginator-line2" class="table-results-navigation"&gt;
+#if($cpage == 1) ## {
+#set($npage = 0)
+#else ## } {
+#set($npage = (($cpage - 2) * $nbToDisplay))
+#end ## }
+#set($url = $xwiki.getURL($doc.fullName, "view", "${addarg}&amp;start=${npage}"))
+#if($cpage!=1) ## {
+#set($prvpage = $cpage - 1)
+#set($altprev = "Page "+${prvpage})
+&lt;a href="${url}" class="table-results-previous#if($cpage==1) table-results-disabled" onclick="return false;#end" alt="${altprev}" title="${altprev}"&gt;$msg.get("l10n.paginate.previous")&lt;/a&gt;
+#end ## }
+#foreach ($pg in [${fpage}..${lpage}]) ## {
+#set($npage = (($pg - 1) * $nbToDisplay))
+#set($url = $xwiki.getURL($doc.fullName, "view", "${addarg}&amp;start=${npage}"))
+&lt;a href="${url}"#if($pg==$cpage) class="table-results-navigation-selected" onclick="return false;"#end&gt;$pg&lt;/a&gt;
+#end ## }
+#if($cpage==$pages) ## {
+#set($npage = (($pages - 1) * $nbToDisplay))
+#else ## } {
+#set($npage = ($cpage * $nbToDisplay))
+#end ## }
+#set($url = $xwiki.getURL($doc.fullName, "view", "${addarg}&amp;start=${npage}"))
+#if($cpage!=$pages) ## {
+#set($nxtpage = $cpage + 1)
+#set($altnext = "Page "+${nxtpage})
+&lt;a href="${url}" class="table-results-next#if($cpage==$pages) table-results-disabled" onclick="return false;#end" alt="${altnext}" title="${altnext}"&gt;$msg.get("l10n.paginate.next")&lt;/a&gt;
+#end ## }
+&lt;/div&gt;
+#end ## if != 0 ## }
+&lt;/div&gt;
+#end ## macro ## }
+
+
+#macro(l10nReview $nb $start)
+#set($toreviewtrans = $trans.getToReviewTranslations($doc.space, $doc.fullName, $request.language, $nb, $start))
+#set($count = $trans.countToReviewTranslations($doc.space, $doc.fullName, $request.language))
+#if (!$toreviewtrans.isEmpty())
+  ## show the link to navigate by keys
+  #set($firstTransPage = $toreviewtrans.get(0))
+  #set($firstTransDoc = $xwiki.getDocument($firstTransPage))
+  #set($firstKey = $firstTransDoc.getValue("key"))
+  #set($prefixLength = $firstKey.length() - 1)
+  #set($firstKey = $firstKey.substring(0, $prefixLength))
+  #set($url = $xwiki.getURL($doc.fullName, "view", "action=review&amp;language=${request.language}&amp;startKey=${firstKey}"))
+  {{html}}
+  &lt;a href="${url}" title="${msg.get("l10n.navigate.bykey.description")}"&gt;$msg.get("l10n.navigate.bykey")&lt;/a&gt;
+  &lt;div style="text-align: center; margin: auto;"&gt;
+  #paginator("" $start $nb $count "action=review&amp;language=${request.language}")
+  &lt;/div&gt;
+  &lt;br /&gt;
+  &lt;form action="$xwiki.getURL("L10NCode.UpdateReviews")" method="post"&gt;
+  &lt;input type="hidden" name="name" value="$doc.fullName" /&gt;
+  &lt;input type="hidden" name="language" value="$request.language" /&gt;
+  &lt;table&gt;
+  &lt;tr&gt;
+  &lt;th&gt;Key&lt;/th&gt;&lt;th&gt;Original language (current and previous text)&lt;/th&gt;&lt;th&gt;Current Translation&lt;/th&gt;&lt;th&gt;Review&lt;/th&gt;
+  &lt;tr&gt;
+  #set($pages =  "")
+  #foreach($transpage in $toreviewtrans)
+    #set($pages =  "${pages},$transpage")
+    #set($transdoc = $xwiki.getDocument($transpage))
+    #set($origtext = "")
+    #set($origtext = $trans.getOriginalTranslation($transdoc))
+    #set($transtext = "")
+    #set($transtext = $transdoc.getValue("translatedtext"))
+    #set($previousorigtext = "")
+    #set($previousorigtext = $transdoc.getValue("originaltext"))
+    &lt;tr&gt;&lt;td&gt; &lt;a href="$transdoc.getURL()"&gt;$transdoc.getValue("key")&lt;/a&gt;
+    &lt;/td&gt;&lt;td&gt;
+    $xwiki.getXMLEncoded($origtext).replace($util.newline, "&lt;br/&gt;") &lt;input type="hidden" name="${transpage}_originaltext"value="$xwiki.getFormEncoded($origtext)" /&gt; #if($previousorigtext &amp;&amp; $previousorigtext != $origtext) &lt;br /&gt;Previous text: &lt;/br /&gt; $xwiki.getXMLEncoded($previousorigtext).replace($util.newline, "&lt;br/&gt;") #end 
+    &lt;/td&gt;&lt;td&gt; 
+    #if($isGuest) $transtext #else #formfield($transpage $transtext $origtext) &lt;input type="hidden" name="${transpage}_previoustranslatedtext" value="$xwiki.getFormEncoded($transtext)" /&gt; #end
+    &lt;/td&gt;&lt;td&gt; 
+    &lt;input type="checkbox" name="${transpage}_review" value="1" /&gt;
+    &lt;/td&gt;&lt;/tr&gt;
+  #end
+  &lt;/table&gt;
+  #if($pages!="")
+    #set($pages = $pages.substring(1))
+  #end
+  &lt;input type="hidden" name="pages" value="$pages" /&gt;
+  &lt;input type="hidden" name="app" value="$doc.space" /&gt;
+  #if(!$isGuest)
+    &lt;input type="submit" value="Save reviews" /&gt;
+  #end
+  &lt;/form&gt;
+  {{/html}}
+#else
+  {{info}}Nothing to review{{/info}}
+#end
+#end
+
+#macro(l10nReviewFromKey $nb $start $startKey)
+{{html}}
+  #set($toreviewtrans = $trans.getToReviewTranslationsFromKey($doc.space, $doc.fullName, $request.language, $nb, $start, $startKey))
+  #set($count = $trans.countToReviewTranslations($doc.space, $doc.fullName, $request.language))
+  &lt;div style="text-align: center; margin: auto;"&gt;
+    ## #paginator("" $start $nb $count "action=review&amp;language=${request.language}&amp;startKey=${startKey}")
+    ## do a special nice navigation for the key sorted translations
+    #set($lastIndex = $toreviewtrans.size() - 1)
+    #if ($toreviewtrans.size() == $nb)
+      #set($lastTransPage = $toreviewtrans.get($lastIndex))
+      #set($lastTransDoc = $xwiki.getDocument($lastTransPage))
+      #set($lastKey = $lastTransDoc.getValue("key"))
+      #set($altnext = "Results from $lastKey")
+      #set($url = $xwiki.getURL($doc.fullName, "view", "action=review&amp;language=${request.language}&amp;startKey=${lastKey}"))
+      &lt;a href="${url}" class="table-results-next" alt="${altnext}" title="${altnext}"&gt;$msg.get("l10n.paginate.nextbykey")&lt;/a&gt; (${count} $msg.get("l10n.navigate.bykey.left"))
+    #end
+  &lt;/div&gt;
+  &lt;br /&gt;
+  &lt;form action="$xwiki.getURL("L10NCode.UpdateReviews")" method="post"&gt;
+    &lt;input type="hidden" name="name" value="$doc.fullName" /&gt;
+    &lt;input type="hidden" name="language" value="$request.language" /&gt;
+    ## add the next start key to this form
+    #if ($lastKey)
+      &lt;input type="hidden" name="startKey" value="${lastKey}" /&gt;
+    #end
+    &lt;table&gt;
+      &lt;tr&gt;
+        &lt;th&gt;Key&lt;/th&gt;&lt;th&gt;Original language (current and previous text)&lt;/th&gt;&lt;th&gt;Current Translation&lt;/th&gt;&lt;th&gt;Review&lt;/th&gt;
+      &lt;/tr&gt;
+      #set($pages =  "")
+      #foreach($transpage in $toreviewtrans)
+        #set($pages =  "${pages},$transpage")
+        #set($transdoc = $xwiki.getDocument($transpage))
+        #set($origtext = "")
+        #set($origtext = $trans.getOriginalTranslation($transdoc))
+        #set($transtext = "")
+        #set($transtext = $transdoc.getValue("translatedtext"))
+        #set($previousorigtext = "")
+        #set($previousorigtext = $transdoc.getValue("originaltext"))
+        &lt;tr&gt;
+          &lt;td&gt;&lt;a href="$transdoc.getURL()"&gt;$transdoc.getValue("key")&lt;/a&gt;&lt;/td&gt;
+          &lt;td&gt;
+            $xwiki.getXMLEncoded($origtext).replace($util.newline, "&lt;br/&gt;")
+            &lt;input type="hidden" name="${transpage}_originaltext"value="$xwiki.getFormEncoded($origtext)" /&gt;
+            #if ($previousorigtext &amp;&amp; $previousorigtext != $origtext)
+              &lt;br /&gt;
+              Previous text:
+              &lt;/br /&gt;
+              $xwiki.getXMLEncoded($previousorigtext).replace($util.newline, "&lt;br/&gt;")
+            #end 
+          &lt;/td&gt;
+          &lt;td&gt; 
+            #if ($isGuest)
+              $transtext
+            #else
+              #formfield($transpage $transtext $origtext) &lt;input type="hidden" name="${transpage}_previoustranslatedtext" value="$xwiki.getFormEncoded($transtext)" /&gt;
+            #end
+          &lt;/td&gt;
+          &lt;td&gt; 
+            &lt;input type="checkbox" name="${transpage}_review" value="1" /&gt;
+          &lt;/td&gt;
+        &lt;/tr&gt;
+      #end
+    &lt;/table&gt;
+    #if($pages!="")
+      #set($pages = $pages.substring(1))
+    #end
+    &lt;input type="hidden" name="pages" value="$pages" /&gt;
+    &lt;input type="hidden" name="app" value="$doc.space" /&gt;
+    #if (!$isGuest)
+      &lt;input type="submit" value="Save reviews" /&gt;
+    #end
+  &lt;/form&gt;
+{{/html}}
+#end
+{{/velocity}}</content></xwikidoc>

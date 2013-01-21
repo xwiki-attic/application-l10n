@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xwikidoc>
+<web>L10N</web>
+<name>TranslationRules</name>
+<language></language>
+<defaultLanguage>en</defaultLanguage>
+<translation>0</translation>
+<parent></parent>
+<creator>XWiki.Admin</creator>
+<author>XWiki.Admin</author>
+<customClass></customClass>
+<contentAuthor>XWiki.Admin</contentAuthor>
+<creationDate>1325372400000</creationDate>
+<date>1325372400000</date>
+<contentUpdateDate>1325372400000</contentUpdateDate>
+<version>1.1</version>
+<title>Global Translation Rules</title>
+<template></template>
+<defaultTemplate></defaultTemplate>
+<validationScript></validationScript>
+<comment></comment>
+<minorEdit>false</minorEdit>
+<syntaxId>xwiki/2.0</syntaxId>
+<hidden>false</hidden>
+<content>Here you can find all rules on translations for all applications and languages.
+
+= Rules pages =
+
+The first rule is about where to put the rules :) As mentioned above this page is about rules that apply on everything, if you have rules that make sense only for a specific application you will find the proper page on the ##&lt;Application Name&gt;.TranslationRules## page. The other context is the language, you will find this one on the page named ##&lt;Application Name&gt;.TranslationRules_&lt;Language Code&gt;##.
+
+To make it more clear, here are some examples:
+
+* [[L10N.TranslationRules&gt;&gt;L10N.TranslationRules]]: apply to all application translations and for all languages
+* [[L10N.TranslationRules_de&gt;&gt;L10N.TranslationRules_de]]: apply to all application translations for the German language
+* [[L10N.TranslationRules_lv&gt;&gt;L10N.TranslationRules_lv]]: apply to all application translations for the Latvian language
+* [[XE.TranslationRules&gt;&gt;XE.TranslationRules]]: apply to all languages for the XE application
+* [[XE.TranslationRules_ro&gt;&gt;XE.TranslationRules_ro]]: apply to the Romanian language for the XE application
+
+= Language Code =
+
+The language code is the standard format used in JAVA which means [[&lt;Language Code&gt;&gt;&gt;http://ftp.ics.uci.edu/pub/ietf/http/related/iso639.txt]][_[[&lt;Country Code&gt;&gt;&gt;http://userpage.chemie.fu-berlin.de/diverse/doc/ISO_3166.html]]].
+
+For example for ##fr## locale we use image:Flags@fr.png with name ##fr.png##.
+
+Note that most of the time there is no official language flag so we always have to choose a country flag and sometime it's obviously not easy. What we say is that the variant language associated to a simple language code is the one we use as default variant. For example here ##fr## is French from France (##fr_FR##) and if we want a Belgim variant then we can create a ##fr_BE## language code.
+
+= Language Flags =
+
+You can modify or add a languages flags on the [[Locale Flags page&gt;&gt;L10N.Flags]]
+
+= Language Names =
+
+You can modify or add language pretty names on the [[Locale Names page&gt;&gt;L10N.LocaleTranslations]].</content></xwikidoc>

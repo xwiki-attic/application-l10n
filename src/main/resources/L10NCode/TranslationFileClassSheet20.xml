@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xwikidoc>
+<web>L10NCode</web>
+<name>TranslationFileClassSheet20</name>
+<language></language>
+<defaultLanguage>en</defaultLanguage>
+<translation>0</translation>
+<parent></parent>
+<creator>XWiki.Admin</creator>
+<author>XWiki.Admin</author>
+<customClass></customClass>
+<contentAuthor>XWiki.Admin</contentAuthor>
+<creationDate>1325372400000</creationDate>
+<date>1325372400000</date>
+<contentUpdateDate>1325372400000</contentUpdateDate>
+<version>1.1</version>
+<title></title>
+<template></template>
+<defaultTemplate></defaultTemplate>
+<validationScript></validationScript>
+<comment></comment>
+<minorEdit>false</minorEdit>
+<syntaxId>xwiki/2.0</syntaxId>
+<hidden>false</hidden>
+<content>= Translation File =
+
+{{include document="L10NCode.Macros20"/}}
+
+{{velocity}}
+#**
+ * This page displays a translation file
+ * @type sheet
+ *#
+#set($ok = $doc.use("L10NCode.TranslationFileClass"))
+##
+#set($trans = $xwiki.parseGroovyFromPage("L10NCode.L10NGroovy"))
+#set($ok = $trans.setContext($context, $xwiki))
+##
+#if ($request.action == "import")
+  #if($context.user=="XWiki.XWikiGuest")
+    #error("You need to be logged in to perform this action")
+  #else
+    #if($request.language)
+      #set($lang = $request.language)
+      #set($url = $trans.findLanguageURL($doc, $lang))
+    #else
+      #set($lang = $trans.getApplicationDefaultLanguage($doc.space))
+      #set($url = $doc.getValue("url"))
+    #end
+    #if(!$url)
+      #error("Error while finding language url for language $lang")
+    #else
+      #if($request.confirm=="1")
+        #set($nb = $trans.importTranslations($doc.space, $doc.fullName, $lang, $url))
+        #if($nb)
+          {{info}}Imported keys: $nb{{/info}}
+          #foreach($tlang in $trans.getApplicationLanguages($doc.space))
+            {{info}}Prepared keys for language $tlang: $trans.prepareTranslations($doc.space, $doc.fullName, $tlang){{/info}}
+          #end
+        #else
+          {{error}}Keys could not be imported: $nb{{/error}}
+        #end
+      #else
+        #if($request.language)
+          [[Confirm importing $url.replace('://', ':~~//')&gt;&gt;$doc.fullName?language=${lang}&amp;action=import&amp;confirm=1]]
+        #else
+         [[Confirm importing $url.replace('://', ':~~//')&gt;&gt;$doc.fullName?action=import&amp;confirm=1]]
+        #end
+      #end
+    #end
+  #end
+#elseif ($request.action == "prepare")
+  #if ($context.user == "XWiki.XWikiGuest")
+    #error("You need to be logged in to perform this action")
+  #else
+    #if($request.confirm=="1")
+      #set($nb = $trans.prepareTranslations($doc.space, $doc.fullName, $request.language))
+      #if($nb)
+        {{info}}Prepared keys: $nb{{/info}}
+      #else
+        {{error}}Keys cound not be prepared{{/error}}
+      #end
+    #else
+      #if($request.language)
+        [[Confirm preparing $request.language&gt;&gt;$doc.fullName?language=${request.language}&amp;action=prepare&amp;confirm=1]]
+      #else
+        [[Confirm preparing $request.language&gt;&gt;$doc.fullName?action=prepare&amp;confirm=1]]
+      #end
+    #end
+  #end
+#elseif ($request.action == "deletetranslation")
+  #if($isGuest)
+    #error("You need to be logged in to perform this action")
+  #else
+    #set($page = $request.page)
+    #if($request.confirm=="1")
+      #set($ok = $trans.removeTranslationFile($page))
+      #info("Deleted translation page: $page")
+    #else
+      #if($request.language)
+        [[Confirm deleteing translation page $request.page&gt;&gt;$doc.fullName?language=${request.language}&amp;action=deletetranslation&amp;page=$util.encodeURI($page)&amp;confirm=1]]
+      #else
+        [[Confirm deleteing translation page $request.page&gt;&gt;$doc.fullName?action=deletetranslation&amp;page=$page&amp;confirm=1]]
+      #end
+    #end
+  #end
+#end
+##
+#if (!$request.action)
+  #set($nbtrans = $trans.countDefaultLanguageTranslations($doc.space, $doc.fullName))
+  #set($nbempty = $trans.countAllEmptyTranslations($doc.space, $doc.fullName))
+  #set($nboutdated = $trans.countAllOutdatedTranslations($doc.space, $doc.fullName))
+  #set($nbtoreview = $trans.countAllToReviewTranslations($doc.space, $doc.fullName))
+  |=File Name|=$doc.display("name")
+  |Type|$doc.display("type")
+  |URL|$doc.display("url")
+  |Number of translations|$nbtrans
+  |Number of empty translations|$nbempty
+  |Number of outdated translations|$nboutdated
+  |Number of translations to review|$nbtoreview
+
+  #if ($hasAdmin)
+    [[Import/reimport default language file&gt;&gt;$doc.fullName?action=import]]
+  #end
+
+  == Available Languages ==
+
+  #if($context.user=="XWiki.XWikiGuest")
+  {{html clean=false}}#warning("Create and account and login to view details by language"){{/html}}
+  #else
+    {{html clean==false}}
+&lt;form action=""&gt;
+   Language &lt;select name="language"&gt;
+   &lt;option value=""&gt;---&lt;/option&gt;
+   &lt;option value="all"&gt;All&lt;/option&gt;
+   #foreach($lang in $trans.getApplicationLanguages($doc.space))
+   &lt;option value="$lang"&gt;$lang&lt;/option&gt;
+   #end
+   &lt;/select&gt;
+   &lt;input type="submit" value="Show language" /&gt;
+&lt;/form&gt;
+    {{/html}}
+  #if($request.language)   
+  |=Language|=Total translations|=Empty translations|=Outdated translations#if($hasAdmin)|= Dead translations#end|=Translations to review|=Translations actions|=Misc actions
+  #foreach($lang in $trans.getApplicationLanguages($doc.space))
+   #if($request.language=="all" || $request.language==$lang)
+    #set($nbtrans = $trans.countTranslations($doc.space, $doc.fullName, $lang))
+    #set($nbempty = $trans.countEmptyTranslations($doc.space, $doc.fullName, $lang))
+    #set($nboutdated = $trans.countOutdatedTranslations($doc.space, $doc.fullName,$lang))
+    #if($hasAdmin)
+      #set($nbdead = $trans.countNonexistentTranslations($doc.space, $doc.fullName,$lang))
+    #end
+    #set($nbtoreview = $trans.countToReviewTranslations($doc.space, $doc.fullName,$lang))
+    |$msg.get("locale.$lang") ($lang)|$nbtrans|$nbempty|$nboutdated#if($hasAdmin)|$nbdead#end|$nbtoreview|(((
+    : [[» View empty&gt;&gt;$doc.fullName?action=viewempty&amp;language=$lang]]
+    : [[» View outdated&gt;&gt;$doc.fullName?action=viewoutdated&amp;language=$lang]]
+    : [[» View all&gt;&gt;$doc.fullName?action=viewall&amp;language=$lang]]
+    : [[» Review&gt;&gt;$doc.fullName?action=review&amp;language=$lang]]
+    #if ($xcontext.user != 'XWiki.Guest')
+      : [[» Batch import&gt;&gt;$doc.fullName?action=batchimport&amp;language=$lang]]
+    #end
+    #if ($hasAdmin)
+      ; Admin:
+      : [[» View dead&gt;&gt;$doc.fullName?action=viewnonexistent&amp;language=$lang]]
+    #end
+    )))|(((
+    : [[» Prepare&gt;&gt;$doc.fullName?action=prepare&amp;language=$lang]]
+    : [[» Get as Application Resource&gt;&gt;L10NCode.GetTranslationFile?name=$doc.fullName&amp;language=$lang&amp;app=${doc.space}&amp;xpage=plain]]
+    : [[» Compare with Application Resource&gt;&gt;L10NCode.CompareTranslationFile?name=$doc.fullName&amp;language=$lang&amp;app=${doc.space}]]
+    \\
+    #if($hasAdmin)
+      ; Admin:
+      : [[» Import from URL&gt;&gt;$doc.fullName?action=import&amp;language=$lang]]
+    #end
+    )))
+   #end
+  #end
+  #end
+ #end
+#end
+##
+#if ($isGuest)
+  {{warning}}You need to be logged in to modify translations{{/warning}}
+#end
+#l10nView()
+{{/velocity}}</content></xwikidoc>

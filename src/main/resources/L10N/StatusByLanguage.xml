@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xwikidoc>
+<web>L10N</web>
+<name>StatusByLanguage</name>
+<language></language>
+<defaultLanguage>en</defaultLanguage>
+<translation>0</translation>
+<parent>L10N.WebHome</parent>
+<creator>XWiki.Admin</creator>
+<author>XWiki.Admin</author>
+<customClass></customClass>
+<contentAuthor>XWiki.Admin</contentAuthor>
+<creationDate>1325372400000</creationDate>
+<date>1325372400000</date>
+<contentUpdateDate>1325372400000</contentUpdateDate>
+<version>1.1</version>
+<title>Status by Language</title>
+<template></template>
+<defaultTemplate></defaultTemplate>
+<validationScript></validationScript>
+<comment></comment>
+<minorEdit>false</minorEdit>
+<syntaxId>xwiki/2.0</syntaxId>
+<hidden>false</hidden>
+<content>{{velocity}}
+#if($request.language)
+ #set($tlang = "_${request.language}")
+#else
+ #set($tlang = "")
+#end
+
+This page lists the status by language. You can also go see the [[Translation Rules for this language&gt;&gt;L10N.TranslationRules${tlang}]]
+
+#if($context.user=="XWiki.XWikiGuest")
+You need to be logged-in to see this data
+#else
+#set($trans = $xwiki.parseGroovyFromPage("L10NCode.L10NGroovy"))
+#set($ok = $trans.setContext($context, $xwiki))
+#set($lang = "fr")
+#if($request.language)
+ #set($lang = $request.language)
+#end
+#set($tnbtrans = 0)
+#set($tnbempty = 0)
+#set($tnboutdated = 0)
+#set($tnbdead = 0)
+#set($tnbtoreview = 0)
+|= App |=Translation file|= Translations |= Empty |= Outdated |= Dead |= To review
+#foreach($app in ["XE", "XEM", "Wysiwyg", "Platform"])
+#set($list = $trans.getTranslationsFiles($app))
+#foreach($file in $list)
+#set($nbtrans = $trans.countTranslations($app, $file.page, $lang))
+#set($nbempty = $trans.countEmptyTranslations($app, $file.page, $lang))
+#set($nboutdated = $trans.countOutdatedTranslations($app, $file.page,$lang))
+#set($nbdead = $trans.countNonexistentTranslations($app, $file.page,$lang))
+#set($nbtoreview = $trans.countToReviewTranslations($app, $file.page,$lang))
+#set($tnbtrans = $tnbtrans + $nbtrans)
+#set($tnbempty = $tnbempty + $nbempty)
+#set($tnboutdated = $tnboutdated + $nboutdated)
+#set($tnbdead = $tnbdead + $nbdead)
+#set($tnbtoreview = $tnbtoreview + $nbtoreview)
+|= $app | $file.name | $nbtrans | $nbempty | $nboutdated | $nbdead | $nbtoreview
+#end
+#end
+|= Total | |= $tnbtrans |= $tnbempty |= $tnboutdated |= $tnbdead |= $tnbtoreview
+#end
+{{/velocity}}
+</content></xwikidoc>

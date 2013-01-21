@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xwikidoc>
+<web>L10NCode</web>
+<name>L10NFixedProperties</name>
+<language></language>
+<defaultLanguage>en</defaultLanguage>
+<translation>0</translation>
+<parent></parent>
+<creator>XWiki.Admin</creator>
+<author>XWiki.Admin</author>
+<customClass></customClass>
+<contentAuthor>XWiki.Admin</contentAuthor>
+<creationDate>1325372400000</creationDate>
+<date>1325372400000</date>
+<contentUpdateDate>1325372400000</contentUpdateDate>
+<version>1.1</version>
+<title></title>
+<template></template>
+<defaultTemplate></defaultTemplate>
+<validationScript></validationScript>
+<comment></comment>
+<minorEdit>false</minorEdit>
+<syntaxId>xwiki/1.0</syntaxId>
+<hidden>false</hidden>
+<content>  /**
+   * Copyright (c) 2000-2005 Liferay, LLC. All rights reserved.
+   *
+   * Permission is hereby granted, free of charge, to any person obtaining a copy
+   * of this software and associated documentation files (the "Software"), to deal
+   * in the Software without restriction, including without limitation the rights
+   * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+   * copies of the Software, and to permit persons to whom the Software is
+   * furnished to do so, subject to the following conditions:
+   *
+   * The above copyright notice and this permission notice shall be included in
+   * all copies or substantial portions of the Software.
+   *
+   * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+   * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+   * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+   * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+   * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+   * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+   * SOFTWARE.
+   */
+  
+
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+
+public class L10NFixedProperties extends Properties
+{
+    LinkedHashMap linkedMap = new LinkedHashMap();
+
+    public L10NFixedProperties()
+    {
+    }
+
+    public String getProperty(String key)
+    {
+        Object oval = linkedMap.get(key);
+        String sval = (oval instanceof String) ? (String) oval : null;
+        return ((sval == null) &amp;&amp; (defaults != null)) ? defaults.getProperty(key) : sval;
+    }
+
+    public int size()
+    {
+        return linkedMap.size();
+    }
+
+    public boolean isEmpty()
+    {
+        return linkedMap.isEmpty();
+    }
+
+    public boolean containsKey(Object key)
+    {
+        return linkedMap.containsKey(key);
+    }
+
+    public boolean containsValue(Object value)
+    {
+        return linkedMap.containsValue(value);
+    }
+
+    public Object get(Object key)
+    {
+        return linkedMap.get(key);
+    }
+
+    // Modification Operations
+
+    public Object put(Object key, Object value)
+    {
+        return linkedMap.put(key, value);
+    }
+
+    public Object remove(Object key)
+    {
+        return linkedMap.remove(key);
+    }
+
+    // Bulk Operations
+
+    public void putAll(Map m)
+    {
+        linkedMap.putAll(m);
+    }
+
+    public void clear()
+    {
+        linkedMap.clear();
+    }
+
+    // Views
+
+    public Set keySet()
+    {
+        return linkedMap.keySet();
+    }
+
+    public Collection values()
+    {
+        return linkedMap.values();
+    }
+
+    public Set entrySet()
+    {
+        return linkedMap.entrySet();
+    }
+
+    // Comparison and hashing
+
+    public boolean equals(Object o)
+    {
+        return linkedMap.equals(o);
+    }
+
+    public int hashCode()
+    {
+        return linkedMap.hashCode();
+    }
+
+    public String test()
+    {
+      return "tested L10NFixedProperties"
+    }
+}</content></xwikidoc>

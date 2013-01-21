@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xwikidoc>
+<web>L10NCode</web>
+<name>WebSearchSheet</name>
+<language></language>
+<defaultLanguage>en</defaultLanguage>
+<translation>0</translation>
+<parent></parent>
+<creator>XWiki.Admin</creator>
+<author>XWiki.Admin</author>
+<customClass></customClass>
+<contentAuthor>XWiki.Admin</contentAuthor>
+<creationDate>1325372400000</creationDate>
+<date>1325372400000</date>
+<contentUpdateDate>1325372400000</contentUpdateDate>
+<version>1.1</version>
+<title></title>
+<template></template>
+<defaultTemplate></defaultTemplate>
+<validationScript></validationScript>
+<comment></comment>
+<minorEdit>false</minorEdit>
+<syntaxId>xwiki/1.0</syntaxId>
+<hidden>false</hidden>
+<content>1 Search for a translation
+
+#if(!$request.space)
+  #set($space = "All")
+#else
+  #set($space = $request.space)
+#end
+
+#macro(spaceoption $space $selectspace)
+  &lt;option value="$space" #if($selectspace == $space)selected="selected"#end&gt;$space&lt;/option&gt;
+#end
+
+#macro(spaceselect $selectspace $spaces)
+  &lt;select name="space"&gt;
+    #spaceoption("All" $selectspace)
+    #foreach($space in $spaces)
+      #spaceoption($xwiki.getDocument($space).space $selectspace)
+    #end
+  &lt;/select&gt;
+#end
+##
+#set($text = "$!request.getParameter('text')")
+#set($utext = $util.encodeURI($text))
+#set($trans = $xwiki.parseGroovyFromPage("L10NCode.L10NGroovy"))
+#set($ok= $trans.setContext($context, $xwiki))
+#set($spaces = $trans.getApplications())
+&lt;form action=""&gt;
+  {pre}
+    &lt;div class="centered"&gt;
+      Query
+      &lt;input type="text" name="text" value="$xwiki.getFormEncoded($!text)" size="20"/&gt;
+      in space #spaceselect($space $spaces) &lt;input type="submit" value="Search"/&gt;
+    &lt;/div&gt;
+  {/pre}
+&lt;/form&gt;
+## ==================================================
+## Common code for WebSearch and WebSearchRss
+## ==================================================
+## Inputs: $text, $space
+## Output: $list
+## Note: Do not put any empty line or this will break
+## the generated RSS feed
+## ==================================================
+#set($datedlist = $util.arrayList)
+#if(!$text or $text == "")
+  ## No search
+  No search
+#else
+  #set($text = $text.replaceAll("'", "''").replaceAll("%", "\\%"))
+  #set($nbitems = 50)
+  ## Display only a given space if $request.space is defined
+  ## -----------------------------------------------------------
+  #if($space &amp;&amp; $space == "All")
+    #set ($webClause = "")
+  #else
+    #set ($webClause = "doc.space='$space'")
+  #end
+  #macro(addelement $item $list)
+    #if($xwiki.hasAccessLevel("view", $context.user, "${context.database}:${item}"))
+      #set($itemdoc = $xwiki.getDocument($item))
+      #set($sdate = $xwiki.formatDate($itemdoc.date, "yyyyMMddHHmmss"))
+      #set($sitem = "${sdate}${item}")
+      #if(!$list.contains($sitem))
+        #set($discard = $list.add($sitem))
+      #end
+    #end
+  #end
+  ## -----------------------------------------------------------
+  ## Search in the page names
+  ## -----------------------------------------------------------
+  #set ($sql = ", BaseObject as obj where doc.fullName=obj.name and obj.className='L10NCode.TranslationClass' and  $webClause upper(doc.fullName) like upper('%$!text%') order by doc.date desc")
+  #foreach ($item in $xwiki.searchDocuments($sql , $nbitems, 0))
+    #addelement($item $datedlist)
+  #end
+  ## -----------------------------------------------------------
+  ## Search in page content
+  ## -----------------------------------------------------------
+  #set ($sql = ", BaseObject as obj where doc.fullName=obj.name and obj.className='L10NCode.TranslationClass' and $webClause upper(doc.content) like upper('%$!text%') order by doc.date desc")
+  #foreach ($item in $xwiki.searchDocuments($sql , $nbitems, 0))
+    #addelement($item $datedlist)
+  #end
+  ## -----------------------------------------------------------
+  ## Search in text fields (simple String properties)
+  ## -----------------------------------------------------------
+  #set($sql= ", BaseObject as obj, BaseObject as obj2, L10NCode.TranslationClass as trans where doc.fullName=obj2.name and obj2.className='L10NCode.TranslationClass' and $webClause obj.name=doc.fullName and obj.id=trans.id and (upper(trans.name) like upper('%$!text%') or upper(trans.key) like upper('%$!text%') or upper(trans.originaltext) like upper('%$!text%') or upper(trans.translatedtext) like upper('%$!text%'))")
+  #foreach ($item in $xwiki.searchDocuments($sql , $nbitems, 0))
+    #addelement($item $datedlist)
+  #end
+#end
+#set($list = $util.arrayList)
+#foreach($item in $util.sort($datedlist))
+  #set($ok = $list.add(0, $item.substring(14)))
+#end
+{table}
+Application | Key | Author | Date | Language | English | Translated
+#foreach($item in $list)
+#set($itemdoc = $xwiki.getDocument($item))
+#set($key = $itemdoc.getValue("key"))
+#set($language = $itemdoc.getValue("language"))
+#set($origtext = $itemdoc.getValue("originaltext"))
+#set($transtext = $itemdoc.getValue("translatedtext"))
+$itemdoc.space | [$key&gt;$itemdoc] | $xwiki.getUserName($doc.author) | $xwiki.formatDate($doc.date) | $language | {pre} $origtext {/pre} | {pre} $transtext {/pre}
+#end
+{table}</content></xwikidoc>

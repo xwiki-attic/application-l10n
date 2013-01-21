@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xwikidoc>
+<web>L10NCode</web>
+<name>TranslationClassSheet20</name>
+<language></language>
+<defaultLanguage>en</defaultLanguage>
+<translation>0</translation>
+<parent></parent>
+<creator>XWiki.Admin</creator>
+<author>XWiki.Admin</author>
+<customClass></customClass>
+<contentAuthor>XWiki.Admin</contentAuthor>
+<creationDate>1325372400000</creationDate>
+<date>1325372400000</date>
+<contentUpdateDate>1325372400000</contentUpdateDate>
+<version>1.1</version>
+<title></title>
+<template></template>
+<defaultTemplate></defaultTemplate>
+<validationScript></validationScript>
+<comment></comment>
+<minorEdit>false</minorEdit>
+<syntaxId>xwiki/2.0</syntaxId>
+<hidden>false</hidden>
+<content>{{velocity}}
+#**
+ * This page displays a translation
+ * @type sheet
+ *#
+#set($ok = $doc.use("L10NCode.TranslationClass"))
+{{/velocity}}
+
+= Translation
+
+{{velocity}}
+|Source file or wiki page| $doc.display("name")
+|Key|$doc.display("key")
+|Language|$doc.display("language")
+|Status|$doc.display("status")
+|Deprecated|$doc.display("deprecated")
+|New key|$doc.display("deprecatedNewKey")
+|Comment|$doc.display("comment")
+|Original Text|#if($context.action == 'edit' || $xcontext.action == 'inline')$doc.display("originaltext")#else{{html clean="false"}}$escapetool.html($!doc.getValue('originaltext')).replace($util.newline, "&lt;br/&gt;").replace("{{", "&amp;#123;&amp;#123;"){{/html}}#end
+
+|Translated Text|#if($context.action == 'edit' || $xcontext.action == 'inline')$doc.display("translatedtext")#else{{html clean="false"}}$escapetool.html("$!{doc.getValue('translatedtext')}").replace($util.newline, "&lt;br/&gt;").replace("{{", "&amp;#123;&amp;#123;"){{/html}}#end
+
+|Validated Translated Text|#if($context.action == 'edit' || $xcontext.action == 'inline')$doc.display("validatedtranslatedtext")#else{{html clean="false"}}$escapetool.html("$!{doc.getValue('validatedtranslatedtext')}").replace($util.newline, "&lt;br/&gt;").replace("{{", "&amp;#123;&amp;#123;"){{/html}}#end
+{{/velocity}}</content></xwikidoc>

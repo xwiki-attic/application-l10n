@@ -1,0 +1,2472 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xwikidoc>
+<web>L10NCode</web>
+<name>L10NGroovy</name>
+<language></language>
+<defaultLanguage>en</defaultLanguage>
+<translation>0</translation>
+<parent></parent>
+<creator>XWiki.Admin</creator>
+<author>XWiki.Admin</author>
+<customClass></customClass>
+<contentAuthor>XWiki.Admin</contentAuthor>
+<creationDate>1325372400000</creationDate>
+<date>1325372400000</date>
+<contentUpdateDate>1325372400000</contentUpdateDate>
+<version>1.1</version>
+<title>L10NGroovy</title>
+<template></template>
+<defaultTemplate></defaultTemplate>
+<validationScript></validationScript>
+<comment></comment>
+<minorEdit>false</minorEdit>
+<syntaxId>xwiki/1.0</syntaxId>
+<hidden>true</hidden>
+<content>/*
+ #* L10N Application Groovy Code
+ *
+ * Allows to manage translations page, including import/export.
+ * @type groovy
+ * @programming
+ *
+ *#
+ #*
+ */
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.Reader;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
+import java.io.Writer;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.TreeSet;
+import java.util.regex.Pattern;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
+
+import org.apache.axis.utils.ByteArrayOutputStream;
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.lang.ObjectUtils;
+import org.apache.commons.lang.StringUtils;
+import org.xwiki.query.Query;
+import org.xwiki.query.QueryException;
+import org.xwiki.query.QueryManager;
+import org.xwiki.rendering.syntax.Syntax;
+
+import com.xpn.xwiki.XWikiContext;
+import com.xpn.xwiki.XWikiException;
+import com.xpn.xwiki.api.Context;
+import com.xpn.xwiki.api.Document;
+import com.xpn.xwiki.api.Property;
+import com.xpn.xwiki.api.XWiki;
+import com.xpn.xwiki.doc.XWikiDocument;
+import com.xpn.xwiki.web.XWikiServletRequest;
+
+public class L10NApp
+{
+    /**
+     * Same as java.util.Properties but with the following changes:
+     * &lt;ul&gt;
+     * &lt;li&gt;Parse comments to find informations related to the key&lt;/li&gt;
+     * &lt;li&gt;The order of the file is kept&lt;/li&gt;
+     * &lt;/ul&gt;
+     */
+    public static class TranslationBundleReader extends LinkedHashMap&lt;String, TranslationBundleReader.Translation&gt;
+    {
+        public static class Translation
+        {
+            private String key;
+
+            private String value;
+
+            private String comment;
+
+            private boolean deprecated;
+
+            private String newKey;
+
+            public Translation(String key, String value, String comment, boolean deprecated, String newKey)
+            {
+                this.key = key;
+                this.value = value;
+
+                this.comment = comment;
+
+                this.deprecated = deprecated;
+                this.newKey = newKey;
+            }
+
+            public String getKey()
+            {
+                return this.key;
+            }
+
+            public String getValue()
+            {
+                return this.value;
+            }
+
+            public String getComment()
+            {
+                return this.comment;
+            }
+
+            public boolean isDeprecated()
+            {
+                return this.deprecated;
+            }
+
+            public String getNewKey()
+            {
+                return this.newKey;
+            }
+        }
+
+        public synchronized void load(Reader reader) throws IOException
+        {
+            load0(new LineReader(reader));
+        }
+
+        /**
+         * Reads a property list (key and element pairs) from the input byte stream. The input stream is in a simple
+         * line-oriented format as specified in {@link #load(java.io.Reader) load(Reader)} and is assumed to use the ISO
+         * 8859-1 character encoding; that is each byte is one Latin1 character. Characters not in Latin1, and certain
+         * special characters, are represented in keys and elements using &lt;a
+         * href="http://java.sun.com/docs/books/jls/third_edition/html/lexical.html#3.3"&gt;Unicode escapes&lt;/a&gt;.
+         * &lt;p&gt;
+         * The specified stream remains open after this method returns.
+         * 
+         * @param inStream the input stream.
+         * @exception IOException if an error occurred when reading from the input stream.
+         * @throws IllegalArgumentException if the input stream contains a malformed Unicode escape sequence.
+         * @since 1.2
+         */
+        public synchronized void load(InputStream inStream) throws IOException
+        {
+            load0(new LineReader(inStream));
+        }
+
+        private void load0(LineReader lr) throws IOException
+        {
+            char[] convtBuf = new char[1024];
+            int limit;
+            int keyLen;
+            int valueStart;
+            char c;
+            boolean hasSep;
+            boolean precedingBackslash;
+
+            // Added to the following translation
+            StringBuilder comment = null;
+            String newKey = null;
+            boolean deprecated = false;
+
+            while ((limit = lr.readLine()) &gt;= 0) {
+                char firstChar = lr.lineBuf[0];
+
+                if (firstChar == '#' || firstChar == '!') {
+                    if (limit &gt; 3 &amp;&amp; lr.lineBuf[1] == firstChar &amp;&amp; lr.lineBuf[2] == firstChar) {
+                        if (comment != null) {
+                            comment.setLength(0);
+                        }
+                    } else {
+                        if (comment == null) {
+                            comment = new StringBuilder();
+                        }
+
+                        if (comment.length() &gt; 0) {
+                            comment.append('\n');
+                        }
+
+                        comment.append(lr.lineBuf, 1, limit - 1);
+
+                        // extract new key
+                        deprecated = startWith(lr.lineBuf, "#@deprecated");
+                        if (deprecated) {
+                            newKey =
+                                extractKey(lr.lineBuf, "#@deprecated".length(), limit - "#@deprecated".length(),
+                                    convtBuf);
+                        }
+                    }
+                } else {
+                    c = 0;
+                    keyLen = 0;
+                    valueStart = limit;
+                    hasSep = false;
+
+                    // System.out.println("line=&lt;" + new String(lineBuf, 0, limit) + "&gt;");
+                    precedingBackslash = false;
+                    while (keyLen &lt; limit) {
+                        c = lr.lineBuf[keyLen];
+                        // need check if escaped.
+                        if ((c == '=' || c == ':') &amp;&amp; !precedingBackslash) {
+                            valueStart = keyLen + 1;
+                            hasSep = true;
+                            break;
+                        } else if ((c == ' ' || c == '\t' || c == '\f') &amp;&amp; !precedingBackslash) {
+                            valueStart = keyLen + 1;
+                            break;
+                        }
+                        if (c == '\\') {
+                            precedingBackslash = !precedingBackslash;
+                        } else {
+                            precedingBackslash = false;
+                        }
+                        keyLen++;
+                    }
+                    while (valueStart &lt; limit) {
+                        c = lr.lineBuf[valueStart];
+                        if (c != ' ' &amp;&amp; c != '\t' &amp;&amp; c != '\f') {
+                            if (!hasSep &amp;&amp; (c == '=' || c == ':')) {
+                                hasSep = true;
+                            } else {
+                                break;
+                            }
+                        }
+                        valueStart++;
+                    }
+                    String key = loadConvert(lr.lineBuf, 0, keyLen, convtBuf);
+
+                    if (isValidKey(key)) {
+                        String value = loadConvert(lr.lineBuf, valueStart, limit - valueStart, convtBuf);
+
+                        Translation translation =
+                            new Translation(key, value, comment != null ? comment.toString() : null, deprecated, newKey);
+
+                        put(key, translation);
+
+                        if (comment != null) {
+                            comment.setLength(0);
+                        }
+                    }
+                }
+            }
+        }
+
+        private boolean startWith(char[] buffer, CharSequence str)
+        {
+            for (int i = 0; i &lt; str.length(); ++i) {
+                if (buffer.length &lt;= i || buffer[i] != str.charAt(i)) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        private String extractKey(char[] buffer, int start, int len, char[] convtBuf)
+        {
+            String rawKey = loadConvert(buffer, start, len, convtBuf);
+
+            rawKey = rawKey.trim();
+
+            if (rawKey.isEmpty()) {
+                return null;
+            }
+
+            return isValidKey(rawKey) ? rawKey : null;
+        }
+
+        private boolean isValidKey(String key)
+        {
+            for (int i = 0; i &lt; key.length(); ++i) {
+                if (!isValidKeyChar(key.charAt(i))) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        private boolean isValidKeyChar(char c)
+        {
+            switch (c) {
+                case ' ':
+                case '\t':
+                case '\f':
+                case '=':
+                case ':':
+                case '{':
+                case '}':
+                case '[':
+                case ']':
+                    return false;
+
+                default:
+                    break;
+            }
+
+            return true;
+        }
+
+        /*
+         * Read in a "logical line" from an InputStream/Reader, skip all comment and blank lines and filter out those
+         * leading whitespace characters ( , and ) from the beginning of a "natural line". Method returns the char
+         * length of the "logical line" and stores the line in "lineBuf".
+         */
+        class LineReader
+        {
+            public LineReader(InputStream inStream)
+            {
+                this.inStream = inStream;
+                inByteBuf = new byte[8192];
+            }
+
+            public LineReader(Reader reader)
+            {
+                this.reader = reader;
+                inCharBuf = new char[8192];
+            }
+
+            byte[] inByteBuf;
+
+            char[] inCharBuf;
+
+            char[] lineBuf = new char[1024];
+
+            int inLimit = 0;
+
+            int inOff = 0;
+
+            InputStream inStream;
+
+            Reader reader;
+
+            int readLine() throws IOException
+            {
+                int len = 0;
+                char c = 0;
+
+                boolean skipWhiteSpace = true;
+                boolean isNewLine = true;
+                boolean appendedLineBegin = false;
+                boolean precedingBackslash = false;
+                boolean skipLF = false;
+
+                while (true) {
+                    if (inOff &gt;= inLimit) {
+                        inLimit = (inStream == null) ? reader.read(inCharBuf) : inStream.read(inByteBuf);
+                        inOff = 0;
+                        if (inLimit &lt;= 0) {
+                            if (len == 0) {
+                                return -1;
+                            }
+                            return len;
+                        }
+                    }
+                    if (inStream != null) {
+                        // The line below is equivalent to calling a
+                        // ISO8859-1 decoder.
+                        c = (char) (0xff &amp; inByteBuf[inOff++]);
+                    } else {
+                        c = inCharBuf[inOff++];
+                    }
+                    if (skipLF) {
+                        skipLF = false;
+                        if (c == '\n') {
+                            continue;
+                        }
+                    }
+                    if (skipWhiteSpace) {
+                        if (c == ' ' || c == '\t' || c == '\f') {
+                            continue;
+                        }
+                        if (!appendedLineBegin &amp;&amp; (c == '\r' || c == '\n')) {
+                            continue;
+                        }
+                        skipWhiteSpace = false;
+                        appendedLineBegin = false;
+                    }
+                    if (isNewLine) {
+                        isNewLine = false;
+                    }
+
+                    if (c != '\n' &amp;&amp; c != '\r') {
+                        lineBuf[len++] = c;
+                        if (len == lineBuf.length) {
+                            int newLength = lineBuf.length * 2;
+                            if (newLength &lt; 0) {
+                                newLength = Integer.MAX_VALUE;
+                            }
+                            char[] buf = new char[newLength];
+                            System.arraycopy(lineBuf, 0, buf, 0, lineBuf.length);
+                            lineBuf = buf;
+                        }
+                        // flip the preceding backslash flag
+                        if (c == '\\') {
+                            precedingBackslash = !precedingBackslash;
+                        } else {
+                            precedingBackslash = false;
+                        }
+                    } else {
+                        // reached EOL
+                        if (len == 0) {
+                            isNewLine = true;
+                            skipWhiteSpace = true;
+                            len = 0;
+                            continue;
+                        }
+                        if (inOff &gt;= inLimit) {
+                            inLimit = (inStream == null) ? reader.read(inCharBuf) : inStream.read(inByteBuf);
+                            inOff = 0;
+                            if (inLimit &lt;= 0) {
+                                return len;
+                            }
+                        }
+                        if (precedingBackslash) {
+                            len -= 1;
+                            // skip the leading whitespace characters in following line
+                            skipWhiteSpace = true;
+                            appendedLineBegin = true;
+                            precedingBackslash = false;
+                            if (c == '\r') {
+                                skipLF = true;
+                            }
+                        } else {
+                            return len;
+                        }
+                    }
+                }
+            }
+        }
+
+        /*
+         * Converts encoded &amp;#92;uxxxx to unicode chars and changes special saved chars to their original forms
+         */
+        private String loadConvert(char[] input, int off, int len, char[] convtBuf)
+        {
+            if (convtBuf.length &lt; len) {
+                int newLen = len * 2;
+                if (newLen &lt; 0) {
+                    newLen = Integer.MAX_VALUE;
+                }
+                convtBuf = new char[newLen];
+            }
+            char aChar;
+            char[] out = convtBuf;
+            int outLen = 0;
+            int end = off + len;
+
+            while (off &lt; end) {
+                aChar = input[off++];
+                if (aChar == '\\') {
+                    aChar = input[off++];
+                    if (aChar == 'u') {
+                        // Read the xxxx
+                        int value = 0;
+                        for (int i = 0; i &lt; 4; i++) {
+                            aChar = input[off++];
+                            switch (aChar) {
+                                case '0':
+                                case '1':
+                                case '2':
+                                case '3':
+                                case '4':
+                                case '5':
+                                case '6':
+                                case '7':
+                                case '8':
+                                case '9':
+                                    value = (value &lt;&lt; 4) + aChar - (char) '0';
+                                    break;
+                                case 'a':
+                                case 'b':
+                                case 'c':
+                                case 'd':
+                                case 'e':
+                                case 'f':
+                                    value = (value &lt;&lt; 4) + 10 + aChar - (char) 'a';
+                                    break;
+                                case 'A':
+                                case 'B':
+                                case 'C':
+                                case 'D':
+                                case 'E':
+                                case 'F':
+                                    value = (value &lt;&lt; 4) + 10 + aChar - (char) 'A';
+                                    break;
+                                default:
+                                    throw new IllegalArgumentException("Malformed \\uxxxx encoding.");
+                            }
+                        }
+                        out[outLen++] = (char) value;
+                    } else {
+                        if (aChar == 't')
+                            aChar = '\t';
+                        else if (aChar == 'r')
+                            aChar = '\r';
+                        else if (aChar == 'n')
+                            aChar = '\n';
+                        else if (aChar == 'f')
+                            aChar = '\f';
+                        out[outLen++] = aChar;
+                    }
+                } else {
+                    out[outLen++] = aChar;
+                }
+            }
+
+            return new String(out, 0, outLen);
+        }
+    }
+
+    public static final String TRANSLATOR_NAME = "XWikiTranslator";
+
+    public static final String TRANSLATOR_FULL_NAME = "XWiki.${TRANSLATOR_NAME}";
+
+    private static final String CACHEKEY_OPEN = "[";
+
+    private static final String CACHEKEY_CLOSE = "]";
+
+    private static final String CACHEKEY_OPENP = Pattern.quote(CACHEKEY_OPEN);
+
+    private static final String CACHEKEY_CLOSEP = Pattern.quote(CACHEKEY_CLOSE);
+
+    private static final String T_PROP_LANGUAGE = "language";
+
+    private static final String T_PROP_NAME = "name";
+
+    private static final String T_PROP_KEY = "key";
+
+    private static final String T_PROP_STATUS = "status";
+
+    private static final String T_PROP_ORIGINALTEXT = "originaltext";
+
+    private static final String T_PROP_TRANSLATEDTEXT = "translatedtext";
+
+    private static final String T_PROP_COMMENT = "comment";
+
+    private static final String T_PROP_DEPRECATED = "deprecated";
+
+    private static final String T_PROP_NEWKEY = "deprecatedNewKey";
+
+    private static final Map&lt;String, Object&gt; countCache = new HashMap&lt;String, Object&gt;();
+
+    private static final Map&lt;String, Object&gt; countByUserCache = new HashMap&lt;String, Object&gt;();
+
+    private static final Map&lt;String, Object&gt; countEmptyCache = new HashMap&lt;String, Object&gt;();
+
+    private static final Map&lt;String, Object&gt; countToReviewCache = new HashMap&lt;String, Object&gt;();
+
+    private static final Map&lt;String, Object&gt; countOutdatedCache = new HashMap&lt;String, Object&gt;();
+
+    private static final Map&lt;String, Object&gt; countNonexistentCache = new HashMap&lt;String, Object&gt;();
+
+    private static final Map&lt;String, Object&gt; lastTranslationsCache = new HashMap&lt;String, Object&gt;();
+
+    private Context context;
+
+    private XWiki xwiki;
+
+    private com.xpn.xwiki.XWiki privateXWiki;
+
+    private XWikiContext privateContext;
+
+    private String lastsql;
+
+    private QueryManager queryManager;
+
+    private QueryManager getQueryManager()
+    {
+        if (queryManager == null) {
+            queryManager = com.xpn.xwiki.web.Utils.getComponent(QueryManager.class);
+        }
+
+        return queryManager;
+    }
+
+    public void clearCache()
+    {
+        countCache.clear();
+        countByUserCache.clear();
+        countEmptyCache.clear();
+        countToReviewCache.clear();
+        countOutdatedCache.clear();
+        countNonexistentCache.clear();
+        lastTranslationsCache.clear();
+    }
+
+    public void clearMapCache(Map&lt;String, ? &gt; map, String app, String name)
+    {
+        clearMapCache(map, "${app}_${name}");
+    }
+
+    public void clearMapCache(Map&lt;String, ? &gt; map, String startWith)
+    {
+        List&lt;String&gt; list = new ArrayList&lt;String&gt;();
+        for (String key : map.keySet()) {
+            if (key.startsWith(startWith)) {
+                list.add(key);
+            }
+        }
+
+        for (String key : list) {
+            map.remove(key);
+        }
+    }
+
+    public void clearCache(String app, String file)
+    {
+        removeFromCache(countCache, app, file, null, null);
+        removeFromCache(countByUserCache, app, file, null, null);
+        removeFromCache(countEmptyCache, app, file, null, null);
+        removeFromCache(countToReviewCache, app, file, null, null);
+        removeFromCache(countOutdatedCache, app, file, null, null);
+        removeFromCache(countNonexistentCache, app, file, null, null);
+        removeFromCache(lastTranslationsCache, app, file, null, null);
+    }
+
+    public void clearCache(String app, String file, String language)
+    {
+        removeFromCache(countCache, app, file, language, null);
+        removeFromCache(countByUserCache, app, file, language, null);
+        removeFromCache(countEmptyCache, app, file, language, null);
+        removeFromCache(countToReviewCache, app, file, language, null);
+        removeFromCache(countOutdatedCache, app, file, language, null);
+        removeFromCache(countNonexistentCache, app, file, language, null);
+        removeFromCache(lastTranslationsCache, app, file, language, null);
+    }
+
+    public void addToCache(Map&lt;String, Object&gt; cache, Object value, String app, String file, String language,
+        String author, Integer nb, Integer start, boolean withTranslator)
+    {
+        cache.put(createKey(app, file, language, author, nb, start, withTranslator), value);
+    }
+
+    public Object getFromCache(Map&lt;String, ? &gt; cache, String app, String file, String language, String author,
+        Integer nb, Integer start, boolean withTranslator)
+    {
+        return cache.get(createKey(app, file, language, author, nb, start, withTranslator));
+    }
+
+    public String createKey(String app, String file, String language, String author, Integer nb, Integer start,
+        boolean withTranslator)
+    {
+        StringBuffer key = new StringBuffer();
+
+        key.append(CACHEKEY_OPEN);
+        if (app != null) {
+            key.append(app);
+        }
+        key.append(CACHEKEY_CLOSE);
+
+        key.append(CACHEKEY_OPEN);
+        if (file != null) {
+            key.append(file);
+        }
+        key.append(CACHEKEY_CLOSE);
+
+        key.append(CACHEKEY_OPEN);
+        if (language != null) {
+            key.append(language);
+        }
+        key.append(CACHEKEY_CLOSE);
+
+        key.append(CACHEKEY_OPEN);
+        if (author != null) {
+            key.append(author);
+        }
+        key.append(CACHEKEY_CLOSE);
+
+        key.append(CACHEKEY_OPEN);
+        if (nb != null) {
+            key.append(nb);
+        }
+        key.append(CACHEKEY_CLOSE);
+
+        key.append(CACHEKEY_OPEN);
+        if (start != null) {
+            key.append(start);
+        }
+        key.append(CACHEKEY_CLOSE);
+
+        key.append(CACHEKEY_OPEN);
+        key.append(withTranslator);
+        key.append(CACHEKEY_CLOSE);
+
+        return key.toString();
+    }
+
+    private void removeFromCache(Map&lt;String, ? &gt; cache, Pattern pattern)
+    {
+        List&lt;String&gt; list = new ArrayList&lt;String&gt;();
+        for (String key : cache.keySet()) {
+            if (pattern.matcher(key).matches()) {
+                list.add(key);
+            }
+        }
+
+        for (String key : list) {
+            cache.remove(key);
+        }
+    }
+
+    public void removeFromCache(Map&lt;String, ? &gt; cache, String app, String file, String language, String author)
+    {
+        StringBuffer pattern = new StringBuffer();
+
+        // app
+        pattern.append(CACHEKEY_OPENP);
+        if (app != null) {
+            pattern.append("(" + Pattern.quote(app) + ")?");
+        } else {
+            pattern.append(".*");
+        }
+        pattern.append(CACHEKEY_CLOSEP);
+
+        // file
+        pattern.append(CACHEKEY_OPENP);
+        if (file != null) {
+            pattern.append("(" + Pattern.quote(file) + ")?");
+        } else {
+            pattern.append(".*");
+        }
+        pattern.append(CACHEKEY_CLOSEP);
+
+        // language
+        pattern.append(CACHEKEY_OPENP);
+        if (language != null) {
+            pattern.append("(" + Pattern.quote(language) + ")?");
+        } else {
+            pattern.append(".*");
+        }
+        pattern.append(CACHEKEY_CLOSEP);
+
+        // author
+        pattern.append(CACHEKEY_OPENP);
+        if (author != null) {
+            pattern.append("(" + Pattern.quote(author) + ")?");
+        } else {
+            pattern.append(".*");
+        }
+        pattern.append(CACHEKEY_CLOSEP);
+
+        // nb
+        pattern.append(CACHEKEY_OPENP);
+        pattern.append(".*");
+        pattern.append(CACHEKEY_CLOSEP);
+
+        // start
+        pattern.append(CACHEKEY_OPENP);
+        pattern.append(".*");
+        pattern.append(CACHEKEY_CLOSEP);
+
+        // withTranslator
+        pattern.append(CACHEKEY_OPENP);
+        pattern.append(".*");
+        pattern.append(CACHEKEY_CLOSEP);
+
+        removeFromCache(cache, Pattern.compile(pattern.toString()));
+    }
+
+    public Map&lt;String, Object&gt; getCountCache()
+    {
+        return countCache;
+    }
+
+    public void setContext(Context context, XWiki xwiki) throws SecurityException, NoSuchFieldException,
+        IllegalArgumentException, IllegalAccessException
+    {
+        this.context = context;
+        this.xwiki = xwiki;
+
+        java.lang.reflect.Field f = com.xpn.xwiki.api.Api.class.getDeclaredField("context");
+        f.setAccessible(true);
+
+        this.privateContext = (XWikiContext) f.get(context);
+        this.privateXWiki = privateContext.getWiki();
+    }
+
+    public String getLastSQL()
+    {
+        return lastsql;
+    }
+
+    public String getPageName(String name, String key, String language)
+    {
+        return xwiki.clearName(name) + "_" + key.hashCode() + "_" + StringUtils.replace(key, ".", "-") + "_${language}";
+    }
+
+    public String getDefaultLanguage() throws XWikiException
+    {
+        Document l10ndoc = xwiki.getDocument("L10N.WebHome");
+        String lang = (String) l10ndoc.getValue("defaultlanguage");
+        if (StringUtils.isEmpty(lang)) {
+            return "en";
+        } else {
+            return lang;
+        }
+    }
+
+    public String[] getLanguages() throws XWikiException
+    {
+        Document l10ndoc = xwiki.getDocument("L10N.WebHome");
+        String lang = (String) l10ndoc.getValue("defaultlanguages");
+        if (StringUtils.isEmpty(lang)) {
+            return "fr,de,es,it".split(",");
+        } else {
+            return lang.split(",");
+        }
+    }
+
+    /* application management functions */
+
+    public List&lt;String&gt; getApplications() throws XWikiException
+    {
+        String sql =
+            ", BaseObject as obj where doc.fullName=obj.name and obj.className='L10NCode.L10NApplicationClass'";
+
+        return xwiki.searchDocuments(sql);
+    }
+
+    public List&lt;String&gt; getApplicationsNames() throws XWikiException
+    {
+        String sql =
+            "select distinct doc.space from XWikiDocument doc, BaseObject as obj where doc.fullName=obj.name and obj.className='L10NCode.L10NApplicationClass'";
+
+        return this.privateXWiki.search(sql, this.privateContext);
+    }
+
+    public boolean addApplication(XWikiServletRequest request) throws XWikiException
+    {
+        String spaceName = request.get("space");
+        Document appdoc = xwiki.getDocument("${spaceName}.WebHome");
+        if (!appdoc.isNew())
+            return false;
+        else {
+            appdoc.addObjectFromRequest("L10NCode.L10NApplicationClass");
+            appdoc.setContent("#includeForm(\"L10NCode.L10NApplicationClassSheet\")");
+            appdoc.save();
+
+            return true;
+        }
+    }
+
+    public Collection&lt;String&gt; getAllLanguages() throws XWikiException
+    {
+        Collection&lt;String&gt; languages = new TreeSet&lt;String&gt;();
+
+        for (String appName : getApplicationsNames()) {
+            try {
+                for (String language : getApplicationLanguages(appName)) {
+                    languages.add(language);
+                }
+            } catch (XWikiException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+
+        return languages;
+    }
+
+    public String[] getApplicationLanguages(String app) throws XWikiException
+    {
+        String[] languages;
+
+        Document appdoc = xwiki.getDocument("${app}.WebHome");
+        String lang = (String) appdoc.getValue("languages");
+
+        if (StringUtils.isEmpty(lang)) {
+            languages = getLanguages();
+        } else {
+            languages = lang.split(",");
+        }
+
+        Arrays.sort(languages);
+
+        return languages;
+    }
+
+    public String getApplicationDefaultLanguage(String app) throws XWikiException
+    {
+        Document appdoc = xwiki.getDocument("${app}.WebHome");
+
+        return getApplicationDefaultLanguage(appdoc);
+    }
+
+    public String getApplicationDefaultLanguage(Document appdoc) throws XWikiException
+    {
+        String lang = (String) appdoc.getValue("defaultlanguage");
+        if (StringUtils.isEmpty(lang)) {
+            return getDefaultLanguage();
+        } else {
+            return lang;
+        }
+    }
+
+    /* translation files management functions */
+
+    public List&lt;Map&lt;String, Object&gt;&gt; getTranslationsFiles(String app) throws XWikiException
+    {
+        List&lt;Map&lt;String, Object&gt;&gt; list = new ArrayList&lt;Map&lt;String, Object&gt;&gt;();
+
+        String sql =
+            ", BaseObject as obj where doc.web='${app}' and doc.fullName=obj.name and obj.className='L10NCode.TranslationFileClass'";
+
+        for (String item : xwiki.searchDocuments(sql)) {
+            Document transfiledoc = xwiki.getDocument(item);
+            transfiledoc.use("L10NCode.TranslationFileClass");
+            Map&lt;String, Object&gt; map = new HashMap&lt;String, Object&gt;();
+            map.put("page", transfiledoc.getFullName());
+            map.put("name", transfiledoc.getValue(T_PROP_NAME));
+            map.put("type", transfiledoc.getValue("type"));
+            map.put("url", transfiledoc.getValue("url"));
+            map.put("state", transfiledoc.getValue("state"));
+            list.add(map);
+        }
+
+        return list;
+    }
+
+    public Document getTranslationFile(String page) throws XWikiException
+    {
+        return xwiki.getDocument(page);
+    }
+
+    public String findLanguageURL(Document doc, String language) throws XWikiException
+    {
+        String url = (String) doc.getValue("url");
+        String dlang = getApplicationDefaultLanguage(doc.getSpace());
+        String type = (String) doc.getValue("type");
+        if (type == "exportedwikipage" || type == "exportedwikitrans") {
+            if (url.indexOf("_${dlang}.properties") != -1) {
+                return url.replaceAll("\\.${dlang}.xml", ".${language}.xml");
+            } else {
+                return url.replaceAll("\\.xml", ".${language}.xml");
+            }
+        } else if (type == "resource") {
+            // type is ApplicationResources
+            if (url.indexOf("_${dlang}.properties") != -1) {
+                return url.replaceAll("_${dlang}\\.properties", "_${language}.properties");
+            } else {
+                return url.replaceAll("\\.properties", "_${language}.properties");
+            }
+        } else {
+            return url;
+        }
+    }
+
+    public Document addTranslationFile(String app, XWikiServletRequest request) throws XWikiException
+    {
+        if (app == null || request == null) {
+            return null;
+        }
+
+        String name = request.get("L10NCode.TranslationFileClass_0_name");
+        String pagename = xwiki.getUniquePageName(app, name);
+        Document transfiledoc = xwiki.getDocument("${app}.${pagename}");
+        transfiledoc.addObjectFromRequest("L10NCode.TranslationFileClass");
+        transfiledoc.setContent("#includeForm(\"L10NCode.TranslationFileClassSheet\")");
+        transfiledoc.save();
+
+        return transfiledoc;
+    }
+
+    public void removeTranslationFile(String page) throws XWikiException
+    {
+        Document transfiledoc = xwiki.getDocument(page);
+
+        com.xpn.xwiki.api.Object obj = transfiledoc.getObject("L10NCode.TranslationClass");
+
+        String app = transfiledoc.getSpace();
+        String name = (String) obj.getProperty(T_PROP_NAME).getValue();
+        String lang = (String) obj.getProperty(T_PROP_LANGUAGE).getValue();
+
+        transfiledoc.delete();
+
+        clearCache(app, name, lang);
+    }
+
+    /* import functions */
+
+    public int importTranslations(String app, String name, String language, String urlorpage) throws Exception
+    {
+        Document transfiledoc = xwiki.getDocument(name);
+        String stype = (String) transfiledoc.getValue("type");
+        if (stype.equals("resource")) {
+            return importApplicationResourcesFromURL(app, name, language, urlorpage);
+        } else if (stype.equals("exportedwikipage")) {
+            return importWikiPageFromURL(app, name, language, urlorpage);
+        } else if (stype.equals("exportedwikitrans")) {
+            return importTranslationWikiPageFromURL(app, name, language, urlorpage);
+        } else if (stype.equals("wikipage")) {
+            return importWikiPageFromWiki(app, name, language, urlorpage);
+        } else if (stype.equals("wikitrans")) {
+            return importTranslationWikiPageFromWiki(app, name, language, urlorpage);
+        } else {
+            return -1;
+        }
+    }
+
+    public TranslationBundleReader getTranslationsFromURL(String surl) throws Exception
+    {
+        HttpClient client =
+            com.xpn.xwiki.XWiki.getHttpClient(privateXWiki.getHttpTimeout(privateContext),
+                privateXWiki.getHttpUserAgent(privateContext));
+
+        GetMethod get = new GetMethod(surl);
+
+        try {
+            client.executeMethod(get);
+
+            int code = get.getStatusCode();
+            if (code != HttpStatus.SC_OK) {
+                throw new Exception("Failed to get content for URL [${surl}]: code [${code}]");
+            }
+
+            // read the properties from url
+            TranslationBundleReader translationReader = new TranslationBundleReader();
+            translationReader.load(get.getResponseBodyAsStream());
+
+            return translationReader;
+        } finally {
+            get.releaseConnection();
+        }
+    }
+
+    public Properties getPropertiesFromURL(String surl) throws Exception
+    {
+        HttpClient client =
+            com.xpn.xwiki.XWiki.getHttpClient(privateXWiki.getHttpTimeout(privateContext),
+                privateXWiki.getHttpUserAgent(privateContext));
+
+        GetMethod get = new GetMethod(surl);
+
+        try {
+            client.executeMethod(get);
+
+            int code = get.getStatusCode();
+            if (code != HttpStatus.SC_OK) {
+                throw new Exception("Failed to get content for URL [${surl}]: code [${code}]");
+            }
+
+            // read the properties from url
+            Properties properties = (Properties) xwiki.parseGroovyFromPage("L10NCode.L10NFixedProperties");
+            properties.load(get.getResponseBodyAsStream());
+
+            return properties;
+        } finally {
+            get.releaseConnection();
+        }
+    }
+
+    private XWikiDocument getXWikiDocumentFromURL(String surl) throws Exception
+    {
+        HttpClient client =
+            com.xpn.xwiki.XWiki.getHttpClient(privateXWiki.getHttpTimeout(privateContext),
+                privateXWiki.getHttpUserAgent(privateContext));
+
+        GetMethod get = new GetMethod(surl);
+
+        try {
+            client.executeMethod(get);
+
+            int code = get.getStatusCode();
+            if (code != HttpStatus.SC_OK) {
+                throw new Exception("Failed to get content for URL [${surl}]: code [${code}]");
+            }
+
+            // read the document from url
+            XWikiDocument xdoc = new XWikiDocument();
+            xdoc.fromXML(get.getResponseBodyAsStream());
+
+            return xdoc;
+        } finally {
+            get.releaseConnection();
+        }
+    }
+
+    private TranslationBundleReader getXWikiDocumentTranslationsFromURL(String surl) throws Exception
+    {
+        XWikiDocument xdoc = getXWikiDocumentFromURL(surl);
+
+        return getTranslationsFromString(xdoc.getContent());
+    }
+
+    public Properties getPropertiesFromString(String content) throws IOException
+    {
+        Reader reader = new StringReader(content);
+        Properties props = new Properties();
+        props.load(reader);
+
+        return props;
+    }
+
+    public TranslationBundleReader getTranslationsFromString(String content) throws IOException
+    {
+        Reader reader = new StringReader(content);
+        TranslationBundleReader translations = new TranslationBundleReader();
+        translations.load(reader);
+
+        return translations;
+    }
+
+    private Properties getPropertiesFromWiki(String page, String language) throws XWikiException, IOException
+    {
+        XWikiDocument xdoc = xwiki.getDocument(page).getTranslatedDocument(language).getDocument();
+
+        return getPropertiesFromString(xdoc.getContent());
+    }
+
+    private TranslationBundleReader getTranslationsFromWiki(String page, String language) throws XWikiException,
+        IOException
+    {
+        XWikiDocument xdoc = xwiki.getDocument(page).getTranslatedDocument(language).getDocument();
+
+        return getTranslationsFromString(xdoc.getContent());
+    }
+
+    /* import functions */
+    public int importTranslationWikiPageFromURL(String app, String name, String language, String url) throws Exception
+    {
+        TranslationBundleReader translations = getXWikiDocumentTranslationsFromURL(url);
+
+        int ret = importMap(app, name, language, translations);
+        String dlang = getApplicationDefaultLanguage(app);
+        if (!StringUtils.equals(dlang, language)) {
+            prepareTranslations(app, name, language);
+        } else {
+            // remove dead default translations
+            cleanDead(app, name, language, translations.keySet());
+            clearCache(app, name, language);
+        }
+
+        return ret;
+    }
+
+    /* import functions */
+    public int importWikiPageFromURL(String app, String name, String language, String surl) throws Exception
+    {
+        String content = getXWikiDocumentFromURL(surl).getContent();
+        Properties props = new Properties();
+        props.put("content", content);
+
+        int ret = importMap(app, name, language, (Map) props);
+        String dlang = getApplicationDefaultLanguage(app);
+        if (!StringUtils.equals(dlang, language)) {
+            prepareTranslations(app, name, language);
+        } else {
+            clearCache(app, name, language);
+        }
+
+        return ret;
+    }
+
+    /* import functions */
+    public int importTranslationWikiPageFromWiki(String app, String name, String language, String pagename)
+        throws XWikiException, IOException, QueryException
+    {
+        TranslationBundleReader translations = getTranslationsFromWiki(pagename, language);
+
+        int ret = importMap(app, name, language, translations);
+        String dlang = getApplicationDefaultLanguage(app);
+        if (!StringUtils.equals(dlang, language)) {
+            prepareTranslations(app, name, language);
+        } else {
+            // remove dead default translations
+            cleanDead(app, name, language, translations.keySet());
+            clearCache(app, name, language);
+        }
+
+        return ret;
+    }
+
+    /* import functions */
+    public int importWikiPageFromWiki(String app, String name, String language, String pagename) throws XWikiException,
+        QueryException
+    {
+        String content = xwiki.getDocument(pagename).getTranslatedContent();
+        Properties props = new Properties();
+        props.put("content", content);
+
+        int ret = importMap(app, name, language, (Map) props);
+        String dlang = getApplicationDefaultLanguage(app);
+        if (!StringUtils.equals(dlang, language)) {
+            prepareTranslations(app, name, language);
+        } else {
+            clearCache(app, name, language);
+        }
+
+        return ret;
+    }
+
+    /* import functions */
+    public int importApplicationResourcesFromURL(String app, String name, String language, String surl)
+        throws Exception
+    {
+        // read the translations
+        TranslationBundleReader translations = getTranslationsFromURL(surl);
+
+        int ret = importMap(app, name, language, translations);
+        String dlang = getApplicationDefaultLanguage(app);
+        if (!StringUtils.equals(dlang, language)) {
+            prepareTranslations(app, name, language);
+        } else {
+            // remove dead default translations
+            cleanDead(app, name, language, translations.keySet());
+            clearCache(app, name, language);
+        }
+
+        return ret;
+    }
+
+    public int importMap(String app, String name, String language, Map&lt;String, ? &gt; map) throws XWikiException
+    {
+        int counter = 0;
+
+        String dlang = getApplicationDefaultLanguage(app);
+
+        for (Map.Entry&lt;String, ? &gt; entry : map.entrySet()) {
+            String key = entry.getKey();
+
+            // some translation pages use this to display the trans page nicely in xwiki
+            // we should ignore the key
+            if (key.equals("{table}")) {
+                continue;
+            }
+
+            if (key.equals("notranslationsmarker")) {
+                break;
+            }
+
+            String value;
+            String comment;
+            Boolean deprecated;
+            String newKey;
+
+            if (entry.getValue() instanceof TranslationBundleReader.Translation) {
+                TranslationBundleReader.Translation translation =
+                    (TranslationBundleReader.Translation) entry.getValue();
+                value = translation.getValue();
+                comment = translation.getComment();
+                deprecated = translation.isDeprecated();
+                newKey = translation.getNewKey();
+            } else {
+                value = (String) entry.getValue();
+                comment = null;
+                deprecated = null;
+                newKey = null;
+            }
+
+            String pagename = "${app}." + getPageName(name, key, language);
+            Document doc = xwiki.getDocument(pagename);
+            Document ddoc;
+            if (language != dlang) {
+                ddoc = xwiki.getDocument("${app}." + getPageName(name, key, dlang));
+            } else {
+                ddoc = doc;
+            }
+
+            boolean needSave = false;
+
+            com.xpn.xwiki.api.Object translation = doc.getObject("L10NCode.TranslationClass");
+            if (translation == null) {
+                translation = doc.newObject("L10NCode.TranslationClass");
+                needSave = true;
+            }
+
+            // initial values
+
+            needSave |= update(doc, translation, T_PROP_KEY, key);
+            needSave |= update(doc, translation, T_PROP_LANGUAGE, language);
+            if (translation.getProperty(T_PROP_STATUS) == null) {
+                translation.set(T_PROP_STATUS, "none");
+                needSave = true;
+            }
+            needSave |= update(doc, translation, T_PROP_NAME, name);
+
+            if (!StringUtils.equals(doc.getContent(), "{{include document=\"L10NCode.TranslationClassSheet20\"/}}")) {
+                doc.setContent("{{include document=\"L10NCode.TranslationClassSheet20\"/}}");
+            }
+            if (doc.getSyntax() != Syntax.XWIKI_2_0) {
+                doc.setSyntax(Syntax.XWIKI_2_0);
+            }
+
+            // update
+
+            if (language == dlang) {
+                needSave |= update(doc, translation, T_PROP_ORIGINALTEXT, value);
+            } else {
+                needSave |= update(doc, translation, T_PROP_TRANSLATEDTEXT, value);
+
+                needSave |= update(doc, translation, T_PROP_ORIGINALTEXT, ddoc.getValue(T_PROP_ORIGINALTEXT));
+            }
+
+            if (translation.getProperty(T_PROP_COMMENT) == null || comment != null) {
+                needSave |= update(doc, translation, T_PROP_COMMENT, comment != null ? comment : "");
+            }
+            if (translation.getProperty(T_PROP_DEPRECATED) == null || deprecated != null) {
+                needSave |= update(doc, translation, T_PROP_DEPRECATED, deprecated == Boolean.TRUE ? 1 : 0);
+            }
+            if (translation.getProperty(T_PROP_NEWKEY) == null || newKey != null) {
+                needSave |= update(doc, translation, T_PROP_NEWKEY, newKey != null ? newKey : "");
+            }
+
+            // Save
+
+            if (needSave) {
+                saveAsTranslator(doc, "Imported");
+                ++counter;
+            }
+        }
+
+        clearCache(app, name);
+
+        return counter;
+    }
+
+    public void cleanDead(String app, String name, String language, Collection&lt;String&gt; validKeys) throws XWikiException
+    {
+        List&lt;Object[]&gt; keysToRemove = getKeysToRemove(app, name, language, validKeys);
+
+        for (Object[] key : keysToRemove) {
+            xwiki.getDocument((String) key[1]).delete();
+        }
+    }
+
+    public List&lt;Object[]&gt; getKeysToRemove(String app, String name, String language, Collection&lt;String&gt; validKeys)
+        throws XWikiException
+    {
+        List&lt;Object[]&gt; keysToRemove = new ArrayList&lt;Object[]&gt;();
+
+        int start = 0;
+        List&lt;Object[]&gt; keys = null;
+        while (keys == null || keys.size() == 100) {
+            keys = getKeysAndDocNames(app, name, language, 100, start);
+            keysToRemove.addAll(getKeysToRemove(app, name, language, validKeys, keys));
+
+            start += 100;
+        }
+
+        return keysToRemove;
+    }
+
+    public List&lt;Object[]&gt; getKeysToRemove(String app, String name, String language, Collection&lt;String&gt; validKeys,
+        Collection&lt;Object[]&gt; keys)
+    {
+        List&lt;Object[]&gt; keysToRemove = new ArrayList&lt;Object[]&gt;();
+
+        for (Object[] key : keys) {
+            if (!validKeys.contains(key[0])) {
+                keysToRemove.add(key);
+            }
+        }
+
+        return keysToRemove;
+    }
+
+    public List&lt;Object[]&gt; getKeysAndDocNames(String app, String name, String language, int nb, int start)
+        throws XWikiException
+    {
+        // new custom mapped query
+        String sql = "select distinct trans.key, obj.name from BaseObject as obj, L10NCode.TranslationClass as trans where obj.className='L10NCode.TranslationClass' and obj.id=trans.id and trans.name='${name}' and trans.language='${language}' order by trans.key";
+
+        return this.privateXWiki.search(sql, nb, start, this.privateContext);
+    }
+
+    public String exportTranslationFile(String app, String name, String language) throws Exception
+    {
+        Document transfiledoc = xwiki.getDocument(name);
+        String type = (String) transfiledoc.getValue("type");
+
+        return exportTranslationFile(app, name, language, type);
+    }
+
+    public String exportTranslationFile(String app, String name, String language, String type) throws Exception
+    {
+        return exportTranslationFile(null, app, name, language, type);
+    }
+
+    public String exportTranslationFile(ZipOutputStream zos, String app, String name, String language, String type)
+        throws Exception
+    {
+        if (language == null) {
+            return exportTranslationFileLanguages(app, name, type);
+        } else {
+            if (type.equals("resource")) {
+                return exportApplicationResources(zos, app, name, language, true);
+            } else if (type.equals("exportedwikipage")) {
+                return exportWikiPage(zos, app, name, language);
+            } else if (type.equals("exportedwikitrans")) {
+                return exportTranslationWikiPage(zos, app, name, language);
+            } else if (type.equals("wikipage")) {
+                return exportWikiPage(zos, app, name, language);
+            } else if (type.equals("wikitrans")) {
+                return exportTranslationWikiPage(zos, app, name, language);
+            } else {
+                return null;
+            }
+        }
+    }
+
+    public String exportTranslationFileLanguages(String app, String name, String type) throws Exception
+    {
+        // set mime type
+        context.getResponse().setContentType("application/zip");
+        // force download request
+        context.getResponse().setHeader("Content-Disposition", "attachment; filename=${app}_${name}.zip");
+
+        ZipOutputStream zos = new ZipOutputStream(context.getResponse().getOutputStream());
+
+        for (String language : getApplicationLanguages(app)) {
+            exportTranslationFile(zos, app, name, language, type);
+        }
+
+        zos.setComment("Language pack for application [${app}] and translation file [${name}]");
+
+        // Finish ZIP file
+        zos.finish();
+        zos.flush();
+
+        context.setFinished(true);
+
+        return null;
+    }
+
+    /**
+     * This functions will allow to transform automatically ' into '' when a translations contains a apostrophe and a
+     * parameter at the same time which is necessary
+     */
+    public String escapeQuotes(String value)
+    {
+        if (value.matches(".*\\{[0-9]\\}.*")) {
+            return value.replaceAll("'", "''").replaceAll("''''", "''");
+        } else {
+            return value;
+        }
+    }
+
+    public String exportApplicationResources(ZipOutputStream zos, String app, String name, String language, boolean esc)
+        throws XWikiException, IOException
+    {
+        return exportApplicationResources(zos, app, name, language, esc, true);
+    }
+
+    public String exportApplicationResources(ZipOutputStream zos, String app, String name, String language,
+        boolean esc, boolean contentType) throws XWikiException, IOException
+    {
+        List&lt;String[]&gt; translist = getAllTranslationsValues(app, name, language, 0, 0);
+        Properties props = (Properties) xwiki.parseGroovyFromPage("L10NCode.L10NSortedPropertiesGroovy");
+        String str = "";
+        for (String[] transentry : translist) {
+            String key = transentry[0];
+            String validtrans = transentry[2];
+            if (StringUtils.isEmpty(validtrans)) {
+                validtrans = transentry[1];
+            }
+
+            if (validtrans != null &amp;&amp; validtrans != "") {
+                props.put(key, escapeQuotes(validtrans).replace("\r\n", "\n"));
+            }
+        }
+
+        if (props.size() &gt; 0) {
+            if (zos == null) {
+                if (esc) {
+                    OutputStream os = new ByteArrayOutputStream();
+                    props.store(os,
+                        "# XWiki Translation for language ${language} generated from http://www.l10n.xwiki.org");
+
+                    if (contentType) {
+                        context.getResponse().setContentType("text/plain");
+                    }
+
+                    return os.toString();
+                } else {
+                    Writer writer = new StringWriter();
+                    props.store(writer,
+                        "# XWiki Translation for language ${language} generated from http://www.l10n.xwiki.org");
+
+                    if (contentType) {
+                        context.getResponse().setContentType("text/plain");
+                    }
+
+                    return writer.toString();
+                }
+            } else {
+                if (!props.isEmpty()) {
+                    String resourceFileName = getResourceFileName(name);
+
+                    int index = resourceFileName.lastIndexOf('.');
+
+                    StringBuilder zipEntryName = new StringBuilder();
+                    zipEntryName.append(resourceFileName.substring(0, index));
+                    zipEntryName.append('_');
+                    zipEntryName.append(language);
+                    zipEntryName.append(resourceFileName.substring(index));
+
+                    ZipEntry zipentry = new ZipEntry(zipEntryName.toString());
+                    zos.putNextEntry(zipentry);
+
+                    props.store(zos,
+                        "# XWiki Translation for language ${language} generated from http://www.l10n.xwiki.org");
+
+                    zos.closeEntry();
+                }
+
+                return null;
+            }
+        }
+
+        return null;
+    }
+
+    public String getResourceFileName(String name) throws XWikiException
+    {
+        Document transfiledoc = xwiki.getDocument(name);
+        com.xpn.xwiki.api.Object transfileobj = transfiledoc.getObject("L10NCode.TranslationFileClass");
+
+        String url = (String) transfiledoc.getValue("url", transfileobj);
+
+        return url.substring(url.lastIndexOf('/') + 1);
+    }
+
+    public String exportWikiPage(ZipOutputStream zos, String app, String name, String language) throws Exception
+    {
+        List&lt;String[]&gt; translist = getAllTranslationsValues(app, name, language, 0, 0);
+        String content = null;
+        String title = null;
+        for (String[] transentry : translist) {
+            String key = transentry[0];
+            String validtrans = transentry[2];
+            if (StringUtils.isEmpty(validtrans)) {
+                validtrans = transentry[1];
+            }
+
+            if (validtrans != null &amp;&amp; validtrans != "") {
+                if (key.equals("content")) {
+                    // make sure to use the proper line ending
+                    content = validtrans.replace("\r\n", "\n").replace('\r', '\n');
+                } else if (key.equals("title")) {
+                    title = validtrans;
+                }
+            }
+        }
+
+        return exportWikiPage(zos, title, content, app, name, language);
+    }
+
+    public String exportTranslationWikiPage(ZipOutputStream zos, String app, String name, String language)
+        throws Exception
+    {
+        String properties = exportApplicationResources(null, app, name, language, false, false);
+
+        return exportWikiPage(zos, null, properties, app, name, language);
+    }
+
+    public String exportWikiPage(ZipOutputStream zos, String title, String content, String app, String name,
+        String language) throws Exception
+    {
+        String export = "";
+
+        if (content != null) {
+            Document transfiledoc = xwiki.getDocument(name);
+            com.xpn.xwiki.api.Object transfileobj = transfiledoc.getObject("L10NCode.TranslationFileClass");
+
+            // Duplicate default document
+            XWikiDocument exportDocument = getXWikiDocumentFromURL((String) transfiledoc.getValue("url", transfileobj));
+
+            // Remove objects
+            exportDocument.setXObjects(Collections.EMPTY_MAP);
+
+            // Remove attachments
+            exportDocument.setAttachmentList(Collections.EMPTY_LIST);
+
+            exportDocument.setTranslation(1);
+            exportDocument.setLanguage(language);
+
+            // put the translation in the document content
+            if (title != null) {
+                exportDocument.setTitle(title);
+            }
+            exportDocument.setContent(content);
+
+            // export the document
+            export = exportDocument.toXML(privateContext);
+
+            if (zos == null) {
+                // set mime type
+                context.getResponse().setContentType("text/xml");
+                // force download request
+                StringBuilder headerValue = new StringBuilder();
+                headerValue.append("attachment; filename=");
+                headerValue.append(exportDocument.getName());
+                headerValue.append('.');
+                headerValue.append(language);
+                headerValue.append(".xml");
+
+                context.getResponse().setHeader("Content-Disposition", headerValue.toString());
+            } else {
+                StringBuilder zipEntryName = new StringBuilder();
+                zipEntryName.append(exportDocument.getSpace());
+                zipEntryName.append('/');
+                zipEntryName.append(exportDocument.getName());
+                zipEntryName.append('.');
+                zipEntryName.append(language);
+                zipEntryName.append(".xml");
+
+                ZipEntry zipentry = new ZipEntry(zipEntryName.toString());
+                zos.putNextEntry(zipentry);
+
+                zos.write(export.getBytes(xwiki.getEncoding()));
+
+                zos.closeEntry();
+            }
+        }
+
+        return export;
+    }
+
+    /* translations management functions */
+
+    public String getOriginalTranslation(Document transdoc) throws XWikiException
+    {
+        String app = transdoc.getSpace();
+        String dlang = getApplicationDefaultLanguage(app);
+        String pagename =
+            getPageName((String) transdoc.getValue(T_PROP_NAME), (String) transdoc.getValue(T_PROP_KEY), dlang);
+        pagename = "${app}.${pagename}";
+
+        Document newdoc = xwiki.getDocument(pagename);
+        newdoc.use("L10NCode.TranslationClass");
+
+        return (String) newdoc.getValue(T_PROP_ORIGINALTEXT);
+    }
+
+    public Map&lt;String, Document&gt; getTranslations(String app, String name, String language) throws XWikiException
+    {
+        // new custom mapped query
+        String sql = ", BaseObject as obj, L10Code.TranslationClass as trans where doc.web='${app}' and doc.fullName=obj.name and obj.className='L10NCode.TranslationClass' and obj.id=trans.id and trans.name='${name}' and trans.language='${language}'";
+
+        List&lt;String&gt; list = xwiki.searchDocuments(sql);
+        Map&lt;String, Document&gt; map = new HashMap&lt;String, Document&gt;();
+        for (String docname : list) {
+            Document doc = xwiki.getDocument(docname);
+            doc.use("L10NCode.TranslationClass");
+            String key = (String) doc.getValue(T_PROP_KEY);
+            map.put(key, doc);
+        }
+
+        return map;
+    }
+
+    public Collection&lt;String&gt; getTranslationKeys(String app, String name, String language) throws QueryException
+    {
+        String sql =
+            "select translation.key from Document as doc, doc.object(L10NCode.TranslationClass) as translation where doc.web=:app and translation.name=:name and translation.language=:language";
+
+        Query query = getQueryManager().createQuery(sql, Query.XWQL);
+
+        query.bindValue("app", app);
+        query.bindValue("name", name);
+        query.bindValue("language", language);
+
+        return query.execute();
+    }
+
+    /**
+     * This will look for all translations available in language sourceLanguage not available in language
+     */
+    public List&lt;String&gt; checkTranslations(String app, String name, String sourceLanguage, String language)
+        throws QueryException
+    {
+        Collection&lt;String&gt; sourceKeys = getTranslationKeys(app, name, sourceLanguage);
+        Collection&lt;String&gt; targetKeys = getTranslationKeys(app, name, language);
+        List&lt;String&gt; result = new ArrayList&lt;String&gt;();
+        for (String key : sourceKeys) {
+            if (!targetKeys.contains(key)) {
+                result.add(key);
+            }
+        }
+
+        return result;
+    }
+
+    /*
+     * This will import default language and create the missing pages for other languages for all the resources of all
+     * the applications
+     */
+    public void reloadApplications() throws Exception
+    {
+        for (String appdocname : getApplications()) {
+            reloadApplication(xwiki.getDocument(appdocname).getSpace());
+        }
+    }
+
+    /*
+     * This will import default language and create the missing pages for other languages for all the resources of the
+     * provided application
+     */
+    public void reloadApplication(String app) throws Exception
+    {
+        for (Map&lt;String, Object&gt; transfile : getTranslationsFiles(app)) {
+            String docname = (String) transfile.get("page");
+
+            reloadApplication(app, docname);
+        }
+    }
+
+    public void reloadApplication(String app, String docname) throws Exception
+    {
+        Document appdoc = xwiki.getDocument(docname);
+        String lang = getApplicationDefaultLanguage(appdoc);
+        String url = (String) appdoc.getValue("url");
+
+        // import default language
+        importTranslations(app, docname, lang, url);
+
+        // prepare translations
+        prepareTranslations(app, docname);
+    }
+
+    /*
+     * This will create the missing pages in your languages versus the english language
+     */
+    public int prepareTranslations(String app, String docname) throws XWikiException, QueryException
+    {
+        int counter = 0;
+
+        for (String tlang : getApplicationLanguages(app)) {
+            counter += prepareTranslations(app, docname, tlang);
+        }
+
+        return counter;
+    }
+
+    /**
+     * This will create the missing pages in your language versus the default language.
+     */
+    public int prepareTranslations(String app, String name, String language) throws XWikiException, QueryException
+    {
+        String dlang = getApplicationDefaultLanguage(app);
+
+        int counter = 0;
+        for (String key : getTranslationKeys(app, name, dlang)) {
+            Document ddoc = xwiki.getDocument("${app}." + getPageName(name, key, dlang));
+            Document doc = xwiki.getDocument("${app}." + getPageName(name, key, language));
+
+            com.xpn.xwiki.api.Object dtranslation = ddoc.getObject("L10NCode.TranslationClass");
+
+            boolean needSave = false;
+
+            com.xpn.xwiki.api.Object translation = doc.getObject("L10NCode.TranslationClass");
+            if (translation == null) {
+                translation = doc.newObject("L10NCode.TranslationClass");
+                needSave = true;
+            }
+
+            // copied from default language
+
+            needSave |= update(doc, translation, T_PROP_KEY, ddoc.getValue(T_PROP_KEY, dtranslation));
+            needSave |= update(doc, translation, T_PROP_ORIGINALTEXT, ddoc.getValue(T_PROP_ORIGINALTEXT, dtranslation));
+            needSave |= update(doc, translation, T_PROP_COMMENT, ddoc.getValue(T_PROP_COMMENT, dtranslation));
+
+            // initial value
+
+            needSave |= update(doc, translation, T_PROP_NAME, name);
+            needSave |= update(doc, translation, T_PROP_LANGUAGE, language);
+            if (!StringUtils.equals(doc.getContent(), "{{include document=\"L10NCode.TranslationClassSheet20\"/}}")) {
+                doc.setContent("{{include document=\"L10NCode.TranslationClassSheet20\"/}}");
+                needSave = true;
+            }
+            if (doc.getSyntax() != Syntax.XWIKI_2_0) {
+                doc.setSyntax(Syntax.XWIKI_2_0);
+                needSave = true;
+            }
+
+            // default values
+
+            String translatedtext;
+            Property transtatedtextProperty = translation.getProperty(T_PROP_TRANSLATEDTEXT);
+            if (translation.getProperty(T_PROP_TRANSLATEDTEXT) == null) {
+                translatedtext = "";
+                translation.set(T_PROP_TRANSLATEDTEXT, "");
+                needSave = true;
+            } else {
+                translatedtext = (String) transtatedtextProperty.getValue();
+            }
+            if (translation.getProperty(T_PROP_STATUS) == null) {
+                translation.set(T_PROP_STATUS, "none");
+                needSave = true;
+            }
+
+            // copy deprecated keys if needed
+
+            boolean isDeprecated = ObjectUtils.equals(ddoc.getValue(T_PROP_DEPRECATED, dtranslation), 1);
+            String newKey = (String) ddoc.getValue(T_PROP_NEWKEY, dtranslation);
+
+            if (isDeprecated) {
+                if (!ObjectUtils.equals(doc.getValue(T_PROP_DEPRECATED, translation), 1)) {
+                    translation.set(T_PROP_DEPRECATED, 1);
+
+                    needSave = true;
+
+                    // Update new translation key
+                    if (StringUtils.isNotEmpty(translatedtext) &amp;&amp; StringUtils.isNotEmpty(newKey)) {
+                        // copy translation to new key
+                        Document newKeyDoc = xwiki.getDocument("${app}." + getPageName(name, newKey, language));
+                        com.xpn.xwiki.api.Object newKeyTranslation = newKeyDoc.getObject("L10NCode.TranslationClass");
+
+                        boolean needSaveNewKeyDoc = false;
+                        if (newKeyTranslation == null) {
+                            newKeyTranslation = newKeyDoc.newObject("L10NCode.TranslationClass");
+                            needSaveNewKeyDoc = true;
+                        }
+
+                        if (StringUtils.isEmpty((String) newKeyDoc.getValue(T_PROP_TRANSLATEDTEXT, newKeyTranslation))) {
+                            newKeyTranslation.set(T_PROP_TRANSLATEDTEXT, translatedtext);
+                            needSaveNewKeyDoc = true;
+                        }
+
+                        if (needSaveNewKeyDoc) {
+                            saveAsTranslator(newKeyDoc, "Copied from deprecated key");
+                        }
+                    }
+                }
+            } else {
+                needSave |= update(doc, translation, T_PROP_DEPRECATED, 0);
+            }
+
+            needSave |= update(doc, translation, T_PROP_NEWKEY, newKey);
+
+            // Save
+            if (needSave) {
+                saveAsTranslator(doc, "Prepared");
+                ++counter;
+            }
+        }
+
+        clearCache(app, name, language);
+
+        return counter;
+    }
+
+    protected boolean update(Document document, com.xpn.xwiki.api.Object object, String fieldName, Object value)
+    {
+        if (ObjectUtils.notEqual(value, document.getValue(fieldName, object))) {
+            object.set(fieldName, value);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    // ////////////////////////////////////////////////////////////////
+    // Search translations
+    // ////////////////////////////////////////////////////////////////
+
+    private void saveAsTranslator(Document doc, String comment) throws XWikiException
+    {
+        String currentUser = context.getContext().getUser();
+        try {
+            // Make sure pages are created with a generic user
+            context.getContext().setUser(TRANSLATOR_FULL_NAME);
+
+            doc.save(comment, true);
+        } finally {
+            context.getContext().setUser(currentUser);
+        }
+    }
+
+    /*
+     * This will look for all translations
+     */
+    public List getAllTranslations(String app, String name, String language, int nb, int start) throws XWikiException
+    {
+        String sql = ", BaseObject as obj, L10NCode.TranslationClass as trans where doc.space='${app}' and doc.fullName=obj.name and obj.className='L10NCode.TranslationClass' and obj.id=trans.id and trans.name='${name}' and trans.language='${language}' order by trans.key";
+
+        return xwiki.searchDocuments(sql, nb, start);
+    }
+
+    /*
+     * Does not return dead translations.
+     * @name the translation resource name (App.FileName)
+     * @language the language code for which to get the translations
+     */
+    public List&lt;String[]&gt; getAllTranslationsValues(String app, String name, String language, int nb, int start)
+        throws XWikiException
+    {
+        String dlang = getApplicationDefaultLanguage(app);
+        // new custom mapped query
+        String defaultsql = "select trans.key from BaseObject as obj, L10NCode.TranslationClass as trans where obj.className='L10NCode.TranslationClass' and obj.id=trans.id and trans.name='${name}' and trans.language='${dlang}'";
+
+        // TODO: improve using a JOIN
+        String sql =
+            "select trans.key, trans.translatedtext from BaseObject as obj, L10NCode.TranslationClass as trans where obj.className='L10NCode.TranslationClass' and obj.id=trans.id and trans.name='${name}' and trans.language='${language}' and trans.key in (${defaultsql}) order by trans.key";
+
+        List&lt;Object[]&gt; translations = this.privateXWiki.search(sql, nb, start, this.privateContext);
+
+        Map&lt;String, String[]&gt; map = new LinkedHashMap&lt;String, String[]&gt;(translations.size());
+
+        for (Object[] tr : translations) {
+            String key = (String) tr[0];
+            String value = (String) tr[1];
+
+            map.put(key, Arrays.&lt;String&gt; asList(key, value, null).toArray(new String[0]));
+        }
+
+        return new ArrayList&lt;String[]&gt;(map.values());
+    }
+
+    /*
+     * This will look for all translations that are empty
+     */
+    public List getEmptyTranslations(String app, String name, String language, int nb, int start) throws XWikiException
+    {
+        String dlang = getApplicationDefaultLanguage(app);
+        // new custom mapped query
+        String defaultsql = "select trans.key from BaseObject as obj, L10NCode.TranslationClass as trans where obj.className='L10NCode.TranslationClass' and obj.id=trans.id and trans.name='${name}' and trans.language='${dlang}'";
+
+        String sql =
+            ", BaseObject as obj, L10NCode.TranslationClass as trand where doc.space='${app}' and doc.fullName=obj.name and obj.className='L10NCode.TranslationClass' and obj.id=trans.id and trans.name='${name}' and trans.language='${language}' (trans.translatedtext'='' or trans.translatedtext' is null) and trans.key in (${defaultsql}) order by trans.key";
+
+        return xwiki.searchDocuments(sql, nb, start);
+    }
+
+    /*
+     * This will look for all translations that are empty
+     */
+    public List getToReviewTranslations(String app, String name, String language, int nb, int start)
+        throws XWikiException
+    {
+        String dlang = getApplicationDefaultLanguage(app);
+        // new custom mapped query
+        String defaultsql = "select trans.key from BaseObject as obj, L10NCode.TranslationClass as trans where obj.className='L10NCode.TranslationClass' and obj.id=trans.id and trans.name='${name}' and trans.language='${dlang}'";
+
+        String sql =
+            ", BaseObject as obj, L10NCode.TranslationClass as trans where doc.space='${app}' and doc.fullName=obj.name and obj.className='L10NCode.TranslationClass' and obj.id=trans.id and trans.name='${name}' and trans.language='${language}' and trans.status &lt;&gt; 'validated' and trans.translatedtext &lt;&gt; '' and trans.translatedtext is not null and trans.key in (${defaultsql}) order by trans.key";
+
+        return xwiki.searchDocuments(sql, nb, start);
+    }
+
+    /*
+     * This will look for all translations that are empty, starting from the specified key, without including the
+     * specified key. Key prefixes can also be used.
+     */
+    public List getToReviewTranslationsFromKey(String app, String name, String language, int nb, int start,
+        String startKey) throws XWikiException
+    {
+        String dlang = getApplicationDefaultLanguage(app);
+        // new custom mapped query
+        String defaultsql = "select trans.key from BaseObject as obj, L10NCode.TranslationClass as trans where obj.className='L10NCode.TranslationClass' and obj.id=trans.id and trans.name='${name}' and trans.language='${dlang}'";
+
+
+        String sql =
+            ", BaseObject as obj, L10NCode.TranslationClass as trans where doc.web='${app}' and doc.fullName=obj.name and obj.className='L10NCode.TranslationClass' and obj.id=trans.id and trans.name='${name}' and trans.language='${language}' and trans.status &lt;&gt; 'validated' and trans.translatedtext &lt;&gt; '' and trans.translatedtext is not null and trans.key = '${startKey}' and trans.key in (${defaultsql}) order by trans.key";
+
+        return xwiki.searchDocuments(sql, nb, start);
+    }
+
+    /*
+     * This will look for all translations that are outdated
+     */
+    public List getOutdatedTranslations(String app, String name, String language, int nb, int start)
+        throws XWikiException
+    {
+        // TODO Custom Mapping
+        String dlang = getApplicationDefaultLanguage(app);
+        String sql =
+            ", BaseObject as obj, L10NCode.TranslationClass as trans, BaseObject as enobj, L10NCode.TranslationClass as entrans where doc.web='${app}' and doc.fullName=obj.name and obj.className='L10NCode.TranslationClass' and obj.id=trans.id and trans.name='${name}' and trans.language='${language}' and enobj.className='L10NCode.TranslationClass' and enobj.id=entrans.id and entrans.name='${name}' and entrans.language='${dlang}' and trans.key=entrans.key and entrans.originaltext&lt;&gt;trans.originaltext order by trans.key";
+
+        return xwiki.searchDocuments(sql, nb, start);
+    }
+
+    /*
+     * This will look for all translations that are non existent
+     */
+    public List getNonexistentTranslations(String app, String name, String language, int nb, int start)
+        throws XWikiException
+    {
+        String dlang = getApplicationDefaultLanguage(app);
+        String defaultsql =
+            "select trans.key from BaseObject as obj, L10NCode.TranslationClass as trans where obj.className='L10NCode.TranslationClass' and trans.name='${name}' and trans.language='${dlang}'";
+
+        String sql =
+            ", BaseObject as obj, L10NCode.TranslationClass as trans where doc.web='${app}' and doc.fullName=obj.name and obj.className='L10NCode.TranslationClass' and obj.id=trans.id and trans.name='${name}' and trans.language='${language}' and trans.key not in (${defaultsql}) order by trans.key";
+
+        return xwiki.searchDocuments(sql, nb, start);
+    }
+
+    public long count(String sql) throws XWikiException
+    {
+        lastsql = sql;
+        List&lt;Object&gt; result = this.privateXWiki.search(sql, this.privateContext);
+        if (result.size() == 0) {
+            return 0;
+        } else {
+            return (Long) result.get(0);
+        }
+    }
+
+    /*
+     * This will count the translations in the default language
+     */
+    public long countDefaultLanguageTranslations(String app, String name) throws XWikiException, QueryException
+    {
+        Long result = (Long) getFromCache(countCache, app, name, "defaultlanguage", null, null, null, true);
+        if (result == null) {
+            result = countTranslations(app, name, getApplicationDefaultLanguage(app));
+        }
+
+        return result;
+    }
+
+    /*
+     * This will count the translations in the default language
+     */
+    public long countTranslations(String app, String name, String language) throws XWikiException, QueryException
+    {
+        String sql =
+            "select count(translation.key) from Document as doc, doc.object(L10NCode.TranslationClass) as translation where doc.web=:app and translation.name=:name and translation.language=:language";
+
+        Query query = getQueryManager().createQuery(sql, Query.XWQL);
+
+        query.bindValue("app", app);
+        query.bindValue("name", name);
+        query.bindValue("language", language);
+
+        List list = query.execute();
+        System.out.println("L10N QUERY: ran XWQL query ${sql} with ${list.size()} results");
+
+        return list.isEmpty() ? 0 : (Long) list.get(0);
+    }
+
+    /*
+     * This will look for all translations that are empty
+     */
+    public long countAllEmptyTranslations(String app, String name) throws XWikiException
+    {
+        Long result = (Long) getFromCache(countEmptyCache, app, name, null, null, null, null, true);
+        if (result == null) {
+            String sql =
+                "select count(*) from BaseObject as obj, L10NCode.TranslationClass as trans where obj.className='L10NCode.TranslationClass' and obj.id=trans.id and trans.name='${name}' and (trans.translatedtext='' or trans.translatedtext is null)";
+            result = count(sql);
+            countEmptyCache.put("${app}_${name}", result);
+
+            addToCache(countEmptyCache, result, app, name, null, null, null, null, true);
+        }
+
+        return result;
+    }
+
+    /*
+     * This will look for all translations that must be reviewed
+     */
+    public long countAllToReviewTranslations(String app, String name) throws XWikiException
+    {
+        Long result = (Long) getFromCache(countToReviewCache, app, name, null, null, null, null, true);
+        if (result == null) {
+            String dlang = getApplicationDefaultLanguage(app);
+            String sql =
+                "select count(*) from BaseObject as obj, L10NCode.TranslationClass as trans where obj.className='L10NCode.TranslationClass' and obj.id=trans.id and trans.name='${name}' and trans.status &lt;&gt; 'validated' and trans.translatedtext &lt;&gt; '' and trans.translatedtext is not null and trans.language&lt;&gt; '${dlang}'";
+            result = count(sql);
+
+            addToCache(countToReviewCache, result, app, name, null, null, null, null, true);
+        }
+
+        return result;
+    }
+
+    /*
+     * This will look for all translations that are outdated
+     */
+    public long countAllOutdatedTranslations(String app, String name) throws XWikiException
+    {
+        Long result = (Long) getFromCache(countOutdatedCache, app, name, null, null, null, null, true);
+        if (result == null) {
+            String dlang = getApplicationDefaultLanguage(app);
+            String sql = "select count(*) from XWikiDocument as doc, BaseObject as obj, L10NCode.TranslationClass as trans, BaseObject as enobj, L10NCode.TranslationClass as entrans where doc.web='${app}' and doc.fullName=obj.name and obj.className='L10NCode.TranslationClass' and obj.id=trans.id and trans.name='${name}' and enobj.className='L10NCode.TranslationClass' and enobj.id=entrans.id and entrans.name='${name}' and entrans.language='${dlang}' and trans.key=entrans.key and entrans.originaltext&lt;&gt;trans.originaltext";
+
+            result = count(sql);
+
+            addToCache(countOutdatedCache, result, app, name, null, null, null, null, true);
+        }
+
+        return result;
+    }
+
+    /*
+     * This will look for all translations that are empty
+     */
+    public long countEmptyTranslations(String app, String name, String language) throws XWikiException
+    {
+        String dlang = getApplicationDefaultLanguage(app);
+        String defaultsql =
+            "select trans.key from XWikiDocument as doc, BaseObject as obj, L10NCode.TranslationClass as trans where doc.web='${app}' and doc.fullName=obj.name and obj.className='L10NCode.TranslationClass' and obj.id=trans.id and trans.name='${name}' and trans.language='${dlang}'";
+
+        Long result = (Long) getFromCache(countEmptyCache, app, name, language, null, null, null, true);
+        if (result == null) {
+            String sql =
+                "select count(*) from BaseObject as obj, L10NCode.TranslationClass as trans where obj.className='L10NCode.TranslationClass' and obj.id=trans.id and trans.name='${name}' and trans.language='${language}' and (trans.translatedtext='' or trans.translatedtext is null) and trans.key in (${defaultsql})";
+            result = count(sql);
+
+            addToCache(countEmptyCache, result, app, name, language, null, null, null, true);
+        }
+
+        return result;
+    }
+
+    /*
+     * This will look for all translations that need to be reviewed
+     */
+    public long countToReviewTranslations(String app, String name, String language) throws XWikiException
+    {
+        String dlang = getApplicationDefaultLanguage(app);
+        String defaultsql =
+            "select trans.key from XWikiDocument as doc, BaseObject as obj, L10NCode.TranslationClass as trans where doc.web='${app}' and doc.fullName=obj.name and obj.className='L10NCode.TranslationClass' and obj.id=trans.id and trans.name='${name}' and trans.language='${dlang}'";
+
+        Long result = (Long) getFromCache(countToReviewCache, app, name, language, null, null, null, true);
+        if (result == null) {
+            String sql =
+                "select count(*) from BaseObject as obj, L10NCode.TranslationClass as trans where obj.className='L10NCode.TranslationClass' and obj.id=trans.id and trans.name='${name}' and trans.language='${language}' and trans.translatedtext &lt;&gt; '' and trans.translatedtext is not null and trans.status &lt;&gt; 'validated' and trans.key in (${defaultsql})";
+            result = count(sql);
+
+            addToCache(countToReviewCache, result, app, name, language, null, null, null, true);
+        }
+
+        return result;
+    }
+
+    /*
+     * This will look for all translations that are outdated
+     */
+    public long countOutdatedTranslations(String app, String name, String language) throws XWikiException
+    {
+        Long result = (Long) getFromCache(countOutdatedCache, app, name, language, null, null, null, true);
+        if (result == null) {
+            String dlang = getApplicationDefaultLanguage(app);
+            String sql = "select count(*) from XWikiDocument as doc, BaseObject as obj, L10NCode.TranslationClass as trans, BaseObject as enobj, L10NCode.TranslationClass as entrans where doc.web='${app}' and doc.fullName=obj.name and obj.className='L10NCode.TranslationClass' and obj.id=trans.id and trans.name='${name}' and trans.language='${language}' and enobj.className='L10NCode.TranslationClass' and enobj.id=entrans.id and entrans.name='${name}' and entrans.language='${dlang}' and trans.key=entrans.key and entrans.originaltext&lt;&gt;trans.originaltext";
+
+            result = count(sql);
+
+            addToCache(countOutdatedCache, result, app, name, language, null, null, null, true);
+        }
+
+        return result;
+    }
+
+    /*
+     * This will look for all translations that are non existent in the default language
+     */
+    public long countNonexistentTranslations(String app, String name, String language) throws XWikiException
+    {
+        Long result = (Long) getFromCache(countNonexistentCache, app, name, language, null, null, null, true);
+        if (result == null) {
+            String dlang = getApplicationDefaultLanguage(app);
+            String defaultsql =
+            "select trans.key from XWikiDocument as doc, BaseObject as obj, L10NCode.TranslationClass as trans where doc.web='${app}' and doc.fullName=obj.name and obj.className='L10NCode.TranslationClass' and obj.id=trans.id and trans.name='${name}' and trans.language='${dlang}'";
+
+            String sql =
+                "select count(*) from XWikiDocument as doc, BaseObject as obj, L10NCode.TranslationClass as trans where doc.web='${app}' and doc.fullName=obj.name and obj.className='L10NCode.TranslationClass' and obj.id=trans.id and trans.name='${name}' and trans.language='${language}' and trans.key not in (${defaultsql})";
+            result = count(sql);
+
+            addToCache(countNonexistentCache, result, app, name, language, null, null, null, true);
+        }
+
+        return result;
+    }
+
+    // //////////////////////////////////////////////////////////////////////////////////
+    // Latest translations
+    // //////////////////////////////////////////////////////////////////////////////////
+
+    public long countTranslations(String app, String name, String language, boolean withTranslator, String author)
+        throws XWikiException
+    {
+        String sqlFrom = "XWikiDocument as doc, BaseObject as obj, L10NCode.TranslationClass as trans";
+
+        String sqlApp = "";
+        if (app != null &amp;&amp; app.length() &gt; 0) {
+            sqlApp = "and doc.space = '${app}'";
+        }
+
+        String sqlLanguage = "";
+        if (language != null &amp;&amp; language.length() &gt; 0) {
+            sqlLanguage = "and trans.language='${language}'";
+        }
+
+        String sqlAuthor = "";
+        if (author != null &amp;&amp; author.length() &gt; 0) {
+            sqlAuthor = "and doc.author = '${author}'";
+        } else if (!withTranslator) {
+            sqlAuthor =
+                "and doc.author &lt;&gt; '${TRANSLATOR_FULL_NAME}' and doc.author &lt;&gt; 'XWiki.Admin' and doc.author &lt;&gt; 'XWiki.ludovic'";
+        }
+
+        String sqlName = "";
+        if (name != null &amp;&amp; name.length() &gt; 0) {
+            sqlName = "and trans.name='${name}'";
+        }
+
+        String sql =
+            "select count(*) from ${sqlFrom} where doc.fullName=obj.name and obj.className='L10NCode.TranslationClass' and obj.id=trans.id ${sqlName} ${sqlApp} ${sqlAuthor} ${sqlLanguage}";
+
+        return count(sql);
+    }
+
+    public List getLatestTranslations(String app, int nb, int start, boolean withTranslator, String author)
+        throws QueryException, UnsupportedEncodingException
+    {
+        String sqlAuthor = "";
+        if (author != null &amp;&amp; author.length() &gt; 0) {
+            sqlAuthor = "doc.author = '${author}'";
+        } else if (!withTranslator) {
+            sqlAuthor =
+                "doc.author &lt;&gt; '${TRANSLATOR_FULL_NAME}' and doc.author &lt;&gt; 'XWiki.Admin' and doc.author &lt;&gt; 'XWiki.ludovic'";
+            sqlAuthor =
+                "doc.author &lt;&gt; '${TRANSLATOR_FULL_NAME}'";
+        }
+
+        String sqlApp = "";
+        if (StringUtils.isNotEmpty(app)) {
+            if (sqlAuthor.length() &gt; 0) {
+                sqlApp = "and ";
+            }
+            sqlApp += "doc.space = '${app}'";
+        }
+
+        String sql =
+            "select doc.space, doc.name, doc.fullName, doc.date, doc.author, translation.key, translation.language, translation.originaltext, translation.translatedtext from Document as doc, doc.object(L10NCode.TranslationClass) as translation where ${sqlAuthor} ${sqlApp} order by doc.date desc";
+
+        System.out.println("L10N QUERY: ${sql}");
+        Query query = getQueryManager().createQuery(sql, Query.XWQL);
+
+        query.setOffset(start);
+        query.setLimit(nb);
+
+        return getTranslationsFromQuery((List) query.execute());
+    }
+
+    public List&lt;Map&lt;String, String&gt;&gt; getTranslationsFromQuery(List&lt;Object[]&gt; queryResult)
+        throws UnsupportedEncodingException
+    {
+        List&lt;Map&lt;String, String&gt;&gt; list = new ArrayList&lt;Map&lt;String, String&gt;&gt;();
+
+        for (Object[] item : queryResult) {
+            Map&lt;String, String&gt; row = new HashMap&lt;String, String&gt;();
+
+            row.put("docSpace", (String) item[0]);
+            row.put("application", (String) item[0]);
+            row.put("docName", (String) item[1]);
+            row.put("docFullName", (String) item[2]);
+            row.put("date", xwiki.formatDate((Date) item[3]));
+            row.put("author", (String) item[4]);
+            row.put("key", (String) item[5]);
+            row.put("language", (String) item[6]);
+
+            String origtext = (String) item[7];
+            if (origtext != null) {
+                row.put("origtext", origtext.length() &gt; 250 ? origtext.substring(0, 250) + "..." : origtext);
+            }
+
+            String transtext = (String) item[8];
+            if (transtext != null) {
+                row.put("transtext", transtext.length() &gt; 250 ? transtext.substring(0, 250) + "..." : transtext);
+            }
+
+            StringBuilder keyUrl = new StringBuilder();
+
+            keyUrl.append("/xwiki/bin/view/");
+            keyUrl.append(URLEncoder.encode(row.get("docSpace"), "UTF-8"));
+            keyUrl.append('/');
+            keyUrl.append(URLEncoder.encode(row.get("docName"), "UTF-8"));
+
+            // mostly for livetable
+            row.put("key_url", keyUrl.toString());
+            row.put("author_url", "/xwiki/bin/view/XWiki/" + URLEncoder.encode(row.get("author").substring(6), "UTF-8"));
+
+            list.add(row);
+        }
+
+        return list;
+    }
+
+    // //////////////////////////////////////////////////////////////////////////////////
+    // Latest translations with history (very expensive)
+    // //////////////////////////////////////////////////////////////////////////////////
+
+    /*
+     * This will count the translations in a language
+     */
+    public long countTranslationsInHistory(String app, String name, String language) throws XWikiException
+    {
+        return countTranslationsInHistory(app, name, language, true, null);
+    }
+
+    public long countTranslationsInHistory(String app, String name, String language, boolean withTranslator,
+        String author) throws XWikiException
+    {
+        String sqlFrom = "XWikiDocument as doc, BaseObject as obj, L10NCode.TranslationClass as trans";
+
+        String sqlApp = "";
+        if (app != null &amp;&amp; app.length() &gt; 0) {
+            sqlApp = "and doc.space = '${app}'";
+        }
+
+        String sqlLanguage = "";
+        if (language != null &amp;&amp; language.length() &gt; 0) {
+            sqlLanguage = "and trans.language='${language}'";
+        }
+
+        String sqlAuthor = "";
+        if (author != null &amp;&amp; author.length() &gt; 0) {
+            sqlFrom += ", XWikiRCSNodeInfo as rcs";
+            sqlAuthor = "and rcs.id.docId=doc.id and rcs.author = '${author}'";
+        } else if (!withTranslator) {
+            sqlFrom += ", XWikiRCSNodeInfo as rcs";
+            sqlAuthor =
+                "and rcs.id.docId=doc.id and rcs.author &lt;&gt; '${TRANSLATOR_FULL_NAME}' and rcs.author &lt;&gt; 'XWiki.Admin' and rcs.author &lt;&gt; 'XWiki.ludovic'";
+        }
+
+        String sqlName = "";
+        if (name != null &amp;&amp; name.length() &gt; 0) {
+            sqlName = "and trans.name='${name}'";
+        }
+
+        Long result = (Long) getFromCache(countCache, app, name, language, author, null, null, withTranslator);
+        if (result == null) {
+            String sql =
+                "select count(*) from ${sqlFrom} where doc.fullName=obj.name and obj.className='L10NCode.TranslationClass' and obj.id=trans.id ${sqlName} ${sqlApp} ${sqlAuthor} ${sqlLanguage}";
+            result = count(sql);
+            addToCache(countCache, result, app, name, language, author, null, null, withTranslator);
+        }
+
+        return result;
+    }
+
+    public List countTranslationsByUserInHistory(String app, String name, String language, boolean withTranslator,
+        int nb, int start) throws XWikiException
+    {
+        String sqlFrom = "XWikiDocument as doc, BaseObject as obj, L10NCode.TranslationClass as trans, XWikiRCSNodeInfo as rcs";
+
+        String sqlApp = "";
+        if (app != null &amp;&amp; app.length() &gt; 0) {
+            sqlApp = "and doc.space = '${app}'";
+        }
+
+        String sqlLanguage = "";
+        if (language != null &amp;&amp; language.length() &gt; 0) {
+            sqlLanguage = "and trans.language='${language}'";
+        }
+
+        String sqlAuthor = "";
+        if (!withTranslator) {
+            sqlAuthor =
+                "and rcs.author &lt;&gt; '${TRANSLATOR_FULL_NAME}' and rcs.author &lt;&gt; 'XWiki.Admin' and rcs.author &lt;&gt; 'XWiki.ludovic'";
+        }
+
+        String sqlName = "";
+        if (name != null &amp;&amp; name.length() &gt; 0) {
+            sqlName = "and trans.name='${name}'";
+        }
+
+        List result = (List) getFromCache(countByUserCache, app, name, language, null, nb, start, withTranslator);
+        if (result == null) {
+            String sql =
+                "select count(distinct rcs.id) as contributions, rcs.author from ${sqlFrom} where doc.fullName=obj.name and obj.className='L10NCode.TranslationClass' and obj.id=trans.id and rcs.id.docId=doc.id ${sqlName} ${sqlApp} ${sqlAuthor} ${sqlLanguage} group by rcs.author order by 1 desc";
+            result = this.privateXWiki.search(sql, nb, start, this.privateContext);
+            addToCache(countByUserCache, result, app, name, language, null, nb, start, withTranslator);
+        }
+
+        return result;
+    }
+
+    public List&lt;Map&lt;String, Object&gt;&gt; getLatestTranslationsInHistory(String app, int nb, int start)
+        throws XWikiException
+    {
+        return getLatestTranslationsInHistory(app, nb, start, true);
+    }
+
+    public List&lt;Map&lt;String, Object&gt;&gt; getLatestTranslationsInHistory(String app, int nb, int start,
+        boolean withTranslator) throws XWikiException
+    {
+        return getLatestTranslationsInHistory(app, nb, start, withTranslator, null);
+    }
+
+    public List&lt;Map&lt;String, Object&gt;&gt; getLatestTranslationsInHistory(String app, int nb, int start, String author)
+        throws XWikiException
+    {
+        return getLatestTranslationsInHistory(app, nb, start, true, author);
+    }
+
+    public List&lt;Map&lt;String, Object&gt;&gt; getLatestTranslationsInHistory(String app, int nb, int start,
+        boolean withTranslator, String author) throws XWikiException
+    {
+        List&lt;Map&lt;String, Object&gt;&gt; list = new ArrayList&lt;Map&lt;String, Object&gt;&gt;();
+
+        String sqlApp = "";
+        if (app != null &amp;&amp; app.length() &gt; 0) {
+            sqlApp = "and doc.space = '${app}'";
+        }
+
+        String sqlAuthor = "";
+        if (author != null &amp;&amp; author.length() &gt; 0) {
+            sqlApp = "and rcs.author = '${author}'";
+        } else if (!withTranslator) {
+            sqlAuthor =
+                "and rcs.author &lt;&gt; '${TRANSLATOR_FULL_NAME}' and rcs.author &lt;&gt; 'XWiki.Admin' and rcs.author &lt;&gt; 'XWiki.ludovic'";
+        }
+
+        String sql =
+            "select doc.fullName, rcs.date, rcs.author from XWikiRCSNodeInfo as rcs, XWikiDocument as doc, BaseObject as obj where rcs.id.docId=doc.id and doc.fullName=obj.name and obj.className='L10NCode.TranslationClass' ${sqlApp} ${sqlAuthor} order by rcs.date desc";
+
+        List&lt;Object[]&gt; result =
+            (List&lt;Object[]&gt;) getFromCache(lastTranslationsCache, app, null, null, author, nb, start, withTranslator);
+        if (result == null) {
+            result = this.privateXWiki.search(sql, nb, start, this.privateContext);
+            addToCache(lastTranslationsCache, result, app, null, null, author, nb, start, withTranslator);
+        }
+
+        for (Object[] item : result) {
+            Map&lt;String, Object&gt; row = new HashMap&lt;String, Object&gt;();
+
+            String pagename = (String) item[0];
+            Document itemdoc = xwiki.getDocument((String) pagename);
+
+            row.put("pagename", pagename);
+            row.put("itemdoc", itemdoc);
+            row.put("date", xwiki.formatDate((Date) item[1]));
+            row.put("author", item[2]);
+            row.put("authordoc", xwiki.getDocument((String) item[2]));
+            row.put("key", itemdoc.getValue(T_PROP_KEY));
+            row.put("language", itemdoc.getValue(T_PROP_LANGUAGE));
+
+            String origtext = (String) itemdoc.getValue(T_PROP_ORIGINALTEXT);
+            if (origtext != null) {
+                row.put("origtext", origtext.length() &gt; 250 ? origtext.substring(0, 250) + "..." : origtext);
+            }
+
+            String transtext = (String) itemdoc.getValue(T_PROP_TRANSLATEDTEXT);
+            if (transtext != null) {
+                transtext = transtext.length() &gt; 250 ? transtext.substring(0, 250) + "..." : transtext;
+            }
+            row.put("transtext", transtext);
+
+            list.add(row);
+        }
+
+        return list;
+    }
+}
+
+/*
+ * *#
+ */
+</content></xwikidoc>

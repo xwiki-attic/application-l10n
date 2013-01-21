@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xwikidoc>
+<web>L10NCode</web>
+<name>CompareTranslationFile</name>
+<language></language>
+<defaultLanguage>en</defaultLanguage>
+<translation>0</translation>
+<parent></parent>
+<creator>XWiki.Admin</creator>
+<author>XWiki.Admin</author>
+<customClass></customClass>
+<contentAuthor>XWiki.Admin</contentAuthor>
+<creationDate>1325372400000</creationDate>
+<date>1325372400000</date>
+<contentUpdateDate>1325372400000</contentUpdateDate>
+<version>1.1</version>
+<title></title>
+<template></template>
+<defaultTemplate></defaultTemplate>
+<validationScript></validationScript>
+<comment></comment>
+<minorEdit>false</minorEdit>
+<syntaxId>xwiki/1.0</syntaxId>
+<hidden>false</hidden>
+<content>#if($context.user=="XWiki.XWikiGuest")
+#warning("You need to be logged in to compare the translation file")
+#elseif(!$request.name)
+#warning("You need to provide a trans page to compare")
+#else
+{pre}
+#set($trans = $xwiki.parseGroovyFromPage("L10NCode.L10NGroovy"))
+#set($ok= $trans.setContext($context, $xwiki))
+#set($language = $request.language)
+#set($name = $request.name)
+#set($app = $request.app)
+#set($type = $request.type)
+#if(!$type)
+ #set($type = "resource")
+#end
+#set($transdoc = $xwiki.getDocument($name))
+#set($url = $trans.findLanguageURL($transdoc, $language))
+#set($currenttranscontent = $xwiki.getURLContent($url).replaceAll("\\r",""))
+#set($newtranscontent = $trans.getTranslationFile($app, $name, $language, $type).replaceAll("\\r",""))
+#set($ok = $response.setContentType("text/html"))
+Diff: &lt;br /&gt;
+$xwiki.diff.getDifferencesAsHTML($currenttranscontent, $newtranscontent, false)
+{/pre}
+#end
+
+</content></xwikidoc>

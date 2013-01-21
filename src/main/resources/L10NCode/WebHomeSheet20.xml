@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xwikidoc>
+<web>L10NCode</web>
+<name>WebHomeSheet20</name>
+<language></language>
+<defaultLanguage>en</defaultLanguage>
+<translation>0</translation>
+<parent></parent>
+<creator>XWiki.Admin</creator>
+<author>XWiki.Admin</author>
+<customClass></customClass>
+<contentAuthor>XWiki.Admin</contentAuthor>
+<creationDate>1325372400000</creationDate>
+<date>1325372400000</date>
+<contentUpdateDate>1325372400000</contentUpdateDate>
+<version>1.1</version>
+<title> </title>
+<template></template>
+<defaultTemplate></defaultTemplate>
+<validationScript></validationScript>
+<comment></comment>
+<minorEdit>false</minorEdit>
+<syntaxId>xwiki/2.0</syntaxId>
+<hidden>false</hidden>
+<content>{{velocity output=false}}
+#**
+ * This page is the home of the translation app 
+ * @type sheet
+ *#
+{{/velocity}}
+
+{{velocity}}
+#set($trans = $xwiki.parseGroovyFromPage("L10NCode.L10NGroovy"))
+#set($ok = $trans.setContext($context, $xwiki))
+#set($app = $doc.space)
+#set($appName = $doc.getValue("name"))
+#if (!$appName || $appName == '')
+  #set($appName = $app)
+#end
+= Application $appName =
+##
+$doc.display("description")
+##
+
+== Actions
+
+#if($request.action == "reload")
+ #if($context.user == "XWiki.XWikiGuest")
+    #error("You need to be logged in to perform this action")
+ #else
+   #if($request.confirm == "1")
+     $trans.reloadApplication($app)
+   #else
+     [[Confirm reloading application $app&gt;&gt;$doc.fullName?action=reload&amp;confirm=1]]
+   #end
+ #end
+#else
+ #if($request.addtransfile == "1")
+   #if($context.user=="XWiki.XWikiGuest")
+     {{error}}You need to be logged in to perform this action{{/error}}
+   #else
+     ## adding translation file
+     #if($trans.addTranslationFile($app, $request))
+       {{info}}Translation file has been added{{/info}}
+     #else
+       {{error}}Translation file could not be added{{/error}}
+     #end
+   #end
+ #end
+
+[[Reload application $app&gt;&gt;$doc.fullName?action=reload]]
+
+== Translations files ==
+
+Click on "View" next to a file in order to view the list of existing languages and remaining empty translations. If you want to add a new language follow this [[process&gt;&gt;L10N.AddALanguage]]
+
+#set($deadTranslations = [])
+#set($list = $trans.getTranslationsFiles($app))
+|=Translation file|=Type|=URL|=Languages|=Counts|=Actions
+#foreach($file in $list)
+  #if ($file.state != 'Dead')
+    #set($slang = "")
+    #foreach($lang in $trans.getApplicationLanguages($app))
+      #set($slang = "${slang} ${lang}")
+    #end
+    #set($nbtrans = $trans.countDefaultLanguageTranslations($app, $file.page))
+    #set($nbempty = $trans.countAllEmptyTranslations($app, $file.page))
+    #set($nboutdated = $trans.countAllOutdatedTranslations($app, $file.page))
+    #set($nbtoreview = $trans.countAllToReviewTranslations($app, $file.page))
+    |$file.name|$msg.get("l10n.translation.type.${file.type}")|$file.url|$slang|Translations:$nbtrans
+    Empty:$nbempty
+    Outdated:$nboutdated
+    To review:$nbtoreview|[[» View&gt;&gt;$file.page]]
+    [[» Get as Application Resource pack&gt;&gt;L10NCode.GetTranslationFile?name=$file.page&amp;app=${doc.space}]]
+  #else
+    #set($void = $deadTranslations.add($file))
+  #end
+#end
+
+#if ($hasAdmin)
+  === Dead translation files ===
+
+  |=Translation file|=Type|=URL|=Languages|=Actions
+  #foreach($file in $deadTranslations)
+    #set($slang = "")
+    #foreach($lang in $trans.getApplicationLanguages($app))
+      #set($slang = "${slang} ${lang}")
+    #end
+    |$file.name|$msg.get("l10n.translation.type.${file.type}")|$file.url|$slang|[[» View&gt;&gt;$file.page]]
+    [[» Get as Application Resource pack&gt;&gt;L10NCode.GetTranslationFile?name=$file.page&amp;app=${doc.space}]]
+  #end  
+
+  == Add a translation file ==
+
+  {{html wiki=true}}
+    &lt;form action=""&gt;
+      &lt;input type="hidden" name="addtransfile" value="1" /&gt;
+      &lt;input type="hidden" name="app" value="$app" /&gt;
+      #set($transfiledoc = $xwiki.getDocument("L10NCode.TranslationFileClassTemplate"))
+      #set($ok = $transfiledoc.use($transfiledoc.getObject("L10NCode.TranslationFileClass", true)))
+      Name: $transfiledoc.display("name", "edit")
+      &lt;br/&gt;
+      Type: $transfiledoc.display("type", "edit")
+      &lt;br/&gt;
+      URL: $transfiledoc.display("url", "edit")
+      &lt;br/&gt;
+      &lt;input type="submit" value="Add translation file" /&gt;
+    &lt;/form&gt;
+  {{/html}}
+#end
+
+== Latest translations updated ==
+
+#set($application = $doc.space)
+{{include document="L10NCode.LatestTranslationsLiveTable"/}}
+
+#end
+{{/velocity}}</content></xwikidoc>

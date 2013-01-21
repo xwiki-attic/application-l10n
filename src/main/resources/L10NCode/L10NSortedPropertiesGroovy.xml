@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xwikidoc>
+<web>L10NCode</web>
+<name>L10NSortedPropertiesGroovy</name>
+<language></language>
+<defaultLanguage>en</defaultLanguage>
+<translation>0</translation>
+<parent></parent>
+<creator>XWiki.Admin</creator>
+<author>XWiki.Admin</author>
+<customClass></customClass>
+<contentAuthor>XWiki.Admin</contentAuthor>
+<creationDate>1325372400000</creationDate>
+<date>1325372400000</date>
+<contentUpdateDate>1325372400000</contentUpdateDate>
+<version>1.1</version>
+<title></title>
+<template></template>
+<defaultTemplate></defaultTemplate>
+<validationScript></validationScript>
+<comment></comment>
+<minorEdit>false</minorEdit>
+<syntaxId>xwiki/1.0</syntaxId>
+<hidden>false</hidden>
+<content>/*
+ #* Sorted property and without the date comment
+ *
+ * @type groovy
+ * @programming
+ *
+ *#
+ #*
+ */
+
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.Properties;
+import java.util.Set;
+import java.util.TreeSet;
+
+public class SortedProperties extends Properties
+{
+    private Set _names;
+
+    public SortedProperties()
+    {
+        _names = new TreeSet&lt;String&gt;();
+    }
+
+    // Hashtable
+    
+    @Override
+    public Enumeration keys()
+    {
+        return Collections.enumeration(_names);
+    }
+
+    @Override
+    public Enumeration propertyNames()
+    {
+        return Collections.enumeration(_names);
+    }
+
+    @Override
+    public Object put(Object key, Object value)
+    {
+        if (_names.contains(key)) {
+            _names.remove(key);
+        }
+
+        _names.add(key);
+
+        return super.put(key, value);
+    }
+
+    @Override
+    public Object remove(Object key)
+    {
+        _names.remove(key);
+
+        return super.remove(key);
+    }
+
+    // Properties
+    
+    /* All that just to get rid of # Date comment... */
+    private void storeWithoutDate(BufferedWriter bw, String comments, boolean escUnicode) throws IOException
+    {
+        if (comments != null) {
+            writeln(bw, "#" + comments);
+            // writeComments(bw, comments);
+        }
+        // bw.write("#" + new Date().toString());
+        //bw.newLine();
+        for (Enumeration e = keys(); e.hasMoreElements();) {
+            String key = (String) e.nextElement();
+            String val = (String) get(key);
+            key = saveConvert(key, true, escUnicode);
+            /*
+             * No need to escape embedded and trailing spaces for value, hence pass false to flag.
+             */
+            val = saveConvert(val, false, escUnicode);
+            bw.write(key + "=" + val);
+            bw.newLine();
+        }
+        bw.flush();
+    }
+
+    public synchronized void store(OutputStream out, String comments) throws IOException
+    {
+        storeWithoutDate(new BufferedWriter(new OutputStreamWriter(out, "8859_1")), comments, true);
+    }
+
+    public void store(Writer writer, String comments) throws IOException
+    {
+        storeWithoutDate((writer instanceof BufferedWriter) ? (BufferedWriter) writer : new BufferedWriter(writer),
+            comments, false);
+    }
+
+    private static void writeln(BufferedWriter bw, String s) throws IOException
+    {
+        bw.write(s);
+        bw.newLine();
+    }
+
+    /*
+     * Converts unicodes to encoded &amp;#92;uxxxx and escapes special characters with a preceding slash
+     */
+    private String saveConvert(String theString, boolean escapeSpace, boolean escapeUnicode)
+    {
+        int len = theString.length();
+        int bufLen = len * 2;
+        if (bufLen &lt; 0) {
+            bufLen = Integer.MAX_VALUE;
+        }
+        StringBuffer outBuffer = new StringBuffer(bufLen);
+
+        for (int x = 0; x &lt; len; x++) {
+            char aChar = theString.charAt(x);
+            // Handle common case first, selecting largest block that
+            // avoids the specials below
+            if ((aChar &gt; 61) &amp;&amp; (aChar &lt; 127)) {
+                if (aChar == '\\') {
+                    outBuffer.append('\\');
+                    outBuffer.append('\\');
+                    continue;
+                }
+                outBuffer.append(aChar);
+                continue;
+            }
+            switch (aChar) {
+                case ' ':
+                    if (x == 0 || escapeSpace)
+                        outBuffer.append('\\');
+                    outBuffer.append(' ');
+                    break;
+                case '\t':
+                    outBuffer.append('\\');
+                    outBuffer.append('t');
+                    break;
+                case '\n':
+                    outBuffer.append('\\');
+                    outBuffer.append('n');
+                    break;
+                case '\r':
+                    outBuffer.append('\\');
+                    outBuffer.append('r');
+                    break;
+                case '\f':
+                    outBuffer.append('\\');
+                    outBuffer.append('f');
+                    break;
+                case '=': // Fall through
+                case ':': // Fall through
+                case '#': // Fall through
+                case '!':
+                    outBuffer.append('\\');
+                    outBuffer.append(aChar);
+                    break;
+                default:
+                    if (((aChar &lt; 0x0020) || (aChar &gt; 0x007e)) &amp; escapeUnicode) {
+                        outBuffer.append('\\');
+                        outBuffer.append('u');
+                        outBuffer.append(toHex((((int)aChar) &gt;&gt; 12) &amp; 0xF));
+                        outBuffer.append(toHex((((int)aChar) &gt;&gt; 8) &amp; 0xF));
+                        outBuffer.append(toHex((((int)aChar) &gt;&gt; 4) &amp; 0xF));
+                        outBuffer.append(toHex(((int)aChar) &amp; 0xF));
+                    } else {
+                        outBuffer.append(aChar);
+                    }
+            }
+        }
+        return outBuffer.toString();
+    }
+
+    /**
+     * Convert a nibble to a hex character
+     * 
+     * @param nibble the nibble to convert.
+     */
+    private static char toHex(int nibble)
+    {
+        return hexDigit[(nibble &amp; 0xF)];
+    }
+
+    /** A table of hex digits */
+    private static final char[] hexDigit = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C',
+    'D', 'E', 'F'];
+}
+
+
+/*
+ * *#
+ */</content></xwikidoc>
