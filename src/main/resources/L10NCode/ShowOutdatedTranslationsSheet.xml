@@ -1,28 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <xwikidoc>
-<web>L10NCode</web>
-<name>ShowOutdatedTranslationsSheet</name>
-<language></language>
-<defaultLanguage>en</defaultLanguage>
-<translation>0</translation>
-<parent></parent>
-<creator>XWiki.Admin</creator>
-<author>XWiki.Admin</author>
-<customClass></customClass>
-<contentAuthor>XWiki.Admin</contentAuthor>
-<creationDate>1325372400000</creationDate>
-<date>1325372400000</date>
-<contentUpdateDate>1325372400000</contentUpdateDate>
-<version>1.1</version>
-<title>ShowOutdatedTranslationsSheet</title>
-<template></template>
-<defaultTemplate></defaultTemplate>
-<validationScript></validationScript>
-<comment></comment>
-<minorEdit>false</minorEdit>
-<syntaxId>xwiki/1.0</syntaxId>
-<hidden>false</hidden>
-<content>#**
+  <web>L10NCode</web>
+  <name>ShowOutdatedTranslationsSheet</name>
+  <language/>
+  <defaultLanguage/>
+  <translation>0</translation>
+  <parent/>
+  <creator>xwiki:XWiki.Admin</creator>
+  <author>xwiki:XWiki.Admin</author>
+  <customClass/>
+  <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
+  <creationDate>1325372400000</creationDate>
+  <date>1325372400000</date>
+  <contentUpdateDate>1325372400000</contentUpdateDate>
+  <version>1.1</version>
+  <title>ShowOutdatedTranslationsSheet</title>
+  <template/>
+  <defaultTemplate/>
+  <validationScript/>
+  <comment/>
+  <minorEdit>false</minorEdit>
+  <syntaxId>xwiki/1.0</syntaxId>
+  <hidden>false</hidden>
+  <content>#**
  * This page shows all the outdated translations for a language 
  * @type sheet
  *#
@@ -37,4 +38,5 @@ Outdated translations:
 #end
 #else
 Select language to show outdated translations for: [fr&gt;$doc.fullName?language=fr] [de&gt;$doc.fullName?language=de] [es&gt;$doc.fullName?language=es]
-#end</content></xwikidoc>
+#end</content>
+</xwikidoc>

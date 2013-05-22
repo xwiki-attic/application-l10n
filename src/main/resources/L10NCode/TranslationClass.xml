@@ -1,177 +1,179 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <xwikidoc>
-<web>L10NCode</web>
-<name>TranslationClass</name>
-<language></language>
-<defaultLanguage></defaultLanguage>
-<translation>0</translation>
-<parent></parent>
-<creator>XWiki.Admin</creator>
-<author>XWiki.Admin</author>
-<customClass></customClass>
-<contentAuthor>XWiki.Admin</contentAuthor>
-<creationDate>1325372400000</creationDate>
-<date>1325372400000</date>
-<contentUpdateDate>1325372400000</contentUpdateDate>
-<version>1.1</version>
-<title></title>
-<template></template>
-<defaultTemplate></defaultTemplate>
-<validationScript></validationScript>
-<comment></comment>
-<minorEdit>false</minorEdit>
-<syntaxId>xwiki/1.0</syntaxId>
-<hidden>false</hidden>
-<class>
-<name>L10NCode.TranslationClass</name>
-<customClass></customClass>
-<customMapping>internal</customMapping>
-<defaultViewSheet></defaultViewSheet>
-<defaultEditSheet></defaultEditSheet>
-<defaultWeb></defaultWeb>
-<nameField></nameField>
-<validationScript></validationScript>
-<comment>
-<disabled>0</disabled>
-<name>comment</name>
-<number>10</number>
-<prettyName>comment</prettyName>
-<size>30</size>
-<unmodifiable>0</unmodifiable>
-<classType>com.xpn.xwiki.objects.classes.StringClass</classType>
-</comment>
-<deprecated>
-<disabled>0</disabled>
-<displayFormType>select</displayFormType>
-<name>deprecated</name>
-<number>8</number>
-<prettyName>deprecated</prettyName>
-<unmodifiable>0</unmodifiable>
-<classType>com.xpn.xwiki.objects.classes.BooleanClass</classType>
-</deprecated>
-<deprecatedNewKey>
-<disabled>0</disabled>
-<name>deprecatedNewKey</name>
-<number>9</number>
-<prettyName>deprecatedNewKey</prettyName>
-<size>30</size>
-<unmodifiable>0</unmodifiable>
-<classType>com.xpn.xwiki.objects.classes.StringClass</classType>
-</deprecatedNewKey>
-<key>
-<customDisplay></customDisplay>
-<disabled>0</disabled>
-<name>key</name>
-<number>1</number>
-<picker>0</picker>
-<prettyName>key</prettyName>
-<size>30</size>
-<tooltip></tooltip>
-<unmodifiable>0</unmodifiable>
-<validationMessage></validationMessage>
-<validationRegExp></validationRegExp>
-<classType>com.xpn.xwiki.objects.classes.StringClass</classType>
-</key>
-<language>
-<disabled>0</disabled>
-<name>language</name>
-<number>7</number>
-<prettyName>language</prettyName>
-<size>30</size>
-<unmodifiable>0</unmodifiable>
-<classType>com.xpn.xwiki.objects.classes.StringClass</classType>
-</language>
-<name>
-<customDisplay></customDisplay>
-<disabled>0</disabled>
-<name>name</name>
-<number>2</number>
-<picker>0</picker>
-<prettyName>name</prettyName>
-<size>30</size>
-<tooltip></tooltip>
-<unmodifiable>0</unmodifiable>
-<validationMessage></validationMessage>
-<validationRegExp></validationRegExp>
-<classType>com.xpn.xwiki.objects.classes.StringClass</classType>
-</name>
-<originaltext>
-<contenttype>PureText</contenttype>
-<customDisplay></customDisplay>
-<disabled>0</disabled>
-<editor>Text</editor>
-<name>originaltext</name>
-<number>4</number>
-<picker>0</picker>
-<prettyName>originaltext</prettyName>
-<rows>5</rows>
-<size>40</size>
-<tooltip></tooltip>
-<unmodifiable>0</unmodifiable>
-<validationMessage></validationMessage>
-<validationRegExp></validationRegExp>
-<classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
-</originaltext>
-<status>
-<cache>0</cache>
-<customDisplay></customDisplay>
-<disabled>0</disabled>
-<displayType>select</displayType>
-<multiSelect>0</multiSelect>
-<name>status</name>
-<number>6</number>
-<picker>0</picker>
-<prettyName>status</prettyName>
-<relationalStorage>0</relationalStorage>
-<separator> </separator>
-<separators> ,|</separators>
-<size>1</size>
-<sort>none</sort>
-<tooltip></tooltip>
-<unmodifiable>0</unmodifiable>
-<validationMessage></validationMessage>
-<validationRegExp></validationRegExp>
-<values>none=None|needreview=Need review|validated=Validated</values>
-<classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
-</status>
-<translatedtext>
-<contenttype>PureText</contenttype>
-<customDisplay></customDisplay>
-<disabled>0</disabled>
-<editor>Text</editor>
-<name>translatedtext</name>
-<number>5</number>
-<picker>0</picker>
-<prettyName>translatedtext</prettyName>
-<rows>5</rows>
-<size>40</size>
-<tooltip></tooltip>
-<unmodifiable>0</unmodifiable>
-<validationMessage></validationMessage>
-<validationRegExp></validationRegExp>
-<classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
-</translatedtext>
-<validatedtranslatedtext>
-<contenttype>PureText</contenttype>
-<customDisplay></customDisplay>
-<disabled>0</disabled>
-<editor>Text</editor>
-<name>validatedtranslatedtext</name>
-<number>7</number>
-<picker>0</picker>
-<prettyName>validatedtranslatedtext</prettyName>
-<rows>5</rows>
-<size>40</size>
-<tooltip></tooltip>
-<unmodifiable>0</unmodifiable>
-<validationMessage></validationMessage>
-<validationRegExp></validationRegExp>
-<classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
-</validatedtranslatedtext>
-</class>
-<content>#**
+  <web>L10NCode</web>
+  <name>TranslationClass</name>
+  <language/>
+  <defaultLanguage/>
+  <translation>0</translation>
+  <parent/>
+  <creator>xwiki:XWiki.Admin</creator>
+  <author>xwiki:XWiki.Admin</author>
+  <customClass/>
+  <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
+  <creationDate>1325372400000</creationDate>
+  <date>1325372400000</date>
+  <contentUpdateDate>1325372400000</contentUpdateDate>
+  <version>1.1</version>
+  <title/>
+  <template/>
+  <defaultTemplate/>
+  <validationScript/>
+  <comment/>
+  <minorEdit>false</minorEdit>
+  <syntaxId>xwiki/1.0</syntaxId>
+  <hidden>false</hidden>
+  <class>
+    <name>L10NCode.TranslationClass</name>
+    <customClass/>
+    <customMapping>internal</customMapping>
+    <defaultViewSheet/>
+    <defaultEditSheet/>
+    <defaultWeb/>
+    <nameField/>
+    <validationScript/>
+    <comment>
+      <disabled>0</disabled>
+      <name>comment</name>
+      <number>10</number>
+      <prettyName>comment</prettyName>
+      <size>30</size>
+      <unmodifiable>0</unmodifiable>
+      <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+    </comment>
+    <deprecated>
+      <disabled>0</disabled>
+      <displayFormType>select</displayFormType>
+      <name>deprecated</name>
+      <number>8</number>
+      <prettyName>deprecated</prettyName>
+      <unmodifiable>0</unmodifiable>
+      <classType>com.xpn.xwiki.objects.classes.BooleanClass</classType>
+    </deprecated>
+    <deprecatedNewKey>
+      <disabled>0</disabled>
+      <name>deprecatedNewKey</name>
+      <number>9</number>
+      <prettyName>deprecatedNewKey</prettyName>
+      <size>30</size>
+      <unmodifiable>0</unmodifiable>
+      <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+    </deprecatedNewKey>
+    <key>
+      <customDisplay/>
+      <disabled>0</disabled>
+      <name>key</name>
+      <number>1</number>
+      <picker>0</picker>
+      <prettyName>key</prettyName>
+      <size>30</size>
+      <tooltip/>
+      <unmodifiable>0</unmodifiable>
+      <validationMessage/>
+      <validationRegExp/>
+      <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+    </key>
+    <language>
+      <disabled>0</disabled>
+      <name>language</name>
+      <number>7</number>
+      <prettyName>language</prettyName>
+      <size>30</size>
+      <unmodifiable>0</unmodifiable>
+      <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+    </language>
+    <name>
+      <customDisplay/>
+      <disabled>0</disabled>
+      <name>name</name>
+      <number>2</number>
+      <picker>0</picker>
+      <prettyName>name</prettyName>
+      <size>30</size>
+      <tooltip/>
+      <unmodifiable>0</unmodifiable>
+      <validationMessage/>
+      <validationRegExp/>
+      <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+    </name>
+    <originaltext>
+      <contenttype>PureText</contenttype>
+      <customDisplay/>
+      <disabled>0</disabled>
+      <editor>Text</editor>
+      <name>originaltext</name>
+      <number>4</number>
+      <picker>0</picker>
+      <prettyName>originaltext</prettyName>
+      <rows>5</rows>
+      <size>40</size>
+      <tooltip/>
+      <unmodifiable>0</unmodifiable>
+      <validationMessage/>
+      <validationRegExp/>
+      <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+    </originaltext>
+    <status>
+      <cache>0</cache>
+      <customDisplay/>
+      <disabled>0</disabled>
+      <displayType>select</displayType>
+      <multiSelect>0</multiSelect>
+      <name>status</name>
+      <number>6</number>
+      <picker>0</picker>
+      <prettyName>status</prettyName>
+      <relationalStorage>0</relationalStorage>
+      <separator> </separator>
+      <separators> ,|</separators>
+      <size>1</size>
+      <sort>none</sort>
+      <tooltip/>
+      <unmodifiable>0</unmodifiable>
+      <validationMessage/>
+      <validationRegExp/>
+      <values>none=None|needreview=Need review|validated=Validated</values>
+      <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+    </status>
+    <translatedtext>
+      <contenttype>PureText</contenttype>
+      <customDisplay/>
+      <disabled>0</disabled>
+      <editor>Text</editor>
+      <name>translatedtext</name>
+      <number>5</number>
+      <picker>0</picker>
+      <prettyName>translatedtext</prettyName>
+      <rows>5</rows>
+      <size>40</size>
+      <tooltip/>
+      <unmodifiable>0</unmodifiable>
+      <validationMessage/>
+      <validationRegExp/>
+      <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+    </translatedtext>
+    <validatedtranslatedtext>
+      <contenttype>PureText</contenttype>
+      <customDisplay/>
+      <disabled>0</disabled>
+      <editor>Text</editor>
+      <name>validatedtranslatedtext</name>
+      <number>7</number>
+      <picker>0</picker>
+      <prettyName>validatedtranslatedtext</prettyName>
+      <rows>5</rows>
+      <size>40</size>
+      <tooltip/>
+      <unmodifiable>0</unmodifiable>
+      <validationMessage/>
+      <validationRegExp/>
+      <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+    </validatedtranslatedtext>
+  </class>
+  <content>#**
   * Translation Class
   *
   * This class allows to manage translations
   * @type class
-  *#</content></xwikidoc>
+  *#</content>
+</xwikidoc>

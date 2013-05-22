@@ -1,33 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <xwikidoc>
-<web>L10NCode</web>
-<name>L10NSkin</name>
-<language></language>
-<defaultLanguage>en</defaultLanguage>
-<translation>0</translation>
-<parent>XWiki.XWikiPreferences</parent>
-<creator>XWiki.Admin</creator>
-<author>XWiki.Admin</author>
-<customClass></customClass>
-<contentAuthor>XWiki.Admin</contentAuthor>
-<creationDate>1325372400000</creationDate>
-<date>1325372400000</date>
-<contentUpdateDate>1325372400000</contentUpdateDate>
-<version>1.1</version>
-<title>$msg.get("xe.admin.skin")</title>
-<template></template>
-<defaultTemplate></defaultTemplate>
-<validationScript></validationScript>
-<comment></comment>
-<minorEdit>false</minorEdit>
-<syntaxId>xwiki/2.1</syntaxId>
-<hidden>false</hidden><attachment>
-<filename>cn.png</filename>
-<filesize>472</filesize>
-<author>XWiki.evalica</author>
-<date>1358693812000</date>
-<version>1.2</version>
-<comment></comment><content>iVBORw0KGgoAAAANSUhEUgAAABAAAAALCAIAAAD5gJpuAAAABGdBTUEAAK/INwWK6QAAABl0RVh0
+  <web>L10NCode</web>
+  <name>L10NSkin</name>
+  <language/>
+  <defaultLanguage/>
+  <translation>0</translation>
+  <parent>XWiki.XWikiPreferences</parent>
+  <creator>xwiki:XWiki.Admin</creator>
+  <author>xwiki:XWiki.Admin</author>
+  <customClass/>
+  <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
+  <creationDate>1325372400000</creationDate>
+  <date>1325372400000</date>
+  <contentUpdateDate>1325372400000</contentUpdateDate>
+  <version>1.1</version>
+  <title>$msg.get("xe.admin.skin")</title>
+  <template/>
+  <defaultTemplate/>
+  <validationScript/>
+  <comment/>
+  <minorEdit>false</minorEdit>
+  <syntaxId>xwiki/2.1</syntaxId>
+  <hidden>false</hidden>
+  <attachment>
+    <filename>cn.png</filename>
+    <filesize>472</filesize>
+    <author>XWiki.evalica</author>
+    <date>1358693812000</date>
+    <version>1.2</version>
+    <comment/>
+    <content>iVBORw0KGgoAAAANSUhEUgAAABAAAAALCAIAAAD5gJpuAAAABGdBTUEAAK/INwWK6QAAABl0RVh0
 U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAFqSURBVHjaYrzOwPAPjJgYQEDAleHVbhAD
 IvgHLPgHiQ0QQCxAlkR9NW8sw+cV/1gV/7Gb/hV4+vfzhj8Mv/78//Pn/+/f/8AkhH1t0yaAAAJp
 4I37zyz2lDfu79uqv/++/WYz+cuq/vvLxt8gdb+A5K9/v34B2SyyskBLAAII5JAva/7/+/z367a/
@@ -36,13 +39,16 @@ Vf8HawAIIJCT/v38C3Hr95N/GDh/f94AVvT7N8RUBpjxQAVADQABBNLw/y/Ifwy/f/399ufTOpDB
 EPf8g5sN0QBEDAwAAQTWABEChgOSA9BVA00E2wAQQCANQBbEif/AzoCqgLkbbBYwWP/+//sXqBYg
 gFhAkfL7D7OkJFCOCSj65zfUeFjwg8z++/ffX5AGoGKAAGI8jhSRyIw/SJH9D4aAYQoQYAA6rnMw
 1jU2vQAAAABJRU5ErkJggg==
-</content></attachment><attachment>
-<filename>cs.png</filename>
-<filesize>439</filesize>
-<author>XWiki.evalica</author>
-<date>1358693812000</date>
-<version>1.2</version>
-<comment></comment><content>iVBORw0KGgoAAAANSUhEUgAAABAAAAALCAIAAAD5gJpuAAAABGdBTUEAAK/INwWK6QAAABl0RVh0
+</content>
+  </attachment>
+  <attachment>
+    <filename>cs.png</filename>
+    <filesize>439</filesize>
+    <author>XWiki.evalica</author>
+    <date>1358693812000</date>
+    <version>1.2</version>
+    <comment/>
+    <content>iVBORw0KGgoAAAANSUhEUgAAABAAAAALCAIAAAD5gJpuAAAABGdBTUEAAK/INwWK6QAAABl0RVh0
 U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAFJSURBVHjaYmRgmMjA8IMBCv4xMPyBkcjo
 F4xkAQjAoZjbAADCQCwFqzFVJmGNzEZ3T3gky3LhEbEz53vdF6lJSyZfEAb1bUBV6wggFrB5/548
 +QxUClT3+zeQ/PsbqAKE/v7+9ffX77+/fgFF/srK8jIwfAMIIBZTUx1NTSFRUa5/////BZn9H2w8
@@ -50,13 +56,16 @@ yAagTjADikRFObZvtwAIIMa/L18yiooCnfT//38GMMQFGBkZP924ARBALBDPQoTgDKyAgZERaBFA
 ALGAPAsVwGs+0Ib/wFD5BxBALP+cnBjLy/+/fs0ADiAYAnoFzIAJgmRFRP50dgIEEMu/69eZjx37
 f+8eAzCAgOjXLxCCMOAif34z/PnLoKICdDNAALEAA5Xp9x8GSUmgHEgUKPf7NyOI/YcBQoKNhyCg
 YoAAYvwKiQgYYkDlokkBAUCAAQBzjGcaf+uHXwAAAABJRU5ErkJggg==
-</content></attachment><attachment>
-<filename>de.png</filename>
-<filesize>545</filesize>
-<author>XWiki.evalica</author>
-<date>1358693812000</date>
-<version>1.2</version>
-<comment></comment><content>iVBORw0KGgoAAAANSUhEUgAAABAAAAALCAIAAAD5gJpuAAAABGdBTUEAAK/INwWK6QAAABl0RVh0
+</content>
+  </attachment>
+  <attachment>
+    <filename>de.png</filename>
+    <filesize>545</filesize>
+    <author>XWiki.evalica</author>
+    <date>1358693812000</date>
+    <version>1.2</version>
+    <comment/>
+    <content>iVBORw0KGgoAAAANSUhEUgAAABAAAAALCAIAAAD5gJpuAAAABGdBTUEAAK/INwWK6QAAABl0RVh0
 U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAGzSURBVHjaYvTxcWb4+53h3z8GZpZff/79
 +v3n/7/fDAz/GHAAgABi+f37e3FxOZD1Dwz+/v3z9y+E/AMFv3//+Qumfv9et241QACxMDExAVWf
 OHkJJAEW/gUEP0EQDn78+AHE/gFOQJUAAcQiy8Ag8O+fLFj1n1+/QDp+/gQioK7fP378+vkDqOH3
@@ -66,13 +75,16 @@ VA0U//v7LwMDQACx/LZiYFD7/5/53/+///79BqK/EMZ/UPACSYa/v/8DyX9A0oTxx2EGgABi+a/H
 8F/m339BoCoQ+g8kgRaCQvgPJJiBYmAuw39hxn+uDAABxMLwi+E/0PusRkwMvxhBGoDkH4b/v/+D
 2EDyz///QB1/QLb8+sP0lQEggFh+vGXYM2/SP6A2Zoaf30Ex/J+PgekHwz9gQDAz/P0FYrAyMfz7
 wcDAzPDtFwNAgAEAd3SIyRitX1gAAAAASUVORK5CYII=
-</content></attachment><attachment>
-<filename>es.png</filename>
-<filesize>469</filesize>
-<author>XWiki.evalica</author>
-<date>1358693812000</date>
-<version>1.2</version>
-<comment></comment><content>iVBORw0KGgoAAAANSUhEUgAAABAAAAALCAIAAAD5gJpuAAAABGdBTUEAAK/INwWK6QAAABl0RVh0
+</content>
+  </attachment>
+  <attachment>
+    <filename>es.png</filename>
+    <filesize>469</filesize>
+    <author>XWiki.evalica</author>
+    <date>1358693812000</date>
+    <version>1.2</version>
+    <comment/>
+    <content>iVBORw0KGgoAAAANSUhEUgAAABAAAAALCAIAAAD5gJpuAAAABGdBTUEAAK/INwWK6QAAABl0RVh0
 U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAFnSURBVHjaYvzPgAD/UNlYEUAAmuTYAAAQ
 hAEYqF/zFbe50RZ1cMmS9TLi0pJLRjZohAMTGFUN9HdnHgEE1sDw//+Tp0ClINW/f0NIKPoFJH/9
 //ULyGaUlQXaABBALAx/Gf4zAt31F4i+ffj3/cN/XrFfzOx//v///f//LzACM/79ZmD8/e8TA0AA
@@ -81,13 +93,16 @@ FOOhev4A/QgQQExgHwAd8IdFT/Wz6j+GhlpmXSOW/2z///8Eq/sJ18Dw/zdQA0AAMQExxJjjdy9x
 2/76EfLz4MXdP/i+wsyGkkA3Aw3984cBIIAYfzIwMKel/bt3jwEaLNAwgZIQxp/fDH/+MqqovL14
 ESCAWICeZvr9h0FSEhSgwBgAygFDEMT+wwAhgQgc4kAEVAwQQIxfUSMSTxxDAECAAQAJWke8v4u1
 tAAAAABJRU5ErkJggg==
-</content></attachment><attachment>
-<filename>fr.png</filename>
-<filesize>545</filesize>
-<author>XWiki.evalica</author>
-<date>1358693812000</date>
-<version>1.2</version>
-<comment></comment><content>iVBORw0KGgoAAAANSUhEUgAAABAAAAALCAIAAAD5gJpuAAAABGdBTUEAAK/INwWK6QAAABl0RVh0
+</content>
+  </attachment>
+  <attachment>
+    <filename>fr.png</filename>
+    <filesize>545</filesize>
+    <author>XWiki.evalica</author>
+    <date>1358693812000</date>
+    <version>1.2</version>
+    <comment/>
+    <content>iVBORw0KGgoAAAANSUhEUgAAABAAAAALCAIAAAD5gJpuAAAABGdBTUEAAK/INwWK6QAAABl0RVh0
 U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAGzSURBVHjaYiyeepkBBv79+Zfnx/f379+f
 P38CyT9//jAyMiq5GP77wvDnJ8MfoAIGBoAAYgGqC7STApL///3/9++/pCTv////Qdz/QO4/IMna
 0vf/z+9/v379//37bUUTQACBNDD8Z/j87fffvyAVX79+/Q8GQDbQeKA9fM+e/Pv18/+vnwzCIkBL
@@ -97,13 +112,16 @@ Ain9B3EOyG1A1UDj//36zfjr1y8GBoAAFI9BDgAwCMIw+P8Ho3GDO6XQ0l4MN8b2kUwYaLszqgKM
 YYNVA/3wmwEYVgwMAAHE8uPHH5BqoD1//gJJLADoJKDS378Z//wFhhJAALF8A3rizz8uTmYg788f
 Jkj4QOKREQyYxSWBhjEC/fcXZANAALF8+/anbcHlHz9+ffvx58uPX9KckkCn/gby/wLd8uvHjx96
 k+cD1UGiGQgAAgwA7q17ZpsMdUQAAAAASUVORK5CYII=
-</content></attachment><attachment>
-<filename>gl.png</filename>
-<filesize>470</filesize>
-<author>XWiki.evalica</author>
-<date>1358693812000</date>
-<version>1.2</version>
-<comment></comment><content>iVBORw0KGgoAAAANSUhEUgAAABAAAAALCAIAAAD5gJpuAAAABGdBTUEAAK/INwWK6QAAABl0RVh0
+</content>
+  </attachment>
+  <attachment>
+    <filename>gl.png</filename>
+    <filesize>470</filesize>
+    <author>XWiki.evalica</author>
+    <date>1358693812000</date>
+    <version>1.2</version>
+    <comment/>
+    <content>iVBORw0KGgoAAAANSUhEUgAAABAAAAALCAIAAAD5gJpuAAAABGdBTUEAAK/INwWK6QAAABl0RVh0
 U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAFoSURBVHjaYvz48SMDEvj3D0zAKQwAEEAs
 QAk+Pj4g+f//f5CO9+////jBICT0n5UVIogMnj17BhBALBCDQaq/fGFYuPD/6dMM37//B2qIjv5v
 YYGsmpGR8c+fPwABxARVDUQLFvw/eJDh8+f/3779f/Dgf0vr/6tX0WwAOgkggJigbn/27P+hQwy/
@@ -112,13 +130,16 @@ C8Ps2f+5uIB6//f3MfxH9eX+/f/z8qAW/v7NqKT07/17gABiAoYfSOjePYYjR1FUAwUXLYKrZvjz
 B2jJHwYGgABiAWpgBnJ+/mSYOBFkj7Hxf2bm/y9e/J806f+xY1ANf4Aa/jL8/Qv0LEAAgTQw/f7D
 ICkJMmbadAYxUQY2NsZHjxg+fGCQlwcaDEJ//0IQUDFAADF+BcYoEmJA5aJJAQFAgAEAGIpbSsjE
 g+QAAAAASUVORK5CYII=
-</content></attachment><attachment>
-<filename>hr.png</filename>
-<filesize>524</filesize>
-<author>XWiki.evalica</author>
-<date>1358693812000</date>
-<version>1.2</version>
-<comment></comment><content>iVBORw0KGgoAAAANSUhEUgAAABAAAAALCAIAAAD5gJpuAAAABGdBTUEAAK/INwWK6QAAABl0RVh0
+</content>
+  </attachment>
+  <attachment>
+    <filename>hr.png</filename>
+    <filesize>524</filesize>
+    <author>XWiki.evalica</author>
+    <date>1358693812000</date>
+    <version>1.2</version>
+    <comment/>
+    <content>iVBORw0KGgoAAAANSUhEUgAAABAAAAALCAIAAAD5gJpuAAAABGdBTUEAAK/INwWK6QAAABl0RVh0
 U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAGeSURBVHjaYvzPgAD/UNlYEUAAsYAkq6uB
 xP9//xiBFBPT/3////398//vP6bfv5h+//7/589/GPll5UqAAAJrYPj//8lThr9/gQgoWhra80f+
 /587//8o/Jtckfj/96//v34BxRllZYE2AAQQE9js/3DVv//+7VqU3cvxccLclMkcH37//glS/Quq
@@ -128,13 +149,16 @@ QMbjx48BAoiRIfxwe7zS0w8/f//9/+fvv99//31+fGPZ+jqgi3286tkkNYAif/79+/P3v6wg+4qs
 AwABxMLw6w+Q/xukFKqBWUw1KmUZkMEK5v7+8+/Pf6AUMJyBcfYPIICAGoAG/BfhYQWqBnoHGBBA
 EiQNYoPIv2DV/4AkWANAADEyuO5k+POP4ccfoFVAzSDyB4wBRH/A7L/wiGYACDAAOJ12JTMlJgUA
 AAAASUVORK5CYII=
-</content></attachment><attachment>
-<filename>in.png</filename>
-<filesize>503</filesize>
-<author>XWiki.evalica</author>
-<date>1358693812000</date>
-<version>1.2</version>
-<comment></comment><content>iVBORw0KGgoAAAANSUhEUgAAABAAAAALCAIAAAD5gJpuAAAABGdBTUEAAK/INwWK6QAAABl0RVh0
+</content>
+  </attachment>
+  <attachment>
+    <filename>in.png</filename>
+    <filesize>503</filesize>
+    <author>XWiki.evalica</author>
+    <date>1358693812000</date>
+    <version>1.2</version>
+    <comment/>
+    <content>iVBORw0KGgoAAAANSUhEUgAAABAAAAALCAIAAAD5gJpuAAAABGdBTUEAAK/INwWK6QAAABl0RVh0
 U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAGJSURBVHjaYvy/nwEO/kEwGP37w/DvHxj9
 gSEwGyAAhXJwAAAEQzG0xSqmtJUZjOTW+sEll5f2xz5eMDkyDnaeOFmVxQIlCkiIveYVQGANDED2
 U6BShn9/gSyQHpCK3zDyFxj9ZmSXBdoAEEAs/8RMGTm1GFjE/v//9x+o5//fO6+FztyR+/vvr5HC
@@ -143,13 +167,16 @@ CVT2/uMngABiYgI7nwGsA4K+fv2pLM21a//tz19//ger/g+RAgXJP4AAYoKYCkKMYH3//+spCx6/
 +vEPG5ehigDYWmT0DyCAGBmKGToCOp5+fPrn358/f3///vvn97/ff4Dk399AERD59w8I/fsjwy+z
 vHE5QACxMPxhgAjB1SGU/vsD1/nn319gMDD8YgAIIBYgBvJFuEUgxkBJMAKqAII///+AqP9gDf8Y
 AAKIkSGZAagHaA+IhKM/SCJ/YAiUEBgAAgwA+jxNFkS1oCwAAAAASUVORK5CYII=
-</content></attachment><attachment>
-<filename>it.png</filename>
-<filesize>420</filesize>
-<author>XWiki.evalica</author>
-<date>1358693812000</date>
-<version>1.2</version>
-<comment></comment><content>iVBORw0KGgoAAAANSUhEUgAAABAAAAALCAIAAAD5gJpuAAAABGdBTUEAAK/INwWK6QAAABl0RVh0
+</content>
+  </attachment>
+  <attachment>
+    <filename>it.png</filename>
+    <filesize>420</filesize>
+    <author>XWiki.evalica</author>
+    <date>1358693812000</date>
+    <version>1.2</version>
+    <comment/>
+    <content>iVBORw0KGgoAAAANSUhEUgAAABAAAAALCAIAAAD5gJpuAAAABGdBTUEAAK/INwWK6QAAABl0RVh0
 U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAE2SURBVHjaYmSYyMDwgwEE/jEw/GF4mvT0
 HyqQUlX9B5aEIIAAYmH4wlDtWg1SDwT//0lKSv7/D+T9/w+nYmL+//79/88fIPll0yaAAGJhYAGJ
 P/n69O+/v0CAUAcHt2////ULqJpRVhZoA0AAsQCtAZoMVP0HiP7+RlcNBEDVYA0Mv38DNQAEEMj8
@@ -157,13 +184,16 @@ vwx//wCt/AdC/zEBkgagYoAAYgF6FGj277+///wlpAEoz8AAEEAgDX/BZv/69wuoB48GRrCTAAKI
 Cajh9//fv/6CVP/++wu7BrDxQFf/YWAACCCwk0BKf0MQdg1/gBqAPv0L9ANAALEAY+33vz+S3JIg
 b/z5C45CBkZGRgY4UFICKQUjoJMAAoiRoZSB4RMojkHx/YPhbNVZoM3AOISQQPUK9vaQOIYAgAAD
 AC5Wd4RRwnKfAAAAAElFTkSuQmCC
-</content></attachment><attachment>
-<filename>kr.png</filename>
-<filesize>592</filesize>
-<author>XWiki.evalica</author>
-<date>1358693812000</date>
-<version>1.2</version>
-<comment></comment><content>iVBORw0KGgoAAAANSUhEUgAAABAAAAALCAIAAAD5gJpuAAAABGdBTUEAAK/INwWK6QAAABl0RVh0
+</content>
+  </attachment>
+  <attachment>
+    <filename>kr.png</filename>
+    <filesize>592</filesize>
+    <author>XWiki.evalica</author>
+    <date>1358693812000</date>
+    <version>1.2</version>
+    <comment/>
+    <content>iVBORw0KGgoAAAANSUhEUgAAABAAAAALCAIAAAD5gJpuAAAABGdBTUEAAK/INwWK6QAAABl0RVh0
 U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAHiSURBVHjaYvz4/SsDEvj37x+YhLCgGAb+
 ADFAADEBpfk4uIDo2YNHV89fZP3PyMfBLcDFxc/NLcjNy8nMfPnM2cd374ry84sJCAE1AAQQC8Tg
 169fb9269cP7DyJiYsqKiv/v3v3/589/FZVnL16uXbtGQFBQWEhIRlYWaAVAAIFs+P///4cPH37/
@@ -174,13 +204,16 @@ f/aTvfrxOX12dm5pKaACBkZGoJMAAgioAaQaCN6+fcvDzfVVXTdXvZKZjfURu9iHHz/vGrupf//8
 ABBALP/AocTFxQXkHzx0WFNLszZM7ZIJ+5+//3UV2O/du7l6zXphYWEBAQGgAqCTAAII5AcgS1pa
 2t3d/eXLl2JikkD9ekpcEHeKi0t5eHgANairq4PjlQEggBifv32LHJFwiuEPmMEAYf/5A1YNxAAB
 BgCFMRk3L8TWJAAAAABJRU5ErkJggg==
-</content></attachment><attachment>
-<filename>lv.png</filename>
-<filesize>465</filesize>
-<author>XWiki.evalica</author>
-<date>1358693812000</date>
-<version>1.2</version>
-<comment></comment><content>iVBORw0KGgoAAAANSUhEUgAAABAAAAALCAIAAAD5gJpuAAAABGdBTUEAAK/INwWK6QAAABl0RVh0
+</content>
+  </attachment>
+  <attachment>
+    <filename>lv.png</filename>
+    <filesize>465</filesize>
+    <author>XWiki.evalica</author>
+    <date>1358693812000</date>
+    <version>1.2</version>
+    <comment/>
+    <content>iVBORw0KGgoAAAANSUhEUgAAABAAAAALCAIAAAD5gJpuAAAABGdBTUEAAK/INwWK6QAAABl0RVh0
 U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAFjSURBVHjaYpzIwPCDAQr+MTD8gZHI6BeM
 ZGJgAAggli8MDK7V1UDV///9A6G/f//9+fvv75//f/78A6Lfv/+CSSD77+/fMzdtAgggFhaQ0f+/
 PnkKUgpEQDkwCZQGkb+AjF//fv0CcrllZYGWAwQQC9A9f/79/42sGigNNBWsFISADLAGtt+/PzEw
@@ -189,13 +222,16 @@ Hz4ABBDLm3PnuGVkgDYwQM38/x9uA4wNsYqFnf3RyZMAAcRYzsDglZX18f59UDj8+gX2KMjFf+EM
 sCBQll9Jqf3cOYAAYgF6HMj5Dw4TEPoFChMg4z/QV0ASwvjz+/+fv8BgBLoZIIBYgNHx//cfLklJ
 sDF///6B6YRFAjBCgP6EBDow+gACiLGUgeETLCJ/IUXqL9RohkQ/DwMDQIABAHwogUlFi1BaAAAA
 AElFTkSuQmCC
-</content></attachment><attachment>
-<filename>nl.png</filename>
-<filesize>453</filesize>
-<author>XWiki.evalica</author>
-<date>1358693812000</date>
-<version>1.2</version>
-<comment></comment><content>iVBORw0KGgoAAAANSUhEUgAAABAAAAALCAIAAAD5gJpuAAAABGdBTUEAAK/INwWK6QAAABl0RVh0
+</content>
+  </attachment>
+  <attachment>
+    <filename>nl.png</filename>
+    <filesize>453</filesize>
+    <author>XWiki.evalica</author>
+    <date>1358693812000</date>
+    <version>1.2</version>
+    <comment/>
+    <content>iVBORw0KGgoAAAANSUhEUgAAABAAAAALCAIAAAD5gJpuAAAABGdBTUEAAK/INwWK6QAAABl0RVh0
 U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAFXSURBVHjaYvzPgAD/UNlYEUAAkuTgCAAI
 BgJggq5VoAs1qM0vdzmMz362vezjokxPGimkEQ5WoAQEKuK71zwCCKyB4c//J8+BShn+/vv/+w/D
 399AEox+//8FJH/9/wUU+cUoKw20ASCAWBhEDf/LyDOw84BU//kDtgGI/oARmAHRDJQSFwVqAAgg
@@ -203,13 +239,16 @@ xo8fP/Ly8oKc9P8/AxjiAoyMjA8ePAAIIJZ///5BVIM0MOBWDpRlZPzz5w9AALH8gyvCbz7QBrCJ
 AAHEyKDYX15r/+j1199//v35++/Xn7+///77DST/wMl/f4Dk378K4jx7O2cABBALw7NP77/+ev3x
 B0gOpOHfr99AdX9/gTVASKCGP//+8XCyMjC8AwggFoZfIHWSwpwQk4CW/AYjsKlA8u+ff////v33
 998/YPgBnQQQQIzAaGNg+AVGf5AYf5BE/oCjGEIyAQQYAGvKZ4C6+xXRAAAAAElFTkSuQmCC
-</content></attachment><attachment>
-<filename>no.png</filename>
-<filesize>512</filesize>
-<author>XWiki.evalica</author>
-<date>1358693812000</date>
-<version>1.2</version>
-<comment></comment><content>iVBORw0KGgoAAAANSUhEUgAAABAAAAALCAIAAAD5gJpuAAAABGdBTUEAAK/INwWK6QAAABl0RVh0
+</content>
+  </attachment>
+  <attachment>
+    <filename>no.png</filename>
+    <filesize>512</filesize>
+    <author>XWiki.evalica</author>
+    <date>1358693812000</date>
+    <version>1.2</version>
+    <comment/>
+    <content>iVBORw0KGgoAAAANSUhEUgAAABAAAAALCAIAAAD5gJpuAAAABGdBTUEAAK/INwWK6QAAABl0RVh0
 U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAGSSURBVHjaYnzIAAVy//9zRV36skTnATPz
 PwaGf2BBCOMPEgkQQCxAUcHaaiD5////ngQpRkZG4aLC/3//MPz58x+Efv//DSL/Acnfv+9u2AQQ
 QCxgg/7/e/IUSL18/weo7c+DB0AVDL+BioCqgejXv1+//v/6zSwrC7QBIIDAGv4CVf0F0f9ADvn/
@@ -218,26 +257,32 @@ F+9///0HdvO/f0BtQA6I/AMk//3+CxIHikgJss7OOQ0QQIx///6FGP+f4X/JgmfdcZL/cQAmJqb3
 798DBBDLPWZmkdysP/fuC2zY9BvspLd21v9+gXzMAPLub6g3fv9hUVa6evocQACxAL35HxxkQKUg
 Z/3//+8nRMUvkCBIJ4jxD+iQP8DAZgAIILCGP3+YJEEuEeUDBRqzjCzTX1DAM4CDn/nPH5Dqv3//
 gR0PEECMV2FRqPD+vaDeibcXzK4JC/+BxTEkghlgJBAABBgA9J5akqVspaUAAAAASUVORK5CYII=
-</content></attachment><attachment>
-<filename>pl.png</filename>
-<filesize>374</filesize>
-<author>XWiki.evalica</author>
-<date>1358693812000</date>
-<version>1.2</version>
-<comment></comment><content>iVBORw0KGgoAAAANSUhEUgAAABAAAAALCAIAAAD5gJpuAAAABGdBTUEAAK/INwWK6QAAABl0RVh0
+</content>
+  </attachment>
+  <attachment>
+    <filename>pl.png</filename>
+    <filesize>374</filesize>
+    <author>XWiki.evalica</author>
+    <date>1358693812000</date>
+    <version>1.2</version>
+    <comment/>
+    <content>iVBORw0KGgoAAAANSUhEUgAAABAAAAALCAIAAAD5gJpuAAAABGdBTUEAAK/INwWK6QAAABl0RVh0
 U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAEISURBVHjaYvz/8SMDDPyD43//gPQ/bAAg
 gFhACvn4gMT///8Zwdr+/wcRjP//MzMwMP1HAV+ePQMIIBYGqKL/yIz/2AAjI+O/P38AAoiFSNUQ
 KaCTAAKIBehWRrhqMMSjAagDIIBYGPj5Gfr6/j979v/PH4Y/f/7D0e/f/38DGb/BjN8gWWnpfwsX
 AgQQ2EkPH/5/8OD/718MvyHqfv3/9fv/r18gNhLJ+OkT0DkAAQR2ElgIZDyyIlTVEMv/MDAABBBI
 AzPYAQxwRZja/gA1/GX4+xfoHIAAAmlg+v2HQVISbMxfhj8gnYxgIxkgJBD9/QtBQMUAAcT4FRy5
 cMSAykWTAgKAAAMA0PVcqMe0XaEAAAAASUVORK5CYII=
-</content></attachment><attachment>
-<filename>pt.png</filename>
-<filesize>554</filesize>
-<author>XWiki.evalica</author>
-<date>1358693812000</date>
-<version>1.2</version>
-<comment></comment><content>iVBORw0KGgoAAAANSUhEUgAAABAAAAALCAIAAAD5gJpuAAAABGdBTUEAAK/INwWK6QAAABl0RVh0
+</content>
+  </attachment>
+  <attachment>
+    <filename>pt.png</filename>
+    <filesize>554</filesize>
+    <author>XWiki.evalica</author>
+    <date>1358693812000</date>
+    <version>1.2</version>
+    <comment/>
+    <content>iVBORw0KGgoAAAANSUhEUgAAABAAAAALCAIAAAD5gJpuAAAABGdBTUEAAK/INwWK6QAAABl0RVh0
 U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAG8SURBVHjaYmSIZGD4wgAF/xgYWBj+boQy
 sSKAAGJh+MRQnVoNUgEE///9ZfzLoPiX4e8fxj9/mP/8Yfr9+/+fP/9h5JdNmwACiIWBCaj4/5P3
 T7mY/xoJ/9UR/v0n8O+f17/Zlv/+//73/1+////+9f/XL6BqRllZoA0AAcQCNvv/339/C03+8v/8
@@ -247,13 +292,16 @@ A0AAsQA1/P0HZP458/qXqvNfjdnVItxy3wNvApUIvwPb8BvqJEawkwACiIXhDwPQ+F9/f+2890dY
 6/cnrycCb++z3frNfOwX01eEagZgKAHdzcAAEEAgG4DGA/W8+fO79+Rvdt5f2+b++sP+m+kdWDVE
 wx+gBmBY/wX6ASCAWBi+Mfz+80eSX/L3n99AzwBDm0H2NwtQHS/QapDBIPT3LwQBnQQQQIwMxgwM
 7xgYfjAArQKRTAyvP2OPYwgACDAAjtdGduN8tIgAAAAASUVORK5CYII=
-</content></attachment><attachment>
-<filename>ro.png</filename>
-<filesize>495</filesize>
-<author>XWiki.evalica</author>
-<date>1358693812000</date>
-<version>1.2</version>
-<comment></comment><content>iVBORw0KGgoAAAANSUhEUgAAABAAAAALCAIAAAD5gJpuAAAABGdBTUEAAK/INwWK6QAAABl0RVh0
+</content>
+  </attachment>
+  <attachment>
+    <filename>ro.png</filename>
+    <filesize>495</filesize>
+    <author>XWiki.evalica</author>
+    <date>1358693812000</date>
+    <version>1.2</version>
+    <comment/>
+    <content>iVBORw0KGgoAAAANSUhEUgAAABAAAAALCAIAAAD5gJpuAAAABGdBTUEAAK/INwWK6QAAABl0RVh0
 U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAGBSURBVHjaYmTQPs7w6Q8DCDAxMLC8P2DO
 wcbA8I/hHxix/GD4pw3kIRBAALEwvPtT3aQIVP7vH+O//0yc0hWsrD8ZGP78//8HRH75/T/mz//f
 v///AZFfNm0CCCAWBhYGhv8MT17//vvv/99/TP/+PWJg+P7//28o+vP7/+1f/3/9AqpmlJUF2gAQ
@@ -262,13 +310,16 @@ dIAAYmH49Q+o7vef/zANv5H0gBm/oE5i+PMHaANAAIE0/AUZ//8XUM9fBiQNYBLJSYxgJwEEEEjD
 778Mv/6A9Pz+wwB1BpoNYOOBbgAGHEAAsTD8BNL/gJqBrvr9lxFJA8QGsIY/QA1/Gf7+BfoBIICA
 ofQHqFRShBXkjb/MTEzSDAzfGBmB/gMa95uB5Q+D0h+QUjACOgkggBgZGLYyMPwCS4Nc+HxvMAsL
 w78/4HgFkh8Y/oVD4xgCAAIMACetb51Fz+5FAAAAAElFTkSuQmCC
-</content></attachment><attachment>
-<filename>ru.png</filename>
-<filesize>420</filesize>
-<author>XWiki.evalica</author>
-<date>1358693812000</date>
-<version>1.2</version>
-<comment></comment><content>iVBORw0KGgoAAAANSUhEUgAAABAAAAALCAIAAAD5gJpuAAAABGdBTUEAAK/INwWK6QAAABl0RVh0
+</content>
+  </attachment>
+  <attachment>
+    <filename>ru.png</filename>
+    <filesize>420</filesize>
+    <author>XWiki.evalica</author>
+    <date>1358693812000</date>
+    <version>1.2</version>
+    <comment/>
+    <content>iVBORw0KGgoAAAANSUhEUgAAABAAAAALCAIAAAD5gJpuAAAABGdBTUEAAK/INwWK6QAAABl0RVh0
 U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAE2SURBVHjaYvz69T8DAvz79w9CQVj/0MCf
 fwwAAcQClObiAin6/x+okxHMgPCAbOb//5n+I4EXL74ABBALxGSwagTjPzbAyMgItAQggBg9Pf9n
 ZPx//x7kjL9////9C2QAyf9//qCQQCQkxFhY+BEggFi2b/+nq8v46BEDSPQ3w+8//3//BqFfv9BJ
@@ -276,13 +327,16 @@ eXmQEwACCOSkP38YgHy4Bog0RN0vIOMXVOTPH6Cv/gEEEEgDxFKgHEgDXCmGDUAE1AAQQCybGZg1
 f/d8//XsH0jTn3+///z79RtE/v4NZfz68xfI/vOX+4/0ZoZFAAHE4gYMvD+3/v2+h91wCANo9Z+/
 jH9VxBkYAAKIBRg9TL//MEhKAuWAogxgZzGC2CCfgUggAoYdGAEVAwQQ41egu5AQAyoXTQoIAAIM
 AD+JZR7YOGEWAAAAAElFTkSuQmCC
-</content></attachment><attachment>
-<filename>sk.png</filename>
-<filesize>562</filesize>
-<author>XWiki.evalica</author>
-<date>1358693812000</date>
-<version>1.2</version>
-<comment></comment><content>iVBORw0KGgoAAAANSUhEUgAAABAAAAALCAIAAAD5gJpuAAAABGdBTUEAAK/INwWK6QAAABl0RVh0
+</content>
+  </attachment>
+  <attachment>
+    <filename>sk.png</filename>
+    <filesize>562</filesize>
+    <author>XWiki.evalica</author>
+    <date>1358693812000</date>
+    <version>1.2</version>
+    <comment/>
+    <content>iVBORw0KGgoAAAANSUhEUgAAABAAAAALCAIAAAD5gJpuAAAABGdBTUEAAK/INwWK6QAAABl0RVh0
 U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAHESURBVHjaYvz79TsDwz8GOPj3D8T5B6L/
 QTj/4OAPkAsQQCxAWSYuLiD5//9/iBYmEP2f8f9/ZrAgMvjy6g1AALFAjP8+fzHDpy/////7/+cv
 UISjMPc/BmBkZPzz5w9AAAAxAM7/BEJk5G1eFUfW2gvv5f97fQCnpv3V15Se5fj+A/38/v39/vz9
@@ -292,13 +346,16 @@ Bw1AAAH9wAZ0+uOI7C1bnj2d/p3hp0dppO3LA5y//4IM+f2P8fd/pj//gQHE+BMUCmwAAcS4n4FB
 qbyLlZ/ru71L80bWcp8/XHu3fjx4+h/INb/BCOym33/YFWT2710KEEAsVgwMzO/v/Dt7j+HdvQmW
 jow7z7BtXi/6+/f/X7/+A0kI489voJsYeT4IMjAABBAL0GFMQDdKSv5/8oxz+SKg3H9ZWcbfQBV/
 GCAkEP39C0FAxQABxPgVHBFwxIDKRZMCAoAAAwBcKj0T0E2bvQAAAABJRU5ErkJggg==
-</content></attachment><attachment>
-<filename>sv.png</filename>
-<filesize>501</filesize>
-<author>XWiki.evalica</author>
-<date>1358693812000</date>
-<version>1.2</version>
-<comment></comment><content>iVBORw0KGgoAAAANSUhEUgAAABAAAAALCAIAAAD5gJpuAAAABGdBTUEAAK/INwWK6QAAABl0RVh0
+</content>
+  </attachment>
+  <attachment>
+    <filename>sv.png</filename>
+    <filesize>501</filesize>
+    <author>XWiki.evalica</author>
+    <date>1358693812000</date>
+    <version>1.2</version>
+    <comment/>
+    <content>iVBORw0KGgoAAAANSUhEUgAAABAAAAALCAIAAAD5gJpuAAAABGdBTUEAAK/INwWK6QAAABl0RVh0
 U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAGHSURBVHjaYmTQv87wiwEK/v1j+PWP4c8/
 kAiQ8esPiPz9DyjBwPAHQgIEEAtQrr9aDKIYjP79+cvw99//v//+/f3L8OfP/z9////58w/CmFF3
 HSCAWIBK/v5jePHmzz+gor9g6b8gxu8/IHVAEoz+/f79T1KUFWgvQAAx7j/9VVmW7devf///M/z/
@@ -307,13 +364,16 @@ HSCAWIBK/v5jePHmzz+gor9g6b8gxu8/IHVAEoz+/f79T1KUFWgvQAAx7j/9VVmW7devf///M/z/
 qQABxLj7+EdVOfYfv0CuBPkB7Og/oEACmgTyA8QHQJqDnXn30WcAAcTIwH66qkv20YtfsDD59+sP
 OJR+A0PmLySU/vwFhvV/BUm27TNPAQQQC9gQBklRFqDE3z//wKH+/zdIBTDsmf/+hYY1KND/gWIL
 IIAYGZiPMvxlgEckjPwDY/9DYoB0AAQYAKRYbE3/GAjBAAAAAElFTkSuQmCC
-</content></attachment><attachment>
-<filename>ua.png</filename>
-<filesize>446</filesize>
-<author>XWiki.evalica</author>
-<date>1358693812000</date>
-<version>1.2</version>
-<comment></comment><content>iVBORw0KGgoAAAANSUhEUgAAABAAAAALCAIAAAD5gJpuAAAABGdBTUEAAK/INwWK6QAAABl0RVh0
+</content>
+  </attachment>
+  <attachment>
+    <filename>ua.png</filename>
+    <filesize>446</filesize>
+    <author>XWiki.evalica</author>
+    <date>1358693812000</date>
+    <version>1.2</version>
+    <comment/>
+    <content>iVBORw0KGgoAAAANSUhEUgAAABAAAAALCAIAAAD5gJpuAAAABGdBTUEAAK/INwWK6QAAABl0RVh0
 U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAFQSURBVHjaYmRo/c8AB//+MfwBkgwg8s8/
 KPoFI4GIgQEgAIdycgMACAMxUAF6oygqoQ1q45dkzSH5N26XR/8zCEuepggsVEPFkxB+S9bcRwCx
 MDCBVD/5+h+o9O8/BqDE378Mv/+DpCGKfgERmCHLw8jw4x9AAIFs+AdUBLQWZDZI9a/////8BSuF
@@ -321,13 +381,16 @@ awBzf/8FuQMggFiALvsLsh2k+g/cbCTVUBLkKgaGDwwAAcTCIHJKhFPh19+fIHf/+/cbpBNI/gO7
 5x+I/RfKluFiY5A6AhBAjH8fMjDI5P///+A/wy8GoFf/A+34hZVkYlJ6f/wUQACxAEOSESwEDEhU
 RSiqwbJ/gKENEEAgDcwgDlAIrgiLNgaGvyD0hwEggEAamP4DdUrCREE6GRl/gyMPQv6BqgYG+z8G
 gABi/HoTFL///kBJBjgbwmBAcEEcBgaAAAMASIdu6OFHDhsAAAAASUVORK5CYII=
-</content></attachment><attachment>
-<filename>us.png</filename>
-<filesize>609</filesize>
-<author>XWiki.evalica</author>
-<date>1358693812000</date>
-<version>1.2</version>
-<comment></comment><content>iVBORw0KGgoAAAANSUhEUgAAABAAAAALCAIAAAD5gJpuAAAABGdBTUEAAK/INwWK6QAAABl0RVh0
+</content>
+  </attachment>
+  <attachment>
+    <filename>us.png</filename>
+    <filesize>609</filesize>
+    <author>XWiki.evalica</author>
+    <date>1358693812000</date>
+    <version>1.2</version>
+    <comment/>
+    <content>iVBORw0KGgoAAAANSUhEUgAAABAAAAALCAIAAAD5gJpuAAAABGdBTUEAAK/INwWK6QAAABl0RVh0
 U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAHzSURBVHjaYkxOP8IAB//+Mfz7w8Dwi4Hh
 P5CcJb/n/7evb16/APL/gRFQDiAAw3JuAgAIBEDQ/iswEERjGzBQLEru97ll0g0+3HvqMn1Spqlq
 GsZMsZsIe0SICA5gt5a/AGIEarCPtFh+6N/ffwxA9OvP/7//QYwff/6fZahmePeB4dNHhi+fGb59
@@ -338,13 +401,16 @@ xj9/GBxb2P/9+S/R8u3vzxuyaX8ZHv3j8/YGms3w8ycQARmi2eE37t4ACCDGR4/uSkrKAS35B3TT
 ////wADOgLOBIaXIyjBlwxKAAGKRXjCB0SOEaeu+/y9fMnz4AHQxCP348R/o+l+//sMZQBNLEvif
 3AcIIMZbty7Ly6t9ZmXl+fXj/38GoHH/UcGfP79//BBiYHjy9+8/oUkNAAHEwt1V/vI/KBY/QSIS
 FqM/GBg+MzB8A6PfYC5EFiDAABqgW776MP0rAAAAAElFTkSuQmCC
-</content></attachment><attachment>
-<filename>logo.png</filename>
-<filesize>4860</filesize>
-<author>XWiki.evalica</author>
-<date>1358693812000</date>
-<version>1.3</version>
-<comment></comment><content>iVBORw0KGgoAAAANSUhEUgAAAIcAAAAyCAYAAAB24MjMAAAABHNCSVQICAgIfAhkiAAAAAlwSFlz
+</content>
+  </attachment>
+  <attachment>
+    <filename>logo.png</filename>
+    <filesize>4860</filesize>
+    <author>XWiki.evalica</author>
+    <date>1358693812000</date>
+    <version>1.3</version>
+    <comment/>
+    <content>iVBORw0KGgoAAAANSUhEUgAAAIcAAAAyCAYAAAB24MjMAAAABHNCSVQICAgIfAhkiAAAAAlwSFlz
 AAAN1wAADdcBQiibeAAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAABJ5SURB
 VHic7VxrbFTVvv/t17xnOu1M3xUqVOEW8cZowCIRNfgBjcEYEo+5xuMxxlzUaK7GWCgYA31A4he9
 UTHhw/lyYxQ15+jxmJBDAgjRnGhURKRBCm15tdPHdJ77ve+HZi322rPnQTsVRX5J05k1e++19lq/
@@ -430,177 +496,178 @@ Uila9ufz+RAOh+e9r/S3BrKv1vniOgJVVaEoSkmJ8rt8s898oaoqkskkTNNEfX39b+btfdVELpdz
 3c5gGAZkWaaFTqVwbT0uFYKE0Im3ci3CTa2Td5VV8mIa4A9KDrKxyDRN5t2j1zoqfYUVwR+SHMCs
 V2NPe1e7OPdawB/S5iCwS45SO9Z/7Z1mvxX8oclxHaVxbVpj11EVXCfHdRTFdXJcR1H8P8TF0UA/
 SY8sAAAAAElFTkSuQmCC
-</content></attachment>
-<object>
-<class>
-<name>XWiki.XWikiSkins</name>
-<customClass></customClass>
-<customMapping></customMapping>
-<defaultViewSheet></defaultViewSheet>
-<defaultEditSheet></defaultEditSheet>
-<defaultWeb></defaultWeb>
-<nameField></nameField>
-<validationScript></validationScript>
-<baseskin>
-<customDisplay></customDisplay>
-<disabled>0</disabled>
-<name>baseskin</name>
-<number>2</number>
-<picker>0</picker>
-<prettyName>Base Skin</prettyName>
-<size>30</size>
-<unmodifiable>0</unmodifiable>
-<validationMessage></validationMessage>
-<validationRegExp></validationRegExp>
-<classType>com.xpn.xwiki.objects.classes.StringClass</classType>
-</baseskin>
-<edit.vm>
-<customDisplay></customDisplay>
-<disabled>0</disabled>
-<editor>PureText</editor>
-<name>edit.vm</name>
-<number>9</number>
-<picker>0</picker>
-<prettyName>Edit</prettyName>
-<rows>15</rows>
-<size>80</size>
-<unmodifiable>0</unmodifiable>
-<validationMessage></validationMessage>
-<validationRegExp></validationRegExp>
-<classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
-</edit.vm>
-<footer.vm>
-<customDisplay></customDisplay>
-<disabled>0</disabled>
-<editor>PureText</editor>
-<name>footer.vm</name>
-<number>6</number>
-<picker>0</picker>
-<prettyName>Footer</prettyName>
-<rows>15</rows>
-<size>80</size>
-<unmodifiable>0</unmodifiable>
-<validationMessage></validationMessage>
-<validationRegExp></validationRegExp>
-<classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
-</footer.vm>
-<header.vm>
-<customDisplay></customDisplay>
-<disabled>0</disabled>
-<editor>PureText</editor>
-<name>header.vm</name>
-<number>5</number>
-<picker>0</picker>
-<prettyName>Header</prettyName>
-<rows>15</rows>
-<size>80</size>
-<unmodifiable>0</unmodifiable>
-<validationMessage></validationMessage>
-<validationRegExp></validationRegExp>
-<classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
-</header.vm>
-<logo>
-<customDisplay></customDisplay>
-<disabled>0</disabled>
-<name>logo</name>
-<number>3</number>
-<picker>0</picker>
-<prettyName>Logo</prettyName>
-<size>30</size>
-<unmodifiable>0</unmodifiable>
-<validationMessage></validationMessage>
-<validationRegExp></validationRegExp>
-<classType>com.xpn.xwiki.objects.classes.StringClass</classType>
-</logo>
-<name>
-<customDisplay></customDisplay>
-<disabled>0</disabled>
-<name>name</name>
-<number>1</number>
-<picker>0</picker>
-<prettyName>Name</prettyName>
-<size>30</size>
-<unmodifiable>0</unmodifiable>
-<validationMessage></validationMessage>
-<validationRegExp></validationRegExp>
-<classType>com.xpn.xwiki.objects.classes.StringClass</classType>
-</name>
-<style.css>
-<customDisplay></customDisplay>
-<disabled>0</disabled>
-<editor>PureText</editor>
-<name>style.css</name>
-<number>4</number>
-<picker>0</picker>
-<prettyName>Style</prettyName>
-<rows>15</rows>
-<size>80</size>
-<unmodifiable>0</unmodifiable>
-<validationMessage></validationMessage>
-<validationRegExp></validationRegExp>
-<classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
-</style.css>
-<view.vm>
-<customDisplay></customDisplay>
-<disabled>0</disabled>
-<editor>PureText</editor>
-<name>view.vm</name>
-<number>8</number>
-<picker>0</picker>
-<prettyName>View</prettyName>
-<rows>15</rows>
-<size>80</size>
-<unmodifiable>0</unmodifiable>
-<validationMessage></validationMessage>
-<validationRegExp></validationRegExp>
-<classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
-</view.vm>
-<viewheader.vm>
-<customDisplay></customDisplay>
-<disabled>0</disabled>
-<editor>PureText</editor>
-<name>viewheader.vm</name>
-<number>7</number>
-<picker>0</picker>
-<prettyName>View Header</prettyName>
-<rows>15</rows>
-<size>80</size>
-<unmodifiable>0</unmodifiable>
-<validationMessage></validationMessage>
-<validationRegExp></validationRegExp>
-<classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
-</viewheader.vm>
-</class>
-<name>L10NCode.L10NSkin</name>
-<number>0</number>
-<className>XWiki.XWikiSkins</className>
-<guid>4eccc173-0b8b-4cb0-9d4d-1f723e9e52e2</guid>
-<property>
-<baseskin>colibri</baseskin>
-</property>
-<property>
-<comments2.vm></comments2.vm>
-</property>
-<property>
-<edit.vm></edit.vm>
-</property>
-<property>
-<footer.vm></footer.vm>
-</property>
-<property>
-<header.vm></header.vm>
-</property>
-<property>
-<logo>logo.png</logo>
-</property>
-<property>
-<name>Default XWiki Skin</name>
-</property>
-<property>
-<pagemenu.vm></pagemenu.vm>
-</property>
-<property>
-<style.css>@import "microformats.css";
+</content>
+  </attachment>
+  <object>
+    <class>
+      <name>XWiki.XWikiSkins</name>
+      <customClass/>
+      <customMapping/>
+      <defaultViewSheet/>
+      <defaultEditSheet/>
+      <defaultWeb/>
+      <nameField/>
+      <validationScript/>
+      <baseskin>
+        <customDisplay/>
+        <disabled>0</disabled>
+        <name>baseskin</name>
+        <number>2</number>
+        <picker>0</picker>
+        <prettyName>Base Skin</prettyName>
+        <size>30</size>
+        <unmodifiable>0</unmodifiable>
+        <validationMessage/>
+        <validationRegExp/>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </baseskin>
+      <edit.vm>
+        <customDisplay/>
+        <disabled>0</disabled>
+        <editor>PureText</editor>
+        <name>edit.vm</name>
+        <number>9</number>
+        <picker>0</picker>
+        <prettyName>Edit</prettyName>
+        <rows>15</rows>
+        <size>80</size>
+        <unmodifiable>0</unmodifiable>
+        <validationMessage/>
+        <validationRegExp/>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </edit.vm>
+      <footer.vm>
+        <customDisplay/>
+        <disabled>0</disabled>
+        <editor>PureText</editor>
+        <name>footer.vm</name>
+        <number>6</number>
+        <picker>0</picker>
+        <prettyName>Footer</prettyName>
+        <rows>15</rows>
+        <size>80</size>
+        <unmodifiable>0</unmodifiable>
+        <validationMessage/>
+        <validationRegExp/>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </footer.vm>
+      <header.vm>
+        <customDisplay/>
+        <disabled>0</disabled>
+        <editor>PureText</editor>
+        <name>header.vm</name>
+        <number>5</number>
+        <picker>0</picker>
+        <prettyName>Header</prettyName>
+        <rows>15</rows>
+        <size>80</size>
+        <unmodifiable>0</unmodifiable>
+        <validationMessage/>
+        <validationRegExp/>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </header.vm>
+      <logo>
+        <customDisplay/>
+        <disabled>0</disabled>
+        <name>logo</name>
+        <number>3</number>
+        <picker>0</picker>
+        <prettyName>Logo</prettyName>
+        <size>30</size>
+        <unmodifiable>0</unmodifiable>
+        <validationMessage/>
+        <validationRegExp/>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </logo>
+      <name>
+        <customDisplay/>
+        <disabled>0</disabled>
+        <name>name</name>
+        <number>1</number>
+        <picker>0</picker>
+        <prettyName>Name</prettyName>
+        <size>30</size>
+        <unmodifiable>0</unmodifiable>
+        <validationMessage/>
+        <validationRegExp/>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </name>
+      <style.css>
+        <customDisplay/>
+        <disabled>0</disabled>
+        <editor>PureText</editor>
+        <name>style.css</name>
+        <number>4</number>
+        <picker>0</picker>
+        <prettyName>Style</prettyName>
+        <rows>15</rows>
+        <size>80</size>
+        <unmodifiable>0</unmodifiable>
+        <validationMessage/>
+        <validationRegExp/>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </style.css>
+      <view.vm>
+        <customDisplay/>
+        <disabled>0</disabled>
+        <editor>PureText</editor>
+        <name>view.vm</name>
+        <number>8</number>
+        <picker>0</picker>
+        <prettyName>View</prettyName>
+        <rows>15</rows>
+        <size>80</size>
+        <unmodifiable>0</unmodifiable>
+        <validationMessage/>
+        <validationRegExp/>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </view.vm>
+      <viewheader.vm>
+        <customDisplay/>
+        <disabled>0</disabled>
+        <editor>PureText</editor>
+        <name>viewheader.vm</name>
+        <number>7</number>
+        <picker>0</picker>
+        <prettyName>View Header</prettyName>
+        <rows>15</rows>
+        <size>80</size>
+        <unmodifiable>0</unmodifiable>
+        <validationMessage/>
+        <validationRegExp/>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </viewheader.vm>
+    </class>
+    <name>L10NCode.L10NSkin</name>
+    <number>0</number>
+    <className>XWiki.XWikiSkins</className>
+    <guid>4eccc173-0b8b-4cb0-9d4d-1f723e9e52e2</guid>
+    <property>
+      <baseskin>colibri</baseskin>
+    </property>
+    <property>
+      <comments2.vm/>
+    </property>
+    <property>
+      <edit.vm/>
+    </property>
+    <property>
+      <footer.vm/>
+    </property>
+    <property>
+      <header.vm/>
+    </property>
+    <property>
+      <logo>logo.png</logo>
+    </property>
+    <property>
+      <name>Default XWiki Skin</name>
+    </property>
+    <property>
+      <pagemenu.vm/>
+    </property>
+    <property>
+      <style.css>@import "microformats.css";
 @import "colibri.css";
 
 #mainContentArea{
@@ -664,16 +731,17 @@ input.searchButton{
   overflow: hidden;
   _width: 190px; /* IE6 */
 }</style.css>
-</property>
-<property>
-<view.vm></view.vm>
-</property>
-<property>
-<viewheader.vm></viewheader.vm>
-</property>
-</object>
-<content>$msg.get("xe.admin.skin.makeyourown")
+    </property>
+    <property>
+      <view.vm/>
+    </property>
+    <property>
+      <viewheader.vm/>
+    </property>
+  </object>
+  <content>$msg.get("xe.admin.skin.makeyourown")
 
 * &lt;a href="$doc.getURL('edit', 'editor=object&amp;amp;classname=XWiki.XWikiSkins')"&gt;$msg.get('xe.admin.skin.editskin')&lt;/a&gt;
 * [$msg.get('xe.admin.skin.testskin')&gt;Main.WebHome?skin=${doc.fullName}]
-</content></xwikidoc>
+</content>
+</xwikidoc>

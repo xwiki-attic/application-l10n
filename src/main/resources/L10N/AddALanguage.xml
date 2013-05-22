@@ -1,33 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <xwikidoc>
-<web>L10N</web>
-<name>AddALanguage</name>
-<language></language>
-<defaultLanguage>en</defaultLanguage>
-<translation>0</translation>
-<parent>L10N.WebHome</parent>
-<creator>XWiki.Admin</creator>
-<author>XWiki.Admin</author>
-<customClass></customClass>
-<contentAuthor>XWiki.Admin</contentAuthor>
-<creationDate>1325372400000</creationDate>
-<date>1325372400000</date>
-<contentUpdateDate>1325372400000</contentUpdateDate>
-<version>1.1</version>
-<title></title>
-<template></template>
-<defaultTemplate></defaultTemplate>
-<validationScript></validationScript>
-<comment></comment>
-<minorEdit>false</minorEdit>
-<syntaxId>xwiki/2.0</syntaxId>
-<hidden>false</hidden><attachment>
-<filename>ApplicationResourcesptbr.properties</filename>
-<filesize>173490</filesize>
-<author>XWiki.mmendes</author>
-<date>1302278260000</date>
-<version>1.1</version>
-<comment></comment><content>IyB2ZXJzXHUwMEUzbyBhdHVhbCAxLjA2DQojIERvY3VtZW50byBpbmljaWFsbWVudGUgdHJhZHV6
+  <web>L10N</web>
+  <name>AddALanguage</name>
+  <language/>
+  <defaultLanguage/>
+  <translation>0</translation>
+  <parent>L10N.WebHome</parent>
+  <creator>xwiki:XWiki.Admin</creator>
+  <author>xwiki:XWiki.Admin</author>
+  <customClass/>
+  <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
+  <creationDate>1325372400000</creationDate>
+  <date>1325372400000</date>
+  <contentUpdateDate>1325372400000</contentUpdateDate>
+  <version>1.1</version>
+  <title/>
+  <template/>
+  <defaultTemplate/>
+  <validationScript/>
+  <comment/>
+  <minorEdit>false</minorEdit>
+  <syntaxId>xwiki/2.0</syntaxId>
+  <hidden>false</hidden>
+  <attachment>
+    <filename>ApplicationResourcesptbr.properties</filename>
+    <filesize>173490</filesize>
+    <author>XWiki.mmendes</author>
+    <date>1302278260000</date>
+    <version>1.1</version>
+    <comment/>
+    <content>IyB2ZXJzXHUwMEUzbyBhdHVhbCAxLjA2DQojIERvY3VtZW50byBpbmljaWFsbWVudGUgdHJhZHV6
 aWRvIHBvciBNYXJjb3MgTWVuZGVzIEFyZWEgZGUgcHJ1ZHV0b3Mgbm8gZGlhIDE4LzAyLzIwMTAN
 CiMgUHJpbWVpcmEgcmV2aXNcdTAwRTNvOiAyMi8wMi8yMDExIGZlaXRhIHBvciBNYXJjb3MgTWVu
 ZGVzDQojIFNlZ3VuZGEgcmV2aXNcdTAwRTNvOiAyNC8wMi8yMDExIGZlaXRhIHBvciBNYXJjb3Mg
@@ -3071,981 +3074,982 @@ Iw0KDQojIyBVc2FkbyBwYXJhIGluZGljYXIgb25kZSBhcyBjaGF2ZXMgcXVlIG5cdTAwRTNvIHBy
 ZWNpc2FtIHNlciB0cmFkdXppZG9zIGNvbWVcdTAwRTdhDQojIyB3aWtpIGwxMG4gdXNhZG8gcXVl
 IG5cdTAwRTNvIGltcG9ydFx1MDBFMS1sb3MsIHBvciBleGVtcGxvLA0Kbm90cmFuc2xhdGlvbnNt
 YXJrZXI9bm90cmFuc2xhdGlvbnNtYXJrZXINCg0KaHJ0ZXh0PQ0K
-</content></attachment>
-<object>
-<class>
-<name>XWiki.XWikiComments</name>
-<customClass></customClass>
-<customMapping></customMapping>
-<defaultViewSheet></defaultViewSheet>
-<defaultEditSheet></defaultEditSheet>
-<defaultWeb></defaultWeb>
-<nameField></nameField>
-<validationScript></validationScript>
-<author>
-<disabled>0</disabled>
-<name>author</name>
-<number>1</number>
-<prettyName>Author</prettyName>
-<size>30</size>
-<unmodifiable>0</unmodifiable>
-<classType>com.xpn.xwiki.objects.classes.StringClass</classType>
-</author>
-<comment>
-<disabled>0</disabled>
-<name>comment</name>
-<number>5</number>
-<prettyName>Comment</prettyName>
-<rows>5</rows>
-<size>40</size>
-<unmodifiable>0</unmodifiable>
-<classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
-</comment>
-<date>
-<dateFormat>dd/MM/yyyy HH:mm:ss</dateFormat>
-<disabled>0</disabled>
-<emptyIsToday>1</emptyIsToday>
-<name>date</name>
-<number>4</number>
-<picker>1</picker>
-<prettyName>Date</prettyName>
-<size>20</size>
-<unmodifiable>0</unmodifiable>
-<classType>com.xpn.xwiki.objects.classes.DateClass</classType>
-</date>
-<highlight>
-<disabled>0</disabled>
-<name>highlight</name>
-<number>2</number>
-<prettyName>Highlighted Text</prettyName>
-<rows>2</rows>
-<size>40</size>
-<unmodifiable>0</unmodifiable>
-<classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
-</highlight>
-<originalSelection>
-<disabled>0</disabled>
-<name>originalSelection</name>
-<number>9</number>
-<prettyName>Original Selection</prettyName>
-<rows>5</rows>
-<size>40</size>
-<unmodifiable>0</unmodifiable>
-<classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
-</originalSelection>
-<replyto>
-<disabled>0</disabled>
-<name>replyto</name>
-<number>3</number>
-<numberType>integer</numberType>
-<prettyName>Reply To</prettyName>
-<size>5</size>
-<unmodifiable>0</unmodifiable>
-<classType>com.xpn.xwiki.objects.classes.NumberClass</classType>
-</replyto>
-<selection>
-<disabled>0</disabled>
-<name>selection</name>
-<number>6</number>
-<prettyName>Selection</prettyName>
-<rows>5</rows>
-<size>40</size>
-<unmodifiable>0</unmodifiable>
-<classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
-</selection>
-<selectionLeftContext>
-<disabled>0</disabled>
-<name>selectionLeftContext</name>
-<number>7</number>
-<prettyName>Selection Left Context</prettyName>
-<rows>5</rows>
-<size>40</size>
-<unmodifiable>0</unmodifiable>
-<classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
-</selectionLeftContext>
-<selectionRightContext>
-<disabled>0</disabled>
-<name>selectionRightContext</name>
-<number>8</number>
-<prettyName>Selection Right Context</prettyName>
-<rows>5</rows>
-<size>40</size>
-<unmodifiable>0</unmodifiable>
-<classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
-</selectionRightContext>
-<state>
-<disabled>0</disabled>
-<name>state</name>
-<number>11</number>
-<prettyName>State</prettyName>
-<size>30</size>
-<unmodifiable>0</unmodifiable>
-<classType>com.xpn.xwiki.objects.classes.StringClass</classType>
-</state>
-<target>
-<disabled>0</disabled>
-<name>target</name>
-<number>10</number>
-<prettyName>Target</prettyName>
-<size>30</size>
-<unmodifiable>0</unmodifiable>
-<classType>com.xpn.xwiki.objects.classes.StringClass</classType>
-</target>
-</class>
-<name>L10N.AddALanguage</name>
-<number>0</number>
-<className>XWiki.XWikiComments</className>
-<guid>8446983f-5da7-4d28-830b-6effe30b8ccf</guid>
-<property>
-<author>XWiki.mmendes</author>
-</property>
-<property>
-<comment>Dear good morning, how do I do to send the translation of the language XWiki portuges Brazil</comment>
-</property>
-<property>
-<date>2011-03-23 17:57:12.0</date>
-</property>
-<property>
-<highlight></highlight>
-</property>
-<property>
-<replyto></replyto>
-</property>
-</object>
-<object>
-<class>
-<name>XWiki.XWikiComments</name>
-<customClass></customClass>
-<customMapping></customMapping>
-<defaultViewSheet></defaultViewSheet>
-<defaultEditSheet></defaultEditSheet>
-<defaultWeb></defaultWeb>
-<nameField></nameField>
-<validationScript></validationScript>
-<author>
-<disabled>0</disabled>
-<name>author</name>
-<number>1</number>
-<prettyName>Author</prettyName>
-<size>30</size>
-<unmodifiable>0</unmodifiable>
-<classType>com.xpn.xwiki.objects.classes.StringClass</classType>
-</author>
-<comment>
-<disabled>0</disabled>
-<name>comment</name>
-<number>5</number>
-<prettyName>Comment</prettyName>
-<rows>5</rows>
-<size>40</size>
-<unmodifiable>0</unmodifiable>
-<classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
-</comment>
-<date>
-<dateFormat>dd/MM/yyyy HH:mm:ss</dateFormat>
-<disabled>0</disabled>
-<emptyIsToday>1</emptyIsToday>
-<name>date</name>
-<number>4</number>
-<picker>1</picker>
-<prettyName>Date</prettyName>
-<size>20</size>
-<unmodifiable>0</unmodifiable>
-<classType>com.xpn.xwiki.objects.classes.DateClass</classType>
-</date>
-<highlight>
-<disabled>0</disabled>
-<name>highlight</name>
-<number>2</number>
-<prettyName>Highlighted Text</prettyName>
-<rows>2</rows>
-<size>40</size>
-<unmodifiable>0</unmodifiable>
-<classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
-</highlight>
-<originalSelection>
-<disabled>0</disabled>
-<name>originalSelection</name>
-<number>9</number>
-<prettyName>Original Selection</prettyName>
-<rows>5</rows>
-<size>40</size>
-<unmodifiable>0</unmodifiable>
-<classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
-</originalSelection>
-<replyto>
-<disabled>0</disabled>
-<name>replyto</name>
-<number>3</number>
-<numberType>integer</numberType>
-<prettyName>Reply To</prettyName>
-<size>5</size>
-<unmodifiable>0</unmodifiable>
-<classType>com.xpn.xwiki.objects.classes.NumberClass</classType>
-</replyto>
-<selection>
-<disabled>0</disabled>
-<name>selection</name>
-<number>6</number>
-<prettyName>Selection</prettyName>
-<rows>5</rows>
-<size>40</size>
-<unmodifiable>0</unmodifiable>
-<classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
-</selection>
-<selectionLeftContext>
-<disabled>0</disabled>
-<name>selectionLeftContext</name>
-<number>7</number>
-<prettyName>Selection Left Context</prettyName>
-<rows>5</rows>
-<size>40</size>
-<unmodifiable>0</unmodifiable>
-<classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
-</selectionLeftContext>
-<selectionRightContext>
-<disabled>0</disabled>
-<name>selectionRightContext</name>
-<number>8</number>
-<prettyName>Selection Right Context</prettyName>
-<rows>5</rows>
-<size>40</size>
-<unmodifiable>0</unmodifiable>
-<classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
-</selectionRightContext>
-<state>
-<disabled>0</disabled>
-<name>state</name>
-<number>11</number>
-<prettyName>State</prettyName>
-<size>30</size>
-<unmodifiable>0</unmodifiable>
-<classType>com.xpn.xwiki.objects.classes.StringClass</classType>
-</state>
-<target>
-<disabled>0</disabled>
-<name>target</name>
-<number>10</number>
-<prettyName>Target</prettyName>
-<size>30</size>
-<unmodifiable>0</unmodifiable>
-<classType>com.xpn.xwiki.objects.classes.StringClass</classType>
-</target>
-</class>
-<name>L10N.AddALanguage</name>
-<number>1</number>
-<className>XWiki.XWikiComments</className>
-<guid>d0bc2906-e658-45cd-bd2d-33ab1e77502b</guid>
-<property>
-<author>XWiki.Miltex</author>
-</property>
-<property>
-<comment>Hello, Marcos !
+</content>
+  </attachment>
+  <object>
+    <class>
+      <name>XWiki.XWikiComments</name>
+      <customClass/>
+      <customMapping/>
+      <defaultViewSheet/>
+      <defaultEditSheet/>
+      <defaultWeb/>
+      <nameField/>
+      <validationScript/>
+      <author>
+        <disabled>0</disabled>
+        <name>author</name>
+        <number>1</number>
+        <prettyName>Author</prettyName>
+        <size>30</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </author>
+      <comment>
+        <disabled>0</disabled>
+        <name>comment</name>
+        <number>5</number>
+        <prettyName>Comment</prettyName>
+        <rows>5</rows>
+        <size>40</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </comment>
+      <date>
+        <dateFormat>dd/MM/yyyy HH:mm:ss</dateFormat>
+        <disabled>0</disabled>
+        <emptyIsToday>1</emptyIsToday>
+        <name>date</name>
+        <number>4</number>
+        <picker>1</picker>
+        <prettyName>Date</prettyName>
+        <size>20</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.DateClass</classType>
+      </date>
+      <highlight>
+        <disabled>0</disabled>
+        <name>highlight</name>
+        <number>2</number>
+        <prettyName>Highlighted Text</prettyName>
+        <rows>2</rows>
+        <size>40</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </highlight>
+      <originalSelection>
+        <disabled>0</disabled>
+        <name>originalSelection</name>
+        <number>9</number>
+        <prettyName>Original Selection</prettyName>
+        <rows>5</rows>
+        <size>40</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </originalSelection>
+      <replyto>
+        <disabled>0</disabled>
+        <name>replyto</name>
+        <number>3</number>
+        <numberType>integer</numberType>
+        <prettyName>Reply To</prettyName>
+        <size>5</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.NumberClass</classType>
+      </replyto>
+      <selection>
+        <disabled>0</disabled>
+        <name>selection</name>
+        <number>6</number>
+        <prettyName>Selection</prettyName>
+        <rows>5</rows>
+        <size>40</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </selection>
+      <selectionLeftContext>
+        <disabled>0</disabled>
+        <name>selectionLeftContext</name>
+        <number>7</number>
+        <prettyName>Selection Left Context</prettyName>
+        <rows>5</rows>
+        <size>40</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </selectionLeftContext>
+      <selectionRightContext>
+        <disabled>0</disabled>
+        <name>selectionRightContext</name>
+        <number>8</number>
+        <prettyName>Selection Right Context</prettyName>
+        <rows>5</rows>
+        <size>40</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </selectionRightContext>
+      <state>
+        <disabled>0</disabled>
+        <name>state</name>
+        <number>11</number>
+        <prettyName>State</prettyName>
+        <size>30</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </state>
+      <target>
+        <disabled>0</disabled>
+        <name>target</name>
+        <number>10</number>
+        <prettyName>Target</prettyName>
+        <size>30</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </target>
+    </class>
+    <name>L10N.AddALanguage</name>
+    <number>0</number>
+    <className>XWiki.XWikiComments</className>
+    <guid>8446983f-5da7-4d28-830b-6effe30b8ccf</guid>
+    <property>
+      <author>XWiki.mmendes</author>
+    </property>
+    <property>
+      <comment>Dear good morning, how do I do to send the translation of the language XWiki portuges Brazil</comment>
+    </property>
+    <property>
+      <date>2011-03-23 17:57:12.0</date>
+    </property>
+    <property>
+      <highlight/>
+    </property>
+    <property>
+      <replyto/>
+    </property>
+  </object>
+  <object>
+    <class>
+      <name>XWiki.XWikiComments</name>
+      <customClass/>
+      <customMapping/>
+      <defaultViewSheet/>
+      <defaultEditSheet/>
+      <defaultWeb/>
+      <nameField/>
+      <validationScript/>
+      <author>
+        <disabled>0</disabled>
+        <name>author</name>
+        <number>1</number>
+        <prettyName>Author</prettyName>
+        <size>30</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </author>
+      <comment>
+        <disabled>0</disabled>
+        <name>comment</name>
+        <number>5</number>
+        <prettyName>Comment</prettyName>
+        <rows>5</rows>
+        <size>40</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </comment>
+      <date>
+        <dateFormat>dd/MM/yyyy HH:mm:ss</dateFormat>
+        <disabled>0</disabled>
+        <emptyIsToday>1</emptyIsToday>
+        <name>date</name>
+        <number>4</number>
+        <picker>1</picker>
+        <prettyName>Date</prettyName>
+        <size>20</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.DateClass</classType>
+      </date>
+      <highlight>
+        <disabled>0</disabled>
+        <name>highlight</name>
+        <number>2</number>
+        <prettyName>Highlighted Text</prettyName>
+        <rows>2</rows>
+        <size>40</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </highlight>
+      <originalSelection>
+        <disabled>0</disabled>
+        <name>originalSelection</name>
+        <number>9</number>
+        <prettyName>Original Selection</prettyName>
+        <rows>5</rows>
+        <size>40</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </originalSelection>
+      <replyto>
+        <disabled>0</disabled>
+        <name>replyto</name>
+        <number>3</number>
+        <numberType>integer</numberType>
+        <prettyName>Reply To</prettyName>
+        <size>5</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.NumberClass</classType>
+      </replyto>
+      <selection>
+        <disabled>0</disabled>
+        <name>selection</name>
+        <number>6</number>
+        <prettyName>Selection</prettyName>
+        <rows>5</rows>
+        <size>40</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </selection>
+      <selectionLeftContext>
+        <disabled>0</disabled>
+        <name>selectionLeftContext</name>
+        <number>7</number>
+        <prettyName>Selection Left Context</prettyName>
+        <rows>5</rows>
+        <size>40</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </selectionLeftContext>
+      <selectionRightContext>
+        <disabled>0</disabled>
+        <name>selectionRightContext</name>
+        <number>8</number>
+        <prettyName>Selection Right Context</prettyName>
+        <rows>5</rows>
+        <size>40</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </selectionRightContext>
+      <state>
+        <disabled>0</disabled>
+        <name>state</name>
+        <number>11</number>
+        <prettyName>State</prettyName>
+        <size>30</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </state>
+      <target>
+        <disabled>0</disabled>
+        <name>target</name>
+        <number>10</number>
+        <prettyName>Target</prettyName>
+        <size>30</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </target>
+    </class>
+    <name>L10N.AddALanguage</name>
+    <number>1</number>
+    <className>XWiki.XWikiComments</className>
+    <guid>d0bc2906-e658-45cd-bd2d-33ab1e77502b</guid>
+    <property>
+      <author>XWiki.Miltex</author>
+    </property>
+    <property>
+      <comment>Hello, Marcos !
 
 Yes, we can!!!</comment>
-</property>
-<property>
-<date>2011-03-28 17:00:06.0</date>
-</property>
-<property>
-<highlight></highlight>
-</property>
-<property>
-<replyto></replyto>
-</property>
-</object>
-<object>
-<class>
-<name>XWiki.XWikiComments</name>
-<customClass></customClass>
-<customMapping></customMapping>
-<defaultViewSheet></defaultViewSheet>
-<defaultEditSheet></defaultEditSheet>
-<defaultWeb></defaultWeb>
-<nameField></nameField>
-<validationScript></validationScript>
-<author>
-<disabled>0</disabled>
-<name>author</name>
-<number>1</number>
-<prettyName>Author</prettyName>
-<size>30</size>
-<unmodifiable>0</unmodifiable>
-<classType>com.xpn.xwiki.objects.classes.StringClass</classType>
-</author>
-<comment>
-<disabled>0</disabled>
-<name>comment</name>
-<number>5</number>
-<prettyName>Comment</prettyName>
-<rows>5</rows>
-<size>40</size>
-<unmodifiable>0</unmodifiable>
-<classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
-</comment>
-<date>
-<dateFormat>dd/MM/yyyy HH:mm:ss</dateFormat>
-<disabled>0</disabled>
-<emptyIsToday>1</emptyIsToday>
-<name>date</name>
-<number>4</number>
-<picker>1</picker>
-<prettyName>Date</prettyName>
-<size>20</size>
-<unmodifiable>0</unmodifiable>
-<classType>com.xpn.xwiki.objects.classes.DateClass</classType>
-</date>
-<highlight>
-<disabled>0</disabled>
-<name>highlight</name>
-<number>2</number>
-<prettyName>Highlighted Text</prettyName>
-<rows>2</rows>
-<size>40</size>
-<unmodifiable>0</unmodifiable>
-<classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
-</highlight>
-<originalSelection>
-<disabled>0</disabled>
-<name>originalSelection</name>
-<number>9</number>
-<prettyName>Original Selection</prettyName>
-<rows>5</rows>
-<size>40</size>
-<unmodifiable>0</unmodifiable>
-<classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
-</originalSelection>
-<replyto>
-<disabled>0</disabled>
-<name>replyto</name>
-<number>3</number>
-<numberType>integer</numberType>
-<prettyName>Reply To</prettyName>
-<size>5</size>
-<unmodifiable>0</unmodifiable>
-<classType>com.xpn.xwiki.objects.classes.NumberClass</classType>
-</replyto>
-<selection>
-<disabled>0</disabled>
-<name>selection</name>
-<number>6</number>
-<prettyName>Selection</prettyName>
-<rows>5</rows>
-<size>40</size>
-<unmodifiable>0</unmodifiable>
-<classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
-</selection>
-<selectionLeftContext>
-<disabled>0</disabled>
-<name>selectionLeftContext</name>
-<number>7</number>
-<prettyName>Selection Left Context</prettyName>
-<rows>5</rows>
-<size>40</size>
-<unmodifiable>0</unmodifiable>
-<classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
-</selectionLeftContext>
-<selectionRightContext>
-<disabled>0</disabled>
-<name>selectionRightContext</name>
-<number>8</number>
-<prettyName>Selection Right Context</prettyName>
-<rows>5</rows>
-<size>40</size>
-<unmodifiable>0</unmodifiable>
-<classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
-</selectionRightContext>
-<state>
-<disabled>0</disabled>
-<name>state</name>
-<number>11</number>
-<prettyName>State</prettyName>
-<size>30</size>
-<unmodifiable>0</unmodifiable>
-<classType>com.xpn.xwiki.objects.classes.StringClass</classType>
-</state>
-<target>
-<disabled>0</disabled>
-<name>target</name>
-<number>10</number>
-<prettyName>Target</prettyName>
-<size>30</size>
-<unmodifiable>0</unmodifiable>
-<classType>com.xpn.xwiki.objects.classes.StringClass</classType>
-</target>
-</class>
-<name>L10N.AddALanguage</name>
-<number>2</number>
-<className>XWiki.XWikiComments</className>
-<guid>3b2bb28e-38a7-4da3-9ccd-cb3f15a6eb24</guid>
-<property>
-<author>XWiki.ThomasMortagne</author>
-</property>
-<property>
-<comment>Milton, please see my comments on the jira issue you created. As this document says it's not your task to add the initial language on this wiki, you just have to provide a translation file and I will take care of it. Then anyone will be able to complete with what you did not translated if there is any.</comment>
-</property>
-<property>
-<date>2011-03-28 21:00:41.0</date>
-</property>
-<property>
-<highlight></highlight>
-</property>
-<property>
-<replyto>1</replyto>
-</property>
-</object>
-<object>
-<class>
-<name>XWiki.XWikiComments</name>
-<customClass></customClass>
-<customMapping></customMapping>
-<defaultViewSheet></defaultViewSheet>
-<defaultEditSheet></defaultEditSheet>
-<defaultWeb></defaultWeb>
-<nameField></nameField>
-<validationScript></validationScript>
-<author>
-<disabled>0</disabled>
-<name>author</name>
-<number>1</number>
-<prettyName>Author</prettyName>
-<size>30</size>
-<unmodifiable>0</unmodifiable>
-<classType>com.xpn.xwiki.objects.classes.StringClass</classType>
-</author>
-<comment>
-<disabled>0</disabled>
-<name>comment</name>
-<number>5</number>
-<prettyName>Comment</prettyName>
-<rows>5</rows>
-<size>40</size>
-<unmodifiable>0</unmodifiable>
-<classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
-</comment>
-<date>
-<dateFormat>dd/MM/yyyy HH:mm:ss</dateFormat>
-<disabled>0</disabled>
-<emptyIsToday>1</emptyIsToday>
-<name>date</name>
-<number>4</number>
-<picker>1</picker>
-<prettyName>Date</prettyName>
-<size>20</size>
-<unmodifiable>0</unmodifiable>
-<classType>com.xpn.xwiki.objects.classes.DateClass</classType>
-</date>
-<highlight>
-<disabled>0</disabled>
-<name>highlight</name>
-<number>2</number>
-<prettyName>Highlighted Text</prettyName>
-<rows>2</rows>
-<size>40</size>
-<unmodifiable>0</unmodifiable>
-<classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
-</highlight>
-<originalSelection>
-<disabled>0</disabled>
-<name>originalSelection</name>
-<number>9</number>
-<prettyName>Original Selection</prettyName>
-<rows>5</rows>
-<size>40</size>
-<unmodifiable>0</unmodifiable>
-<classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
-</originalSelection>
-<replyto>
-<disabled>0</disabled>
-<name>replyto</name>
-<number>3</number>
-<numberType>integer</numberType>
-<prettyName>Reply To</prettyName>
-<size>5</size>
-<unmodifiable>0</unmodifiable>
-<classType>com.xpn.xwiki.objects.classes.NumberClass</classType>
-</replyto>
-<selection>
-<disabled>0</disabled>
-<name>selection</name>
-<number>6</number>
-<prettyName>Selection</prettyName>
-<rows>5</rows>
-<size>40</size>
-<unmodifiable>0</unmodifiable>
-<classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
-</selection>
-<selectionLeftContext>
-<disabled>0</disabled>
-<name>selectionLeftContext</name>
-<number>7</number>
-<prettyName>Selection Left Context</prettyName>
-<rows>5</rows>
-<size>40</size>
-<unmodifiable>0</unmodifiable>
-<classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
-</selectionLeftContext>
-<selectionRightContext>
-<disabled>0</disabled>
-<name>selectionRightContext</name>
-<number>8</number>
-<prettyName>Selection Right Context</prettyName>
-<rows>5</rows>
-<size>40</size>
-<unmodifiable>0</unmodifiable>
-<classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
-</selectionRightContext>
-<state>
-<disabled>0</disabled>
-<name>state</name>
-<number>11</number>
-<prettyName>State</prettyName>
-<size>30</size>
-<unmodifiable>0</unmodifiable>
-<classType>com.xpn.xwiki.objects.classes.StringClass</classType>
-</state>
-<target>
-<disabled>0</disabled>
-<name>target</name>
-<number>10</number>
-<prettyName>Target</prettyName>
-<size>30</size>
-<unmodifiable>0</unmodifiable>
-<classType>com.xpn.xwiki.objects.classes.StringClass</classType>
-</target>
-</class>
-<name>L10N.AddALanguage</name>
-<number>3</number>
-<className>XWiki.XWikiComments</className>
-<guid>47a354ab-1340-43a9-a146-4abb5d65be5d</guid>
-<property>
-<author>XWiki.Miltex</author>
-</property>
-<property>
-<comment>My friend, I'm just wanting to collaborate with the internationalization of XWiki.
+    </property>
+    <property>
+      <date>2011-03-28 17:00:06.0</date>
+    </property>
+    <property>
+      <highlight/>
+    </property>
+    <property>
+      <replyto/>
+    </property>
+  </object>
+  <object>
+    <class>
+      <name>XWiki.XWikiComments</name>
+      <customClass/>
+      <customMapping/>
+      <defaultViewSheet/>
+      <defaultEditSheet/>
+      <defaultWeb/>
+      <nameField/>
+      <validationScript/>
+      <author>
+        <disabled>0</disabled>
+        <name>author</name>
+        <number>1</number>
+        <prettyName>Author</prettyName>
+        <size>30</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </author>
+      <comment>
+        <disabled>0</disabled>
+        <name>comment</name>
+        <number>5</number>
+        <prettyName>Comment</prettyName>
+        <rows>5</rows>
+        <size>40</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </comment>
+      <date>
+        <dateFormat>dd/MM/yyyy HH:mm:ss</dateFormat>
+        <disabled>0</disabled>
+        <emptyIsToday>1</emptyIsToday>
+        <name>date</name>
+        <number>4</number>
+        <picker>1</picker>
+        <prettyName>Date</prettyName>
+        <size>20</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.DateClass</classType>
+      </date>
+      <highlight>
+        <disabled>0</disabled>
+        <name>highlight</name>
+        <number>2</number>
+        <prettyName>Highlighted Text</prettyName>
+        <rows>2</rows>
+        <size>40</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </highlight>
+      <originalSelection>
+        <disabled>0</disabled>
+        <name>originalSelection</name>
+        <number>9</number>
+        <prettyName>Original Selection</prettyName>
+        <rows>5</rows>
+        <size>40</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </originalSelection>
+      <replyto>
+        <disabled>0</disabled>
+        <name>replyto</name>
+        <number>3</number>
+        <numberType>integer</numberType>
+        <prettyName>Reply To</prettyName>
+        <size>5</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.NumberClass</classType>
+      </replyto>
+      <selection>
+        <disabled>0</disabled>
+        <name>selection</name>
+        <number>6</number>
+        <prettyName>Selection</prettyName>
+        <rows>5</rows>
+        <size>40</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </selection>
+      <selectionLeftContext>
+        <disabled>0</disabled>
+        <name>selectionLeftContext</name>
+        <number>7</number>
+        <prettyName>Selection Left Context</prettyName>
+        <rows>5</rows>
+        <size>40</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </selectionLeftContext>
+      <selectionRightContext>
+        <disabled>0</disabled>
+        <name>selectionRightContext</name>
+        <number>8</number>
+        <prettyName>Selection Right Context</prettyName>
+        <rows>5</rows>
+        <size>40</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </selectionRightContext>
+      <state>
+        <disabled>0</disabled>
+        <name>state</name>
+        <number>11</number>
+        <prettyName>State</prettyName>
+        <size>30</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </state>
+      <target>
+        <disabled>0</disabled>
+        <name>target</name>
+        <number>10</number>
+        <prettyName>Target</prettyName>
+        <size>30</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </target>
+    </class>
+    <name>L10N.AddALanguage</name>
+    <number>2</number>
+    <className>XWiki.XWikiComments</className>
+    <guid>3b2bb28e-38a7-4da3-9ccd-cb3f15a6eb24</guid>
+    <property>
+      <author>XWiki.ThomasMortagne</author>
+    </property>
+    <property>
+      <comment>Milton, please see my comments on the jira issue you created. As this document says it's not your task to add the initial language on this wiki, you just have to provide a translation file and I will take care of it. Then anyone will be able to complete with what you did not translated if there is any.</comment>
+    </property>
+    <property>
+      <date>2011-03-28 21:00:41.0</date>
+    </property>
+    <property>
+      <highlight/>
+    </property>
+    <property>
+      <replyto>1</replyto>
+    </property>
+  </object>
+  <object>
+    <class>
+      <name>XWiki.XWikiComments</name>
+      <customClass/>
+      <customMapping/>
+      <defaultViewSheet/>
+      <defaultEditSheet/>
+      <defaultWeb/>
+      <nameField/>
+      <validationScript/>
+      <author>
+        <disabled>0</disabled>
+        <name>author</name>
+        <number>1</number>
+        <prettyName>Author</prettyName>
+        <size>30</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </author>
+      <comment>
+        <disabled>0</disabled>
+        <name>comment</name>
+        <number>5</number>
+        <prettyName>Comment</prettyName>
+        <rows>5</rows>
+        <size>40</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </comment>
+      <date>
+        <dateFormat>dd/MM/yyyy HH:mm:ss</dateFormat>
+        <disabled>0</disabled>
+        <emptyIsToday>1</emptyIsToday>
+        <name>date</name>
+        <number>4</number>
+        <picker>1</picker>
+        <prettyName>Date</prettyName>
+        <size>20</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.DateClass</classType>
+      </date>
+      <highlight>
+        <disabled>0</disabled>
+        <name>highlight</name>
+        <number>2</number>
+        <prettyName>Highlighted Text</prettyName>
+        <rows>2</rows>
+        <size>40</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </highlight>
+      <originalSelection>
+        <disabled>0</disabled>
+        <name>originalSelection</name>
+        <number>9</number>
+        <prettyName>Original Selection</prettyName>
+        <rows>5</rows>
+        <size>40</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </originalSelection>
+      <replyto>
+        <disabled>0</disabled>
+        <name>replyto</name>
+        <number>3</number>
+        <numberType>integer</numberType>
+        <prettyName>Reply To</prettyName>
+        <size>5</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.NumberClass</classType>
+      </replyto>
+      <selection>
+        <disabled>0</disabled>
+        <name>selection</name>
+        <number>6</number>
+        <prettyName>Selection</prettyName>
+        <rows>5</rows>
+        <size>40</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </selection>
+      <selectionLeftContext>
+        <disabled>0</disabled>
+        <name>selectionLeftContext</name>
+        <number>7</number>
+        <prettyName>Selection Left Context</prettyName>
+        <rows>5</rows>
+        <size>40</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </selectionLeftContext>
+      <selectionRightContext>
+        <disabled>0</disabled>
+        <name>selectionRightContext</name>
+        <number>8</number>
+        <prettyName>Selection Right Context</prettyName>
+        <rows>5</rows>
+        <size>40</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </selectionRightContext>
+      <state>
+        <disabled>0</disabled>
+        <name>state</name>
+        <number>11</number>
+        <prettyName>State</prettyName>
+        <size>30</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </state>
+      <target>
+        <disabled>0</disabled>
+        <name>target</name>
+        <number>10</number>
+        <prettyName>Target</prettyName>
+        <size>30</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </target>
+    </class>
+    <name>L10N.AddALanguage</name>
+    <number>3</number>
+    <className>XWiki.XWikiComments</className>
+    <guid>47a354ab-1340-43a9-a146-4abb5d65be5d</guid>
+    <property>
+      <author>XWiki.Miltex</author>
+    </property>
+    <property>
+      <comment>My friend, I'm just wanting to collaborate with the internationalization of XWiki.
 Sorry for inconvenience!</comment>
-</property>
-<property>
-<date>2011-03-31 15:16:08.0</date>
-</property>
-<property>
-<replyto></replyto>
-</property>
-</object>
-<object>
-<class>
-<name>XWiki.XWikiComments</name>
-<customClass></customClass>
-<customMapping></customMapping>
-<defaultViewSheet></defaultViewSheet>
-<defaultEditSheet></defaultEditSheet>
-<defaultWeb></defaultWeb>
-<nameField></nameField>
-<validationScript></validationScript>
-<author>
-<disabled>0</disabled>
-<name>author</name>
-<number>1</number>
-<prettyName>Author</prettyName>
-<size>30</size>
-<unmodifiable>0</unmodifiable>
-<classType>com.xpn.xwiki.objects.classes.StringClass</classType>
-</author>
-<comment>
-<disabled>0</disabled>
-<name>comment</name>
-<number>5</number>
-<prettyName>Comment</prettyName>
-<rows>5</rows>
-<size>40</size>
-<unmodifiable>0</unmodifiable>
-<classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
-</comment>
-<date>
-<dateFormat>dd/MM/yyyy HH:mm:ss</dateFormat>
-<disabled>0</disabled>
-<emptyIsToday>1</emptyIsToday>
-<name>date</name>
-<number>4</number>
-<picker>1</picker>
-<prettyName>Date</prettyName>
-<size>20</size>
-<unmodifiable>0</unmodifiable>
-<classType>com.xpn.xwiki.objects.classes.DateClass</classType>
-</date>
-<highlight>
-<disabled>0</disabled>
-<name>highlight</name>
-<number>2</number>
-<prettyName>Highlighted Text</prettyName>
-<rows>2</rows>
-<size>40</size>
-<unmodifiable>0</unmodifiable>
-<classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
-</highlight>
-<originalSelection>
-<disabled>0</disabled>
-<name>originalSelection</name>
-<number>9</number>
-<prettyName>Original Selection</prettyName>
-<rows>5</rows>
-<size>40</size>
-<unmodifiable>0</unmodifiable>
-<classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
-</originalSelection>
-<replyto>
-<disabled>0</disabled>
-<name>replyto</name>
-<number>3</number>
-<numberType>integer</numberType>
-<prettyName>Reply To</prettyName>
-<size>5</size>
-<unmodifiable>0</unmodifiable>
-<classType>com.xpn.xwiki.objects.classes.NumberClass</classType>
-</replyto>
-<selection>
-<disabled>0</disabled>
-<name>selection</name>
-<number>6</number>
-<prettyName>Selection</prettyName>
-<rows>5</rows>
-<size>40</size>
-<unmodifiable>0</unmodifiable>
-<classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
-</selection>
-<selectionLeftContext>
-<disabled>0</disabled>
-<name>selectionLeftContext</name>
-<number>7</number>
-<prettyName>Selection Left Context</prettyName>
-<rows>5</rows>
-<size>40</size>
-<unmodifiable>0</unmodifiable>
-<classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
-</selectionLeftContext>
-<selectionRightContext>
-<disabled>0</disabled>
-<name>selectionRightContext</name>
-<number>8</number>
-<prettyName>Selection Right Context</prettyName>
-<rows>5</rows>
-<size>40</size>
-<unmodifiable>0</unmodifiable>
-<classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
-</selectionRightContext>
-<state>
-<disabled>0</disabled>
-<name>state</name>
-<number>11</number>
-<prettyName>State</prettyName>
-<size>30</size>
-<unmodifiable>0</unmodifiable>
-<classType>com.xpn.xwiki.objects.classes.StringClass</classType>
-</state>
-<target>
-<disabled>0</disabled>
-<name>target</name>
-<number>10</number>
-<prettyName>Target</prettyName>
-<size>30</size>
-<unmodifiable>0</unmodifiable>
-<classType>com.xpn.xwiki.objects.classes.StringClass</classType>
-</target>
-</class>
-<name>L10N.AddALanguage</name>
-<number>4</number>
-<className>XWiki.XWikiComments</className>
-<guid>bdbf1299-3f95-4dce-82ff-6dfaf228d922</guid>
-<property>
-<author>XWiki.Miltex</author>
-</property>
-<property>
-<comment>My language "Portuguese of Brazil" has not yet appeared in the languages ​​supported.
+    </property>
+    <property>
+      <date>2011-03-31 15:16:08.0</date>
+    </property>
+    <property>
+      <replyto/>
+    </property>
+  </object>
+  <object>
+    <class>
+      <name>XWiki.XWikiComments</name>
+      <customClass/>
+      <customMapping/>
+      <defaultViewSheet/>
+      <defaultEditSheet/>
+      <defaultWeb/>
+      <nameField/>
+      <validationScript/>
+      <author>
+        <disabled>0</disabled>
+        <name>author</name>
+        <number>1</number>
+        <prettyName>Author</prettyName>
+        <size>30</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </author>
+      <comment>
+        <disabled>0</disabled>
+        <name>comment</name>
+        <number>5</number>
+        <prettyName>Comment</prettyName>
+        <rows>5</rows>
+        <size>40</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </comment>
+      <date>
+        <dateFormat>dd/MM/yyyy HH:mm:ss</dateFormat>
+        <disabled>0</disabled>
+        <emptyIsToday>1</emptyIsToday>
+        <name>date</name>
+        <number>4</number>
+        <picker>1</picker>
+        <prettyName>Date</prettyName>
+        <size>20</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.DateClass</classType>
+      </date>
+      <highlight>
+        <disabled>0</disabled>
+        <name>highlight</name>
+        <number>2</number>
+        <prettyName>Highlighted Text</prettyName>
+        <rows>2</rows>
+        <size>40</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </highlight>
+      <originalSelection>
+        <disabled>0</disabled>
+        <name>originalSelection</name>
+        <number>9</number>
+        <prettyName>Original Selection</prettyName>
+        <rows>5</rows>
+        <size>40</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </originalSelection>
+      <replyto>
+        <disabled>0</disabled>
+        <name>replyto</name>
+        <number>3</number>
+        <numberType>integer</numberType>
+        <prettyName>Reply To</prettyName>
+        <size>5</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.NumberClass</classType>
+      </replyto>
+      <selection>
+        <disabled>0</disabled>
+        <name>selection</name>
+        <number>6</number>
+        <prettyName>Selection</prettyName>
+        <rows>5</rows>
+        <size>40</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </selection>
+      <selectionLeftContext>
+        <disabled>0</disabled>
+        <name>selectionLeftContext</name>
+        <number>7</number>
+        <prettyName>Selection Left Context</prettyName>
+        <rows>5</rows>
+        <size>40</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </selectionLeftContext>
+      <selectionRightContext>
+        <disabled>0</disabled>
+        <name>selectionRightContext</name>
+        <number>8</number>
+        <prettyName>Selection Right Context</prettyName>
+        <rows>5</rows>
+        <size>40</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </selectionRightContext>
+      <state>
+        <disabled>0</disabled>
+        <name>state</name>
+        <number>11</number>
+        <prettyName>State</prettyName>
+        <size>30</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </state>
+      <target>
+        <disabled>0</disabled>
+        <name>target</name>
+        <number>10</number>
+        <prettyName>Target</prettyName>
+        <size>30</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </target>
+    </class>
+    <name>L10N.AddALanguage</name>
+    <number>4</number>
+    <className>XWiki.XWikiComments</className>
+    <guid>bdbf1299-3f95-4dce-82ff-6dfaf228d922</guid>
+    <property>
+      <author>XWiki.Miltex</author>
+    </property>
+    <property>
+      <comment>My language "Portuguese of Brazil" has not yet appeared in the languages ​​supported.
 Why is it?
 I already sent the file,"ApplicationResources.properties".</comment>
-</property>
-<property>
-<date>2011-03-31 23:15:10.0</date>
-</property>
-<property>
-<replyto></replyto>
-</property>
-</object>
-<object>
-<class>
-<name>XWiki.XWikiComments</name>
-<customClass></customClass>
-<customMapping></customMapping>
-<defaultViewSheet></defaultViewSheet>
-<defaultEditSheet></defaultEditSheet>
-<defaultWeb></defaultWeb>
-<nameField></nameField>
-<validationScript></validationScript>
-<author>
-<disabled>0</disabled>
-<name>author</name>
-<number>1</number>
-<prettyName>Author</prettyName>
-<size>30</size>
-<unmodifiable>0</unmodifiable>
-<classType>com.xpn.xwiki.objects.classes.StringClass</classType>
-</author>
-<comment>
-<disabled>0</disabled>
-<name>comment</name>
-<number>5</number>
-<prettyName>Comment</prettyName>
-<rows>5</rows>
-<size>40</size>
-<unmodifiable>0</unmodifiable>
-<classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
-</comment>
-<date>
-<dateFormat>dd/MM/yyyy HH:mm:ss</dateFormat>
-<disabled>0</disabled>
-<emptyIsToday>1</emptyIsToday>
-<name>date</name>
-<number>4</number>
-<picker>1</picker>
-<prettyName>Date</prettyName>
-<size>20</size>
-<unmodifiable>0</unmodifiable>
-<classType>com.xpn.xwiki.objects.classes.DateClass</classType>
-</date>
-<highlight>
-<disabled>0</disabled>
-<name>highlight</name>
-<number>2</number>
-<prettyName>Highlighted Text</prettyName>
-<rows>2</rows>
-<size>40</size>
-<unmodifiable>0</unmodifiable>
-<classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
-</highlight>
-<originalSelection>
-<disabled>0</disabled>
-<name>originalSelection</name>
-<number>9</number>
-<prettyName>Original Selection</prettyName>
-<rows>5</rows>
-<size>40</size>
-<unmodifiable>0</unmodifiable>
-<classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
-</originalSelection>
-<replyto>
-<disabled>0</disabled>
-<name>replyto</name>
-<number>3</number>
-<numberType>integer</numberType>
-<prettyName>Reply To</prettyName>
-<size>5</size>
-<unmodifiable>0</unmodifiable>
-<classType>com.xpn.xwiki.objects.classes.NumberClass</classType>
-</replyto>
-<selection>
-<disabled>0</disabled>
-<name>selection</name>
-<number>6</number>
-<prettyName>Selection</prettyName>
-<rows>5</rows>
-<size>40</size>
-<unmodifiable>0</unmodifiable>
-<classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
-</selection>
-<selectionLeftContext>
-<disabled>0</disabled>
-<name>selectionLeftContext</name>
-<number>7</number>
-<prettyName>Selection Left Context</prettyName>
-<rows>5</rows>
-<size>40</size>
-<unmodifiable>0</unmodifiable>
-<classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
-</selectionLeftContext>
-<selectionRightContext>
-<disabled>0</disabled>
-<name>selectionRightContext</name>
-<number>8</number>
-<prettyName>Selection Right Context</prettyName>
-<rows>5</rows>
-<size>40</size>
-<unmodifiable>0</unmodifiable>
-<classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
-</selectionRightContext>
-<state>
-<disabled>0</disabled>
-<name>state</name>
-<number>11</number>
-<prettyName>State</prettyName>
-<size>30</size>
-<unmodifiable>0</unmodifiable>
-<classType>com.xpn.xwiki.objects.classes.StringClass</classType>
-</state>
-<target>
-<disabled>0</disabled>
-<name>target</name>
-<number>10</number>
-<prettyName>Target</prettyName>
-<size>30</size>
-<unmodifiable>0</unmodifiable>
-<classType>com.xpn.xwiki.objects.classes.StringClass</classType>
-</target>
-</class>
-<name>L10N.AddALanguage</name>
-<number>5</number>
-<className>XWiki.XWikiComments</className>
-<guid>05163a8b-3f44-4b07-9bf2-cbb9c3779108</guid>
-<property>
-<author>XWiki.mmendes</author>
-</property>
-<property>
-<comment>dear have attached the file, pt_br translation on this page, send e-mail me anything, marcosprogramacao@gmail.com</comment>
-</property>
-<property>
-<date>2011-04-08 13:26:57.0</date>
-</property>
-<property>
-<replyto></replyto>
-</property>
-</object>
-<object>
-<class>
-<name>XWiki.XWikiComments</name>
-<customClass></customClass>
-<customMapping></customMapping>
-<defaultViewSheet></defaultViewSheet>
-<defaultEditSheet></defaultEditSheet>
-<defaultWeb></defaultWeb>
-<nameField></nameField>
-<validationScript></validationScript>
-<author>
-<disabled>0</disabled>
-<name>author</name>
-<number>1</number>
-<prettyName>Author</prettyName>
-<size>30</size>
-<unmodifiable>0</unmodifiable>
-<classType>com.xpn.xwiki.objects.classes.StringClass</classType>
-</author>
-<comment>
-<disabled>0</disabled>
-<name>comment</name>
-<number>5</number>
-<prettyName>Comment</prettyName>
-<rows>5</rows>
-<size>40</size>
-<unmodifiable>0</unmodifiable>
-<classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
-</comment>
-<date>
-<dateFormat>dd/MM/yyyy HH:mm:ss</dateFormat>
-<disabled>0</disabled>
-<emptyIsToday>1</emptyIsToday>
-<name>date</name>
-<number>4</number>
-<picker>1</picker>
-<prettyName>Date</prettyName>
-<size>20</size>
-<unmodifiable>0</unmodifiable>
-<classType>com.xpn.xwiki.objects.classes.DateClass</classType>
-</date>
-<highlight>
-<disabled>0</disabled>
-<name>highlight</name>
-<number>2</number>
-<prettyName>Highlighted Text</prettyName>
-<rows>2</rows>
-<size>40</size>
-<unmodifiable>0</unmodifiable>
-<classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
-</highlight>
-<originalSelection>
-<disabled>0</disabled>
-<name>originalSelection</name>
-<number>9</number>
-<prettyName>Original Selection</prettyName>
-<rows>5</rows>
-<size>40</size>
-<unmodifiable>0</unmodifiable>
-<classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
-</originalSelection>
-<replyto>
-<disabled>0</disabled>
-<name>replyto</name>
-<number>3</number>
-<numberType>integer</numberType>
-<prettyName>Reply To</prettyName>
-<size>5</size>
-<unmodifiable>0</unmodifiable>
-<classType>com.xpn.xwiki.objects.classes.NumberClass</classType>
-</replyto>
-<selection>
-<disabled>0</disabled>
-<name>selection</name>
-<number>6</number>
-<prettyName>Selection</prettyName>
-<rows>5</rows>
-<size>40</size>
-<unmodifiable>0</unmodifiable>
-<classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
-</selection>
-<selectionLeftContext>
-<disabled>0</disabled>
-<name>selectionLeftContext</name>
-<number>7</number>
-<prettyName>Selection Left Context</prettyName>
-<rows>5</rows>
-<size>40</size>
-<unmodifiable>0</unmodifiable>
-<classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
-</selectionLeftContext>
-<selectionRightContext>
-<disabled>0</disabled>
-<name>selectionRightContext</name>
-<number>8</number>
-<prettyName>Selection Right Context</prettyName>
-<rows>5</rows>
-<size>40</size>
-<unmodifiable>0</unmodifiable>
-<classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
-</selectionRightContext>
-<state>
-<disabled>0</disabled>
-<name>state</name>
-<number>11</number>
-<prettyName>State</prettyName>
-<size>30</size>
-<unmodifiable>0</unmodifiable>
-<classType>com.xpn.xwiki.objects.classes.StringClass</classType>
-</state>
-<target>
-<disabled>0</disabled>
-<name>target</name>
-<number>10</number>
-<prettyName>Target</prettyName>
-<size>30</size>
-<unmodifiable>0</unmodifiable>
-<classType>com.xpn.xwiki.objects.classes.StringClass</classType>
-</target>
-</class>
-<name>L10N.AddALanguage</name>
-<number>6</number>
-<className>XWiki.XWikiComments</className>
-<guid>fc585810-96d3-4947-9330-7300bafeb05c</guid>
-<property>
-<author>XWiki.ThomasMortagne</author>
-</property>
-<property>
-<comment>As indicated in the page this is not the place to provide translations (which is why I see you message only now). You should have create a jira issue and attach the file there. Anyway the process is  a bit easier now, the pt_BR language ha been added empty as I said on the jira issue create by Milton so you don't need to provide a file anymore. Just use the translation UI or the batch import since you already have lots of translation ready.</comment>
-</property>
-<property>
-<date>2011-11-07 13:04:47.0</date>
-</property>
-<property>
-<replyto>5</replyto>
-</property>
-</object>
-<content>= Adding a new language =
+    </property>
+    <property>
+      <date>2011-03-31 23:15:10.0</date>
+    </property>
+    <property>
+      <replyto/>
+    </property>
+  </object>
+  <object>
+    <class>
+      <name>XWiki.XWikiComments</name>
+      <customClass/>
+      <customMapping/>
+      <defaultViewSheet/>
+      <defaultEditSheet/>
+      <defaultWeb/>
+      <nameField/>
+      <validationScript/>
+      <author>
+        <disabled>0</disabled>
+        <name>author</name>
+        <number>1</number>
+        <prettyName>Author</prettyName>
+        <size>30</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </author>
+      <comment>
+        <disabled>0</disabled>
+        <name>comment</name>
+        <number>5</number>
+        <prettyName>Comment</prettyName>
+        <rows>5</rows>
+        <size>40</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </comment>
+      <date>
+        <dateFormat>dd/MM/yyyy HH:mm:ss</dateFormat>
+        <disabled>0</disabled>
+        <emptyIsToday>1</emptyIsToday>
+        <name>date</name>
+        <number>4</number>
+        <picker>1</picker>
+        <prettyName>Date</prettyName>
+        <size>20</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.DateClass</classType>
+      </date>
+      <highlight>
+        <disabled>0</disabled>
+        <name>highlight</name>
+        <number>2</number>
+        <prettyName>Highlighted Text</prettyName>
+        <rows>2</rows>
+        <size>40</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </highlight>
+      <originalSelection>
+        <disabled>0</disabled>
+        <name>originalSelection</name>
+        <number>9</number>
+        <prettyName>Original Selection</prettyName>
+        <rows>5</rows>
+        <size>40</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </originalSelection>
+      <replyto>
+        <disabled>0</disabled>
+        <name>replyto</name>
+        <number>3</number>
+        <numberType>integer</numberType>
+        <prettyName>Reply To</prettyName>
+        <size>5</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.NumberClass</classType>
+      </replyto>
+      <selection>
+        <disabled>0</disabled>
+        <name>selection</name>
+        <number>6</number>
+        <prettyName>Selection</prettyName>
+        <rows>5</rows>
+        <size>40</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </selection>
+      <selectionLeftContext>
+        <disabled>0</disabled>
+        <name>selectionLeftContext</name>
+        <number>7</number>
+        <prettyName>Selection Left Context</prettyName>
+        <rows>5</rows>
+        <size>40</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </selectionLeftContext>
+      <selectionRightContext>
+        <disabled>0</disabled>
+        <name>selectionRightContext</name>
+        <number>8</number>
+        <prettyName>Selection Right Context</prettyName>
+        <rows>5</rows>
+        <size>40</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </selectionRightContext>
+      <state>
+        <disabled>0</disabled>
+        <name>state</name>
+        <number>11</number>
+        <prettyName>State</prettyName>
+        <size>30</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </state>
+      <target>
+        <disabled>0</disabled>
+        <name>target</name>
+        <number>10</number>
+        <prettyName>Target</prettyName>
+        <size>30</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </target>
+    </class>
+    <name>L10N.AddALanguage</name>
+    <number>5</number>
+    <className>XWiki.XWikiComments</className>
+    <guid>05163a8b-3f44-4b07-9bf2-cbb9c3779108</guid>
+    <property>
+      <author>XWiki.mmendes</author>
+    </property>
+    <property>
+      <comment>dear have attached the file, pt_br translation on this page, send e-mail me anything, marcosprogramacao@gmail.com</comment>
+    </property>
+    <property>
+      <date>2011-04-08 13:26:57.0</date>
+    </property>
+    <property>
+      <replyto/>
+    </property>
+  </object>
+  <object>
+    <class>
+      <name>XWiki.XWikiComments</name>
+      <customClass/>
+      <customMapping/>
+      <defaultViewSheet/>
+      <defaultEditSheet/>
+      <defaultWeb/>
+      <nameField/>
+      <validationScript/>
+      <author>
+        <disabled>0</disabled>
+        <name>author</name>
+        <number>1</number>
+        <prettyName>Author</prettyName>
+        <size>30</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </author>
+      <comment>
+        <disabled>0</disabled>
+        <name>comment</name>
+        <number>5</number>
+        <prettyName>Comment</prettyName>
+        <rows>5</rows>
+        <size>40</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </comment>
+      <date>
+        <dateFormat>dd/MM/yyyy HH:mm:ss</dateFormat>
+        <disabled>0</disabled>
+        <emptyIsToday>1</emptyIsToday>
+        <name>date</name>
+        <number>4</number>
+        <picker>1</picker>
+        <prettyName>Date</prettyName>
+        <size>20</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.DateClass</classType>
+      </date>
+      <highlight>
+        <disabled>0</disabled>
+        <name>highlight</name>
+        <number>2</number>
+        <prettyName>Highlighted Text</prettyName>
+        <rows>2</rows>
+        <size>40</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </highlight>
+      <originalSelection>
+        <disabled>0</disabled>
+        <name>originalSelection</name>
+        <number>9</number>
+        <prettyName>Original Selection</prettyName>
+        <rows>5</rows>
+        <size>40</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </originalSelection>
+      <replyto>
+        <disabled>0</disabled>
+        <name>replyto</name>
+        <number>3</number>
+        <numberType>integer</numberType>
+        <prettyName>Reply To</prettyName>
+        <size>5</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.NumberClass</classType>
+      </replyto>
+      <selection>
+        <disabled>0</disabled>
+        <name>selection</name>
+        <number>6</number>
+        <prettyName>Selection</prettyName>
+        <rows>5</rows>
+        <size>40</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </selection>
+      <selectionLeftContext>
+        <disabled>0</disabled>
+        <name>selectionLeftContext</name>
+        <number>7</number>
+        <prettyName>Selection Left Context</prettyName>
+        <rows>5</rows>
+        <size>40</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </selectionLeftContext>
+      <selectionRightContext>
+        <disabled>0</disabled>
+        <name>selectionRightContext</name>
+        <number>8</number>
+        <prettyName>Selection Right Context</prettyName>
+        <rows>5</rows>
+        <size>40</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </selectionRightContext>
+      <state>
+        <disabled>0</disabled>
+        <name>state</name>
+        <number>11</number>
+        <prettyName>State</prettyName>
+        <size>30</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </state>
+      <target>
+        <disabled>0</disabled>
+        <name>target</name>
+        <number>10</number>
+        <prettyName>Target</prettyName>
+        <size>30</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </target>
+    </class>
+    <name>L10N.AddALanguage</name>
+    <number>6</number>
+    <className>XWiki.XWikiComments</className>
+    <guid>fc585810-96d3-4947-9330-7300bafeb05c</guid>
+    <property>
+      <author>XWiki.ThomasMortagne</author>
+    </property>
+    <property>
+      <comment>As indicated in the page this is not the place to provide translations (which is why I see you message only now). You should have create a jira issue and attach the file there. Anyway the process is  a bit easier now, the pt_BR language ha been added empty as I said on the jira issue create by Milton so you don't need to provide a file anymore. Just use the translation UI or the batch import since you already have lots of translation ready.</comment>
+    </property>
+    <property>
+      <date>2011-11-07 13:04:47.0</date>
+    </property>
+    <property>
+      <replyto>5</replyto>
+    </property>
+  </object>
+  <content>= Adding a new language =
 
 There are two processes to add a new language, depending on if you want to submit an initial translation file (ApplicationResources) or if you want to start from scratch directly on l10n.xwiki.org.
 
@@ -4073,4 +4077,5 @@ Once it's committed the xwiki.org team will very probably do the following steps
 {{warning}}The language code is the standard format use in JAVA which mean [[&lt;language code~&gt;&gt;&gt;http://ftp.ics.uci.edu/pub/ietf/http/related/iso639.txt]]_[[&lt;COUNTRY CODE~&gt;&gt;&gt;http://userpage.chemie.fu-berlin.de/diverse/doc/ISO_3166.html]].{{/warning}}
 1. Save.
 1. [nice to have] Add the corresponding flag on [[L10N.Flags]]
-1. [nice to have] Add the corresponding pretty name on [[L10N.LocaleTranslations]]</content></xwikidoc>
+1. [nice to have] Add the corresponding pretty name on [[L10N.LocaleTranslations]]</content>
+</xwikidoc>
