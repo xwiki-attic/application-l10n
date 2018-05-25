@@ -1,63 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<xwikidoc>
+<xwikidoc version="1.3" reference="L10NCode.L10NGroovy" locale="">
   <web>L10NCode</web>
   <name>L10NGroovy</name>
   <language/>
   <defaultLanguage/>
   <translation>0</translation>
-  <parent/>
   <creator>xwiki:XWiki.Admin</creator>
-  <author>xwiki:XWiki.Admin</author>
-  <customClass/>
-  <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
   <creationDate>1225046934000</creationDate>
-  <date>1368718308000</date>
-  <contentUpdateDate>1368718308000</contentUpdateDate>
+  <author>xwiki:XWiki.Admin</author>
+  <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
+  <date>1493800962000</date>
+  <contentUpdateDate>1493800962000</contentUpdateDate>
   <version>1.1</version>
   <title>L10NGroovy</title>
-  <template/>
-  <defaultTemplate/>
-  <validationScript/>
   <comment/>
   <minorEdit>false</minorEdit>
-  <syntaxId>xwiki/1.0</syntaxId>
+  <syntaxId>xwiki/2.1</syntaxId>
   <hidden>true</hidden>
-  <object>
-    <class>
-      <name>XWiki.TagClass</name>
-      <customClass/>
-      <customMapping/>
-      <defaultViewSheet/>
-      <defaultEditSheet/>
-      <defaultWeb/>
-      <nameField/>
-      <validationScript/>
-      <tags>
-        <cache>0</cache>
-        <disabled>0</disabled>
-        <displayType>input</displayType>
-        <multiSelect>1</multiSelect>
-        <name>tags</name>
-        <number>1</number>
-        <prettyName>Tags</prettyName>
-        <relationalStorage>1</relationalStorage>
-        <separator> </separator>
-        <separators> ,|</separators>
-        <size>30</size>
-        <unmodifiable>0</unmodifiable>
-        <values/>
-        <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
-      </tags>
-    </class>
-    <name>L10NCode.L10NGroovy</name>
-    <number>0</number>
-    <className>XWiki.TagClass</className>
-    <guid>b0aeb826-774e-48ba-8c2c-e512056e02e2</guid>
-    <property>
-      <tags/>
-    </property>
-  </object>
   <content>/*
  #* L10N Application Groovy Code
  *
@@ -69,6 +29,7 @@
  #*
  */
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -95,13 +56,17 @@ import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import org.apache.axis.utils.ByteArrayOutputStream;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.ecs.storage.Array;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.xwiki.model.EntityType;
 import org.xwiki.model.reference.DocumentReference;
+import org.xwiki.model.reference.EntityReference;
 import org.xwiki.query.Query;
 import org.xwiki.query.QueryException;
 import org.xwiki.query.QueryManager;
@@ -116,8 +81,12 @@ import com.xpn.xwiki.api.XWiki;
 import com.xpn.xwiki.doc.XWikiDocument;
 import com.xpn.xwiki.web.XWikiServletRequest;
 
+import groovy.json.JsonSlurper;
+
 public class L10NApp
 {
+    protected static final Logger LOGGER = LoggerFactory.getLogger(L10NApp.class);
+
     /**
      * Same as java.util.Properties but with the following changes:
      * &lt;ul&gt;
@@ -214,6 +183,7 @@ public class L10NApp
             StringBuilder comment = null;
             String newKey = null;
             boolean deprecated = false;
+            boolean nextdeprecated = false;
 
             while ((limit = lr.readLine()) &gt;= 0) {
                 char firstChar = lr.lineBuf[0];
@@ -234,12 +204,18 @@ public class L10NApp
 
                         comment.append(lr.lineBuf, 1, limit - 1);
 
-                        // extract new key
-                        deprecated = startWith(lr.lineBuf, "#@deprecated");
-                        if (deprecated) {
-                            newKey =
-                                extractKey(lr.lineBuf, "#@deprecated".length(), limit - "#@deprecated".length(),
-                                    convtBuf);
+                        if (startWith(lr.lineBuf, "#@deprecated")) {
+                            if (startWith(lr.lineBuf, "#@deprecatedstart")) {
+                                deprecated = true;
+                            } else if (startWith(lr.lineBuf, "#@deprecatedend")) {
+                                deprecated = false;
+                            } else {
+                                // extract new key
+                                newKey =
+                                    extractKey(lr.lineBuf, "#@deprecated".length(), limit - "#@deprecated".length(),
+                                        convtBuf);
+                                nextdeprecated = true;
+                            }
                         }
                     }
                 } else {
@@ -285,13 +261,19 @@ public class L10NApp
                         String value = loadConvert(lr.lineBuf, valueStart, limit - valueStart, convtBuf);
 
                         Translation translation =
-                            new Translation(key, value, comment != null ? comment.toString() : null, deprecated, newKey);
+                            new Translation(key, value, comment != null ? comment.toString().trim() : null, deprecated
+                                | nextdeprecated, newKey);
 
                         put(key, translation);
 
-                        if (comment != null) {
-                            comment.setLength(0);
+                        // Cleanup
+                        if (newKey != null) {
+                            newKey = null;
                         }
+                        if (comment != null) {
+                            comment = null;
+                        }
+                        nextdeprecated = false;
                     }
                 }
             }
@@ -598,6 +580,8 @@ public class L10NApp
 
     private static final Map&lt;String, Object&gt; countByUserCache = new HashMap&lt;String, Object&gt;();
 
+    private static final Map&lt;String, Object&gt; countByLanguageCache = new HashMap&lt;String, Object&gt;();
+
     private static final Map&lt;String, Object&gt; countEmptyCache = new HashMap&lt;String, Object&gt;();
 
     private static final Map&lt;String, Object&gt; countToReviewCache = new HashMap&lt;String, Object&gt;();
@@ -640,12 +624,12 @@ public class L10NApp
         lastTranslationsCache.clear();
     }
 
-    public void clearMapCache(Map&lt;String, ? &gt; map, String app, String name)
+    public void clearMapCache(Map&lt;String, ?&gt; map, String app, String name)
     {
         clearMapCache(map, "${app}_${name}");
     }
 
-    public void clearMapCache(Map&lt;String, ? &gt; map, String startWith)
+    public void clearMapCache(Map&lt;String, ?&gt; map, String startWith)
     {
         List&lt;String&gt; list = new ArrayList&lt;String&gt;();
         for (String key : map.keySet()) {
@@ -684,17 +668,35 @@ public class L10NApp
     public void addToCache(Map&lt;String, Object&gt; cache, Object value, String app, String file, String language,
         String author, Integer nb, Integer start, boolean withTranslator)
     {
-        cache.put(createKey(app, file, language, author, nb, start, withTranslator), value);
+        addToCache(cache, value, app, file, language, author, nb, start, withTranslator, null);
     }
 
-    public Object getFromCache(Map&lt;String, ? &gt; cache, String app, String file, String language, String author,
+    public void addToCache(Map&lt;String, Object&gt; cache, Object value, String app, String file, String language,
+        String author, Integer nb, Integer start, boolean withTranslator, Object keySuffix)
+    {
+        cache.put(createKey(app, file, language, author, nb, start, withTranslator, keySuffix), value);
+    }
+
+    public Object getFromCache(Map&lt;String, ?&gt; cache, String app, String file, String language, String author,
         Integer nb, Integer start, boolean withTranslator)
     {
-        return cache.get(createKey(app, file, language, author, nb, start, withTranslator));
+        return getFromCache(cache, app, file, language, author, nb, start, withTranslator, null);
+    }
+
+    public Object getFromCache(Map&lt;String, ?&gt; cache, String app, String file, String language, String author,
+        Integer nb, Integer start, boolean withTranslator, Object keySuffix)
+    {
+        return cache.get(createKey(app, file, language, author, nb, start, withTranslator, keySuffix));
     }
 
     public String createKey(String app, String file, String language, String author, Integer nb, Integer start,
         boolean withTranslator)
+    {
+        return createKey(app, file, language, author, nb, start, withTranslator, null);
+    }
+
+    public String createKey(String app, String file, String language, String author, Integer nb, Integer start,
+        boolean withTranslator, Object keySuffix)
     {
         StringBuffer key = new StringBuffer();
 
@@ -738,10 +740,15 @@ public class L10NApp
         key.append(withTranslator);
         key.append(CACHEKEY_CLOSE);
 
+        if (keySuffix != null) {
+            key.append('_');
+            key.append(keySuffix);
+        }
+
         return key.toString();
     }
 
-    private void removeFromCache(Map&lt;String, ? &gt; cache, Pattern pattern)
+    public void removeFromCache(Map&lt;String, ?&gt; cache, Pattern pattern)
     {
         List&lt;String&gt; list = new ArrayList&lt;String&gt;();
         for (String key : cache.keySet()) {
@@ -755,7 +762,7 @@ public class L10NApp
         }
     }
 
-    public void removeFromCache(Map&lt;String, ? &gt; cache, String app, String file, String language, String author)
+    public void removeFromCache(Map&lt;String, ?&gt; cache, String app, String file, String language, String author)
     {
         StringBuffer pattern = new StringBuffer();
 
@@ -906,7 +913,6 @@ public class L10NApp
                     languages.add(language);
                 }
             } catch (XWikiException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         }
@@ -1193,9 +1199,11 @@ public class L10NApp
     /* import functions */
     public int importWikiPageFromURL(String app, String name, String language, String surl) throws Exception
     {
-        String content = getXWikiDocumentFromURL(surl).getContent();
+        XWikiDocument xdocument = getXWikiDocumentFromURL(surl);
+
         Properties props = new Properties();
-        props.put("content", content);
+        props.put("title", xdocument.getTitle());
+        props.put("content", xdocument.getContent());
 
         int ret = importMap(app, name, language, (Map) props);
         String dlang = getApplicationDefaultLanguage(app);
@@ -1231,9 +1239,11 @@ public class L10NApp
     public int importWikiPageFromWiki(String app, String name, String language, String pagename) throws XWikiException,
         QueryException
     {
-        String content = xwiki.getDocument(pagename).getTranslatedContent();
+        Document document = xwiki.getDocument(pagename).getTranslatedDocument();
+
         Properties props = new Properties();
-        props.put("content", content);
+        props.put("title", document.getTitle());
+        props.put("content", document.getContent());
 
         int ret = importMap(app, name, language, (Map) props);
         String dlang = getApplicationDefaultLanguage(app);
@@ -1266,13 +1276,13 @@ public class L10NApp
         return ret;
     }
 
-    public int importMap(String app, String name, String language, Map&lt;String, ? &gt; map) throws XWikiException
+    public int importMap(String app, String name, String language, Map&lt;String, ?&gt; map) throws XWikiException
     {
         int counter = 0;
 
         String dlang = getApplicationDefaultLanguage(app);
 
-        for (Map.Entry&lt;String, ? &gt; entry : map.entrySet()) {
+        for (Map.Entry&lt;String, ?&gt; entry : map.entrySet()) {
             String key = entry.getKey();
 
             // some translation pages use this to display the trans page nicely in xwiki
@@ -1348,15 +1358,10 @@ public class L10NApp
                 needSave |= update(doc, translation, T_PROP_ORIGINALTEXT, ddoc.getValue(T_PROP_ORIGINALTEXT));
             }
 
-            if (translation.getProperty(T_PROP_COMMENT) == null || comment != null) {
-                needSave |= update(doc, translation, T_PROP_COMMENT, comment != null ? comment : "");
-            }
-            if (translation.getProperty(T_PROP_DEPRECATED) == null || deprecated != null) {
-                needSave |= update(doc, translation, T_PROP_DEPRECATED, deprecated == Boolean.TRUE ? 1 : 0);
-            }
-            if (translation.getProperty(T_PROP_NEWKEY) == null || newKey != null) {
-                needSave |= update(doc, translation, T_PROP_NEWKEY, newKey != null ? newKey : "");
-            }
+            needSave |=
+                update(doc, translation, T_PROP_COMMENT, comment != null &amp;&amp; comment.length() &lt; 255 ? comment : "");
+            needSave |= update(doc, translation, T_PROP_DEPRECATED, deprecated == Boolean.TRUE ? 1 : 0);
+            needSave |= update(doc, translation, T_PROP_NEWKEY, newKey != null ? newKey : "");
 
             // Save
 
@@ -1503,7 +1508,7 @@ public class L10NApp
     {
         List&lt;String[]&gt; translist = getAllTranslationsValues(app, name, language, 0, 0);
         Properties props = (Properties) xwiki.parseGroovyFromPage("L10NCode.L10NSortedPropertiesGroovy");
-        String str = "";
+
         for (String[] transentry : translist) {
             String key = transentry[0];
             String validtrans = transentry[2];
@@ -1651,12 +1656,17 @@ public class L10NApp
                 headerValue.append(language);
                 headerValue.append(".xml");
 
-                context.getResponse().setHeader("Content-Disposition", headerValue.toString());
+                //context.getResponse().setHeader("Content-Disposition", headerValue.toString());
             } else {
                 StringBuilder zipEntryName = new StringBuilder();
-                zipEntryName.append(exportDocument.getSpace());
-                zipEntryName.append('/');
-                zipEntryName.append(exportDocument.getName());
+                for (EntityReference referenceElement : exportDocument.documentReference.getReversedReferenceChain()) {
+                  if (referenceElement.type == EntityType.SPACE || referenceElement.type == EntityType.DOCUMENT) {
+                    if (zipEntryName.length() &gt; 0) {
+                      zipEntryName.append('/');
+                    }
+                    zipEntryName.append(referenceElement.name);
+                  }
+                }
                 zipEntryName.append('.');
                 zipEntryName.append(language);
                 zipEntryName.append(".xml");
@@ -1745,7 +1755,11 @@ public class L10NApp
     public void reloadApplications() throws Exception
     {
         for (String appdocname : getApplications()) {
-            reloadApplication(xwiki.getDocument(appdocname).getSpace());
+            try {
+                reloadApplication(xwiki.getDocument(appdocname).getSpace());
+            } catch (Exception e) {
+                LOGGER.error("Failed to reload application " + appdocname, e);
+            }
         }
     }
 
@@ -1758,7 +1772,11 @@ public class L10NApp
         for (Map&lt;String, Object&gt; transfile : getTranslationsFiles(app)) {
             String docname = (String) transfile.get("page");
 
-            reloadApplication(app, docname);
+            try {
+                reloadApplication(app, docname);
+            } catch (Exception e) {
+                LOGGER.error("Failed to reload translation resource " + docname, e);
+            }
         }
     }
 
@@ -1794,14 +1812,15 @@ public class L10NApp
      */
     public int prepareTranslations(String app, String name, String language) throws XWikiException, QueryException
     {
-        String dlang = getApplicationDefaultLanguage(app);
+        String defaultLocale = getApplicationDefaultLanguage(app);
 
         int counter = 0;
-        for (String key : getTranslationKeys(app, name, dlang)) {
-            Document ddoc = xwiki.getDocument("${app}." + getPageName(name, key, dlang));
+        Set&lt;String&gt; defaultKeys = new HashSet&lt;String&gt;(getTranslationKeys(app, name, defaultLocale));
+        for (String key : defaultKeys) {
+            Document defaultDoc = xwiki.getDocument("${app}." + getPageName(name, key, defaultLocale));
             Document doc = xwiki.getDocument("${app}." + getPageName(name, key, language));
 
-            com.xpn.xwiki.api.Object dtranslation = ddoc.getObject("L10NCode.TranslationClass");
+            com.xpn.xwiki.api.Object dtranslation = defaultDoc.getObject("L10NCode.TranslationClass");
 
             boolean needSave = false;
 
@@ -1813,9 +1832,10 @@ public class L10NApp
 
             // copied from default language
 
-            needSave |= update(doc, translation, T_PROP_KEY, ddoc.getValue(T_PROP_KEY, dtranslation));
-            needSave |= update(doc, translation, T_PROP_ORIGINALTEXT, ddoc.getValue(T_PROP_ORIGINALTEXT, dtranslation));
-            needSave |= update(doc, translation, T_PROP_COMMENT, ddoc.getValue(T_PROP_COMMENT, dtranslation));
+            needSave |= update(doc, translation, T_PROP_KEY, defaultDoc.getValue(T_PROP_KEY, dtranslation));
+            needSave |=
+                update(doc, translation, T_PROP_ORIGINALTEXT, defaultDoc.getValue(T_PROP_ORIGINALTEXT, dtranslation));
+            needSave |= update(doc, translation, T_PROP_COMMENT, defaultDoc.getValue(T_PROP_COMMENT, dtranslation));
 
             // initial value
 
@@ -1834,7 +1854,7 @@ public class L10NApp
 
             String translatedtext;
             Property transtatedtextProperty = translation.getProperty(T_PROP_TRANSLATEDTEXT);
-            if (translation.getProperty(T_PROP_TRANSLATEDTEXT) == null) {
+            if (transtatedtextProperty == null) {
                 translatedtext = "";
                 translation.set(T_PROP_TRANSLATEDTEXT, "");
                 needSave = true;
@@ -1848,8 +1868,8 @@ public class L10NApp
 
             // copy deprecated keys if needed
 
-            boolean isDeprecated = ObjectUtils.equals(ddoc.getValue(T_PROP_DEPRECATED, dtranslation), 1);
-            String newKey = (String) ddoc.getValue(T_PROP_NEWKEY, dtranslation);
+            boolean isDeprecated = ObjectUtils.equals(defaultDoc.getValue(T_PROP_DEPRECATED, dtranslation), 1);
+            String newKey = (String) defaultDoc.getValue(T_PROP_NEWKEY, dtranslation);
 
             if (isDeprecated) {
                 if (!ObjectUtils.equals(doc.getValue(T_PROP_DEPRECATED, translation), 1)) {
@@ -1892,6 +1912,24 @@ public class L10NApp
             }
         }
 
+        // Update dead translations
+        String sql =
+            "select translation.key from Document as doc, doc.object(L10NCode.TranslationClass) as translation where doc.web=:app and translation.name=:name and translation.language=:language and translation.status&lt;&gt;:status";
+        Query query = getQueryManager().createQuery(sql, Query.XWQL);
+        query.bindValue("app", app);
+        query.bindValue("name", name);
+        query.bindValue("language", language);
+        query.bindValue("status", "dead");
+        for (String key : query.&lt;String&gt;execute()) {
+            if (!defaultKeys.contains(key)) {
+                Document doc = xwiki.getDocument("${app}." + getPageName(name, key, language));
+                com.xpn.xwiki.api.Object translation = doc.getObject("L10NCode.TranslationClass");
+                translation.set(T_PROP_STATUS, "dead");
+                saveAsTranslator(doc, "Prepared");
+            }
+        }
+
+        // Clear related cache
         clearCache(app, name, language);
 
         return counter;
@@ -1928,12 +1966,21 @@ public class L10NApp
     /*
      * This will look for all translations
      */
-    public List getAllTranslations(String app, String name, String language, int nb, int start) throws XWikiException
+    public List&lt;String&gt; getAllTranslations(String app, String name, String language, int limit, int offset)
+        throws XWikiException, QueryException
     {
         String sql =
-            ", BaseObject as obj, StringProperty as prop, StringProperty as proplang, StringProperty as propkey where doc.space='${app}' and doc.fullName=obj.name and obj.className='L10NCode.TranslationClass' and obj.id=prop.id.id and prop.id.name='name' and prop.value='${name}' and obj.id=proplang.id.id and proplang.id.name='language' and proplang.value='${language}' and obj.id=propkey.id.id and propkey.id.name='key' order by propkey.value";
+            "from doc.object(L10NCode.TranslationClass) as translation where doc.web=:app and translation.name=:name and translation.language=:language and translation.status &lt;&gt; 'dead' order by translation.key";
 
-        return xwiki.searchDocuments(sql, nb, start);
+        Query query = getQueryManager().createQuery(sql, Query.XWQL);
+
+        query.bindValue("app", app);
+        query.bindValue("name", name);
+        query.bindValue("language", language);
+        query.setLimit(limit);
+        query.setOffset(offset);
+
+        return query.execute();
     }
 
     /*
@@ -1960,7 +2007,7 @@ public class L10NApp
             String key = (String) tr[0];
             String value = (String) tr[1];
 
-            map.put(key, Arrays.&lt;String&gt; asList(key, value, null).toArray(new String[0]));
+            map.put(key, Arrays.&lt;String&gt;asList(key, value, null).toArray(new String[0]));
         }
 
         return new ArrayList&lt;String[]&gt;(map.values());
@@ -1969,49 +2016,63 @@ public class L10NApp
     /*
      * This will look for all translations that are empty
      */
-    public List getEmptyTranslations(String app, String name, String language, int nb, int start) throws XWikiException
+    public List getEmptyTranslations(String app, String name, String language, int limit, int offset)
+        throws XWikiException, QueryException
     {
-        String dlang = getApplicationDefaultLanguage(app);
-        String defaultsql =
-            "select propkey.value from BaseObject as obj, StringProperty as prop, StringProperty as proplang, StringProperty as propkey where obj.className='L10NCode.TranslationClass' and obj.id=prop.id.id and prop.id.name='name' and prop.value='${name}' and obj.id=proplang.id.id and proplang.id.name='language' and proplang.value='${dlang}' and obj.id=propkey.id.id and propkey.id.name='key'";
-
         String sql =
-            ", BaseObject as obj, StringProperty as prop, StringProperty as proplang, StringProperty propkey, LargeStringProperty propcontent where doc.space='${app}' and doc.fullName=obj.name and obj.className='L10NCode.TranslationClass' and obj.id=prop.id.id and prop.id.name='name' and prop.value='${name}' and obj.id=proplang.id.id and proplang.id.name='language' and proplang.value='${language}' and propcontent.id.id=obj.id and propcontent.id.name='translatedtext' and (propcontent.value='' or propcontent.value is null) and obj.id=propkey.id.id and propkey.id.name='key' and propkey.value in (${defaultsql}) order by propkey.value";
+            "from doc.object(L10NCode.TranslationClass) as translation where doc.web=:app and translation.name=:name and translation.language=:language and (translation.translatedtext='' or translation.translatedtext is null) and (translation.deprecated = 0 or translation.deprecated is null) and translation.status &lt;&gt; 'dead' order by translation.key";
 
-        return xwiki.searchDocuments(sql, nb, start);
+        Query query = getQueryManager().createQuery(sql, Query.XWQL);
+
+        query.bindValue("app", app);
+        query.bindValue("name", name);
+        query.bindValue("language", language);
+        query.setLimit(limit);
+        query.setOffset(offset);
+
+        return query.execute();
     }
 
     /*
      * This will look for all translations that are empty
      */
-    public List getToReviewTranslations(String app, String name, String language, int nb, int start)
-        throws XWikiException
+    public List getToReviewTranslations(String app, String name, String language, int limit, int offset)
+        throws QueryException
     {
-        String dlang = getApplicationDefaultLanguage(app);
-        String defaultsql =
-            "select propkey.value from BaseObject as obj, StringProperty as prop, StringProperty as proplang, StringProperty as propkey where obj.className='L10NCode.TranslationClass' and obj.id=prop.id.id and prop.id.name='name' and prop.value='${name}' and obj.id=proplang.id.id and proplang.id.name='language' and proplang.value='${dlang}' and obj.id=propkey.id.id and propkey.id.name='key'";
-
         String sql =
-            ", BaseObject as obj, StringProperty as prop, StringProperty as proplang, StringProperty propkey, StringProperty propreview, LargeStringProperty propcontent where doc.space='${app}' and doc.fullName=obj.name and obj.className='L10NCode.TranslationClass' and obj.id=prop.id.id and prop.id.name='name' and prop.value='${name}' and obj.id=proplang.id.id and proplang.id.name='language' and proplang.value='${language}' and propreview.id.id=obj.id and propreview.id.name='status' and propreview.value &lt;&gt; 'validated' and propcontent.id.id=obj.id and propcontent.id.name='translatedtext' and propcontent.value &lt;&gt; '' and propcontent.value is not null and obj.id=propkey.id.id and propkey.id.name='key' and propkey.value in (${defaultsql}) order by propkey.value";
+            "from doc.object(L10NCode.TranslationClass) as translation where doc.web=:app and translation.name=:name and translation.language=:language and translation.translatedtext &lt;&gt; '' and translation.translatedtext is not null and translation.status &lt;&gt; 'validated' and translation.status &lt;&gt; 'dead' and (translation.deprecated = 0 or translation.deprecated is null) order by translation.key";
 
-        return xwiki.searchDocuments(sql, nb, start);
+        Query query = getQueryManager().createQuery(sql, Query.XWQL);
+
+        query.bindValue("app", app);
+        query.bindValue("name", name);
+        query.bindValue("language", language);
+        query.setLimit(limit);
+        query.setOffset(offset);
+
+        return query.execute();
     }
 
     /*
      * This will look for all translations that are empty, starting from the specified key, without including the
      * specified key. Key prefixes can also be used.
      */
-    public List getToReviewTranslationsFromKey(String app, String name, String language, int nb, int start,
-        String startKey) throws XWikiException
+    public List getToReviewTranslationsFromKey(String app, String name, String language, int limit, int offset,
+        String startKey) throws QueryException
     {
-        String dlang = getApplicationDefaultLanguage(app);
-        String defaultsql =
-            "select propkey.value from BaseObject as obj, StringProperty as prop, StringProperty as proplang, StringProperty as propkey where obj.className='L10NCode.TranslationClass' and obj.id=prop.id.id and prop.id.name='name' and prop.value='${name}' and obj.id=proplang.id.id and proplang.id.name='language' and proplang.value='${dlang}' and obj.id=propkey.id.id and propkey.id.name='key'";
-
         String sql =
-            ", BaseObject as obj, StringProperty as prop, StringProperty as proplang, StringProperty propkey, StringProperty propreview, LargeStringProperty propcontent where doc.web='${app}' and doc.fullName=obj.name and obj.className='L10NCode.TranslationClass' and obj.id=prop.id.id and prop.id.name='name' and prop.value='${name}' and obj.id=proplang.id.id and proplang.id.name='language' and proplang.value='${language}' and propreview.id.id=obj.id and propreview.id.name='status' and propreview.value &lt;&gt; 'validated' and propcontent.id.id=obj.id and propcontent.id.name='translatedtext' and propcontent.value &lt;&gt; '' and propcontent.value is not null and obj.id=propkey.id.id and propkey.id.name='key' and propkey.value &gt; '${startKey}' and propkey.value in (${defaultsql}) order by propkey.value";
+            "from doc.object(L10NCode.TranslationClass) as translation where doc.web=:app and translation.name=:name and translation.language=:language and translation.translatedtext &lt;&gt; '' and translation.translatedtext is not null and translation.status &lt;&gt; 'validated' and translation.status &lt;&gt; 'dead' and translation.key &gt; :startkey and (translation.deprecated = 0 or translation.deprecated is null) order by translation.key";
 
-        return xwiki.searchDocuments(sql, nb, start);
+        Query query = getQueryManager().createQuery(sql, Query.XWQL);
+
+        query.bindValue("app", app);
+        query.bindValue("name", name);
+        query.bindValue("language", language);
+        query.bindValue("startkey", startKey);
+        query.setLimit(limit);
+        query.setOffset(offset);
+
+        return query.execute();
     }
 
     /*
@@ -2043,10 +2104,29 @@ public class L10NApp
         return xwiki.searchDocuments(sql, nb, start);
     }
 
-    public long count(String sql) throws XWikiException
+    public long count(String sql) throws QueryException
     {
-        lastsql = sql;
-        List&lt;Object&gt; result = this.privateXWiki.search(sql, this.privateContext);
+        return count(sql, null);
+    }
+
+    public long count(String sql, List&lt;?&gt; values) throws QueryException
+    {
+        return count(getQueryManager().createQuery(sql, Query.HQL), values);
+    }
+
+    public long countXWQL(String sql, List&lt;?&gt; values) throws QueryException
+    {
+        return count(getQueryManager().createQuery(sql, Query.XWQL), values);
+    }
+
+    public long count(Query query, List&lt;?&gt; values) throws QueryException
+    {
+        if (values != null) {
+            query.bindValues((List) values);
+        }
+
+        lastsql = query.getStatement();
+        List&lt;Object&gt; result = query.execute();
         if (result.size() == 0) {
             return 0;
         } else {
@@ -2073,7 +2153,7 @@ public class L10NApp
     public long countTranslations(String app, String name, String language) throws XWikiException, QueryException
     {
         String sql =
-            "select count(translation.key) from Document as doc, doc.object(L10NCode.TranslationClass) as translation where doc.web=:app and translation.name=:name and translation.language=:language";
+            "select count(doc.id) from Document as doc, doc.object(L10NCode.TranslationClass) as translation where doc.web=:app and translation.name=:name and translation.language=:language";
 
         Query query = getQueryManager().createQuery(sql, Query.XWQL);
 
@@ -2089,7 +2169,7 @@ public class L10NApp
     /*
      * This will look for all translations that are empty
      */
-    public long countAllEmptyTranslations(String app, String name) throws XWikiException
+    public long countAllEmptyTranslations(String app, String name) throws XWikiException, QueryException
     {
         Long result = (Long) getFromCache(countEmptyCache, app, name, null, null, null, null, true);
         if (result == null) {
@@ -2107,7 +2187,7 @@ public class L10NApp
     /*
      * This will look for all translations that must be reviewed
      */
-    public long countAllToReviewTranslations(String app, String name) throws XWikiException
+    public long countAllToReviewTranslations(String app, String name) throws XWikiException, QueryException
     {
         Long result = (Long) getFromCache(countToReviewCache, app, name, null, null, null, null, true);
         if (result == null) {
@@ -2125,7 +2205,7 @@ public class L10NApp
     /*
      * This will look for all translations that are outdated
      */
-    public long countAllOutdatedTranslations(String app, String name) throws XWikiException
+    public long countAllOutdatedTranslations(String app, String name) throws XWikiException, QueryException
     {
         Long result = (Long) getFromCache(countOutdatedCache, app, name, null, null, null, null, true);
         if (result == null) {
@@ -2143,55 +2223,53 @@ public class L10NApp
     /*
      * This will look for all translations that are empty
      */
-    public long countEmptyTranslations(String app, String name, String language) throws XWikiException
+    public long countEmptyTranslations(String app, String name, String language) throws XWikiException, QueryException
     {
-        String dlang = getApplicationDefaultLanguage(app);
-        String defaultsql =
-            "select propkey.value from XWikiDocument as doc, BaseObject as obj, StringProperty as prop, StringProperty as proplang, StringProperty as propkey where doc.web='${app}' and doc.fullName=obj.name and obj.className='L10NCode.TranslationClass' and obj.id=prop.id.id and prop.id.name='name' and prop.value='${name}' and obj.id=proplang.id.id and proplang.id.name='language' and proplang.value='${dlang}' and obj.id=propkey.id.id and propkey.id.name='key'";
+        String sql =
+            "select count(translation.key) from Document as doc, doc.object(L10NCode.TranslationClass) as translation where doc.web=:app and translation.name=:name and translation.language=:language and (translation.translatedtext='' or translation.translatedtext is null) and (translation.deprecated = 0 or translation.deprecated is null) and translation.status &lt;&gt; 'dead' order by translation.key";
 
-        Long result = (Long) getFromCache(countEmptyCache, app, name, language, null, null, null, true);
-        if (result == null) {
-            String sql =
-                "select count(*) from BaseObject as obj, StringProperty as prop,  StringProperty as proplang, StringProperty propkey, LargeStringProperty propcontent where obj.className='L10NCode.TranslationClass' and obj.id=prop.id.id and prop.id.name='name' and prop.value='${name}' and obj.id=proplang.id.id and proplang.id.name='language' and proplang.value='${language}' and propcontent.id.id=obj.id and propcontent.id.name='translatedtext' and (propcontent.value='' or propcontent.value is null) and obj.id=propkey.id.id and propkey.id.name='key' and propkey.value in (${defaultsql})";
-            result = count(sql);
+        Query query = getQueryManager().createQuery(sql, Query.XWQL);
 
-            addToCache(countEmptyCache, result, app, name, language, null, null, null, true);
-        }
+        query.bindValue("app", app);
+        query.bindValue("name", name);
+        query.bindValue("language", language);
 
-        return result;
+        List list = query.execute();
+
+        return list.isEmpty() ? 0 : (Long) list.get(0);
     }
 
     /*
      * This will look for all translations that need to be reviewed
      */
-    public long countToReviewTranslations(String app, String name, String language) throws XWikiException
+    public long countToReviewTranslations(String app, String name, String language) throws XWikiException,
+        QueryException
     {
-        String dlang = getApplicationDefaultLanguage(app);
-        String defaultsql =
-            "select propkey.value from BaseObject as obj, StringProperty as prop, StringProperty as proplang, StringProperty as propkey where obj.className='L10NCode.TranslationClass' and obj.id=prop.id.id and prop.id.name='name' and prop.value='${name}' and obj.id=proplang.id.id and proplang.id.name='language' and proplang.value='${dlang}' and obj.id=propkey.id.id and propkey.id.name='key'";
+        String sql =
+            "select count(translation.key) from Document as doc, doc.object(L10NCode.TranslationClass) as translation where doc.web=:app and translation.name=:name and translation.language=:language and translation.translatedtext &lt;&gt; '' and translation.translatedtext is not null and translation.status &lt;&gt; 'validated' and (translation.deprecated = 0 or translation.deprecated is null) and translation.status &lt;&gt; 'dead' order by translation.key";
 
-        Long result = (Long) getFromCache(countToReviewCache, app, name, language, null, null, null, true);
-        if (result == null) {
-            String sql =
-                "select count(*) from BaseObject as obj, StringProperty as prop, StringProperty as proplang, StringProperty propkey, StringProperty propreview, LargeStringProperty propcontent where obj.className='L10NCode.TranslationClass' and obj.id=prop.id.id and prop.id.name='name' and prop.value='${name}' and obj.id=proplang.id.id and proplang.id.name='language' and propcontent.id.id=obj.id and propcontent.id.name='translatedtext' and propcontent.value &lt;&gt; '' and propcontent.value is not null and proplang.value='${language}' and propreview.id.id=obj.id and propreview.id.name='status' and propreview.value &lt;&gt; 'validated' and obj.id=propkey.id.id and propkey.id.name='key' and propkey.value in (${defaultsql})";
-            result = count(sql);
+        Query query = getQueryManager().createQuery(sql, Query.XWQL);
 
-            addToCache(countToReviewCache, result, app, name, language, null, null, null, true);
-        }
+        query.bindValue("app", app);
+        query.bindValue("name", name);
+        query.bindValue("language", language);
 
-        return result;
+        List list = query.execute();
+
+        return list.isEmpty() ? 0 : (Long) list.get(0);
     }
 
     /*
      * This will look for all translations that are outdated
      */
-    public long countOutdatedTranslations(String app, String name, String language) throws XWikiException
+    public long countOutdatedTranslations(String app, String name, String language) throws XWikiException,
+        QueryException
     {
         Long result = (Long) getFromCache(countOutdatedCache, app, name, language, null, null, null, true);
         if (result == null) {
             String dlang = getApplicationDefaultLanguage(app);
             String sql =
-                "select count(*) from XWikiDocument as doc, BaseObject as obj, StringProperty as prop, StringProperty as proplang, StringProperty as propkey, LargeStringProperty propcontent, BaseObject as enobj, StringProperty as enprop, StringProperty as enproplang, StringProperty as enpropkey, LargeStringProperty enpropcontent where doc.web='${app}' and doc.fullName=obj.name and obj.className='L10NCode.TranslationClass' and obj.id=prop.id.id and prop.id.name='name' and prop.value='${name}' and obj.id=proplang.id.id and proplang.id.name='language' and proplang.value='${language}' and propcontent.id.id=obj.id and propcontent.id.name='originaltext' and obj.id=propkey.id.id and propkey.id.name='key' and enobj.className='L10NCode.TranslationClass' and enobj.id=enprop.id.id and enprop.id.name='name' and enprop.value='${name}' and enobj.id=enproplang.id.id and enproplang.id.name='language' and enproplang.value='${dlang}' and enpropcontent.id.id=enobj.id and enpropcontent.id.name='originaltext' and enobj.id=enpropkey.id.id and enpropkey.id.name='key' and propkey.value=enpropkey.value and enpropcontent.value&lt;&gt;propcontent.value";
+                "select count(doc.id) from XWikiDocument as doc, BaseObject as obj, StringProperty as prop, StringProperty as proplang, StringProperty as propkey, LargeStringProperty propcontent, BaseObject as enobj, StringProperty as enprop, StringProperty as enproplang, StringProperty as enpropkey, LargeStringProperty enpropcontent where doc.web='${app}' and doc.fullName=obj.name and obj.className='L10NCode.TranslationClass' and obj.id=prop.id.id and prop.id.name='name' and prop.value='${name}' and obj.id=proplang.id.id and proplang.id.name='language' and proplang.value='${language}' and propcontent.id.id=obj.id and propcontent.id.name='originaltext' and obj.id=propkey.id.id and propkey.id.name='key' and enobj.className='L10NCode.TranslationClass' and enobj.id=enprop.id.id and enprop.id.name='name' and enprop.value='${name}' and enobj.id=enproplang.id.id and enproplang.id.name='language' and enproplang.value='${dlang}' and enpropcontent.id.id=enobj.id and enpropcontent.id.name='originaltext' and enobj.id=enpropkey.id.id and enpropkey.id.name='key' and propkey.value=enpropkey.value and enpropcontent.value&lt;&gt;propcontent.value";
             result = count(sql);
 
             addToCache(countOutdatedCache, result, app, name, language, null, null, null, true);
@@ -2203,7 +2281,8 @@ public class L10NApp
     /*
      * This will look for all translations that are non existent in the default language
      */
-    public long countNonexistentTranslations(String app, String name, String language) throws XWikiException
+    public long countNonexistentTranslations(String app, String name, String language) throws XWikiException,
+        QueryException
     {
         Long result = (Long) getFromCache(countNonexistentCache, app, name, language, null, null, null, true);
         if (result == null) {
@@ -2212,7 +2291,7 @@ public class L10NApp
                 "select propkey.value from BaseObject as obj, StringProperty as prop, StringProperty as proplang, StringProperty as propkey where obj.className='L10NCode.TranslationClass' and obj.id=prop.id.id and prop.id.name='name' and prop.value='${name}' and obj.id=proplang.id.id and proplang.id.name='language' and proplang.value='${dlang}' and obj.id=propkey.id.id and propkey.id.name='key'";
 
             String sql =
-                "select count(*) from XWikiDocument as doc, BaseObject as obj, StringProperty as prop, StringProperty as proplang, StringProperty as propkey where doc.web='${app}' and doc.fullName=obj.name and obj.className='L10NCode.TranslationClass' and obj.id=prop.id.id and prop.id.name='name' and prop.value='${name}' and obj.id=proplang.id.id and proplang.id.name='language' and proplang.value='${language}' and obj.id=propkey.id.id and propkey.id.name='key' and propkey.value not in (${defaultsql})";
+                "select count(doc.id) from XWikiDocument as doc, BaseObject as obj, StringProperty as prop, StringProperty as proplang, StringProperty as propkey where doc.web='${app}' and doc.fullName=obj.name and obj.className='L10NCode.TranslationClass' and obj.id=prop.id.id and prop.id.name='name' and prop.value='${name}' and obj.id=proplang.id.id and proplang.id.name='language' and proplang.value='${language}' and obj.id=propkey.id.id and propkey.id.name='key' and propkey.value not in (${defaultsql})";
             result = count(sql);
 
             addToCache(countNonexistentCache, result, app, name, language, null, null, null, true);
@@ -2226,62 +2305,65 @@ public class L10NApp
     // //////////////////////////////////////////////////////////////////////////////////
 
     public long countTranslations(String app, String name, String language, boolean withTranslator, String author)
-        throws XWikiException
+        throws XWikiException, QueryException
     {
-        String sqlFrom = "XWikiDocument as doc, BaseObject as obj";
+        String sqlWhere = "";
 
-        String sqlApp = "";
-        if (app != null &amp;&amp; app.length() &gt; 0) {
-            sqlApp = "and doc.space = '${app}'";
-        }
-
-        String sqlLanguage = "";
-        if (language != null &amp;&amp; language.length() &gt; 0) {
-            sqlFrom += ", StringProperty as proplang";
-            sqlLanguage = "and obj.id=proplang.id.id and proplang.id.name='language' and proplang.value='${language}'";
-        }
-
-        String sqlAuthor = "";
-        if (author != null &amp;&amp; author.length() &gt; 0) {
-            sqlAuthor = "and doc.author = '${author}'";
+        if (StringUtils.isNotEmpty(author)) {
+            sqlWhere = "doc.author = '${author}'";
         } else if (!withTranslator) {
-            sqlAuthor =
-                "and doc.author &lt;&gt; '${TRANSLATOR_FULL_NAME}' and doc.author &lt;&gt; 'XWiki.Admin' and doc.author &lt;&gt; 'XWiki.ludovic'";
+            sqlWhere =
+                "doc.author &lt;&gt; '${TRANSLATOR_FULL_NAME}' and doc.author &lt;&gt; 'XWiki.Admin' and doc.author &lt;&gt; 'XWiki.superadmin'";
         }
 
-        String sqlName = "";
-        if (name != null &amp;&amp; name.length() &gt; 0) {
-            sqlFrom += ", StringProperty as prop";
-            sqlName = "and obj.id=prop.id.id and prop.id.name='name' and prop.value='${name}'";
+        if (StringUtils.isNotEmpty(app)) {
+            if (sqlWhere.length() &gt; 0) {
+                sqlWhere = " and ";
+            }
+            sqlWhere += "doc.space = '${app}'";
+        }
+
+        if (StringUtils.isNotEmpty(language)) {
+            if (sqlWhere.length() &gt; 0) {
+                sqlWhere = " and ";
+            }
+            sqlWhere += "translation.language = '${language}'";
+        }
+
+        if (StringUtils.isNotEmpty(name)) {
+            if (sqlWhere.length() &gt; 0) {
+                sqlWhere = " and ";
+            }
+            sqlWhere += "translation.name = '${name}'";
         }
 
         String sql =
-            "select count(*) from ${sqlFrom} where doc.fullName=obj.name and obj.className='L10NCode.TranslationClass' ${sqlName} ${sqlApp} ${sqlAuthor} ${sqlLanguage}";
+            "select count(doc.id) from Document as doc, doc.object(L10NCode.TranslationClass) as translation where ${sqlWhere}";
 
-        return count(sql);
+        return countXWQL(sql, null);
     }
 
     public List getLatestTranslations(String app, int nb, int start, boolean withTranslator, String author)
         throws QueryException, UnsupportedEncodingException
     {
-        String sqlAuthor = "";
-        if (author != null &amp;&amp; author.length() &gt; 0) {
-            sqlAuthor = "doc.author = '${author}'";
+        String sqlWhere = "";
+
+        if (StringUtils.isNotEmpty(author)) {
+            sqlWhere = "doc.author = '${author}'";
         } else if (!withTranslator) {
-            sqlAuthor =
-                "doc.author &lt;&gt; '${TRANSLATOR_FULL_NAME}' and doc.author &lt;&gt; 'XWiki.Admin' and doc.author &lt;&gt; 'XWiki.ludovic'";
+            sqlWhere =
+                "doc.author &lt;&gt; '${TRANSLATOR_FULL_NAME}' and doc.author &lt;&gt; 'XWiki.Admin' and doc.author &lt;&gt; 'XWiki.superadmin'";
         }
 
-        String sqlApp = "";
         if (StringUtils.isNotEmpty(app)) {
-            if (sqlAuthor.length() &gt; 0) {
-                sqlApp = "and ";
+            if (sqlWhere.length() &gt; 0) {
+                sqlWhere = " and ";
             }
-            sqlApp += "doc.space = '${app}'";
+            sqlWhere += "doc.space = '${app}'";
         }
 
         String sql =
-            "select doc.space, doc.name, doc.fullName, doc.date, doc.author, translation.key, translation.language, translation.originaltext, translation.translatedtext from Document as doc, doc.object(L10NCode.TranslationClass) as translation where ${sqlAuthor} ${sqlApp} order by doc.date desc";
+            "select doc.space, doc.name, doc.fullName, doc.date, doc.author, translation.key, translation.language, translation.originaltext, translation.translatedtext from Document as doc, doc.object(L10NCode.TranslationClass) as translation where ${sqlWhere} order by doc.date desc";
 
         Query query = getQueryManager().createQuery(sql, Query.XWQL);
 
@@ -2342,13 +2424,14 @@ public class L10NApp
     /*
      * This will count the translations in a language
      */
-    public long countTranslationsInHistory(String app, String name, String language) throws XWikiException
+    public long countTranslationsInHistory(String app, String name, String language) throws XWikiException,
+        QueryException
     {
         return countTranslationsInHistory(app, name, language, true, null);
     }
 
     public long countTranslationsInHistory(String app, String name, String language, boolean withTranslator,
-        String author) throws XWikiException
+        String author) throws XWikiException, QueryException
     {
         String sqlFrom = "XWikiDocument as doc, BaseObject as obj";
 
@@ -2370,7 +2453,7 @@ public class L10NApp
         } else if (!withTranslator) {
             sqlFrom += ", XWikiRCSNodeInfo as rcs";
             sqlAuthor =
-                "and rcs.id.docId=doc.id and rcs.author &lt;&gt; '${TRANSLATOR_FULL_NAME}' and rcs.author &lt;&gt; 'XWiki.Admin' and rcs.author &lt;&gt; 'XWiki.ludovic'";
+                "and rcs.id.docId=doc.id and rcs.author &lt;&gt; '${TRANSLATOR_FULL_NAME}' and rcs.author &lt;&gt; 'XWiki.Admin' and rcs.author &lt;&gt; 'XWiki.superadmin'";
         }
 
         String sqlName = "";
@@ -2383,6 +2466,7 @@ public class L10NApp
         if (result == null) {
             String sql =
                 "select count(*) from ${sqlFrom} where doc.fullName=obj.name and obj.className='L10NCode.TranslationClass' ${sqlName} ${sqlApp} ${sqlAuthor} ${sqlLanguage}";
+
             result = count(sql);
             addToCache(countCache, result, app, name, language, author, null, null, withTranslator);
         }
@@ -2391,39 +2475,155 @@ public class L10NApp
     }
 
     public List countTranslationsByUserInHistory(String app, String name, String language, boolean withTranslator,
-        int nb, int start) throws XWikiException
+        int limit, int offset) throws QueryException
     {
+        return countTranslationsByUserInHistory(app, name, language, withTranslator, limit, offset, null);
+    }
+
+    public List countTranslationsByUserInHistory(String app, String name, String language, boolean withTranslator,
+        int limit, int offset, Integer year) throws QueryException
+    {
+        return countTranslationsByUserInHistory(app, name, language, withTranslator, limit, offset, year, null, null);
+    }
+
+    public List countTranslationsByUserInHistory(String app, String name, String language, boolean withTranslator,
+        int limit, int offset, Integer year, Date lowerBound, Date upperBound) throws QueryException
+    {
+        List&lt;Object&gt; values = new ArrayList&lt;Object&gt;();
+
         String sqlFrom = "XWikiDocument as doc, BaseObject as obj, XWikiRCSNodeInfo as rcs";
+
+        String sqlName = "";
+        if (name != null &amp;&amp; name.length() &gt; 0) {
+            sqlFrom += ", StringProperty as prop";
+            sqlName = "and obj.id=prop.id.id and prop.id.name='name' and prop.value=?";
+            values.add(name);
+        }
 
         String sqlApp = "";
         if (app != null &amp;&amp; app.length() &gt; 0) {
-            sqlApp = "and doc.space = '${app}'";
-        }
-
-        String sqlLanguage = "";
-        if (language != null &amp;&amp; language.length() &gt; 0) {
-            sqlFrom += ", StringProperty as proplang";
-            sqlLanguage = "and obj.id=proplang.id.id and proplang.id.name='language' and proplang.value='${language}'";
+            sqlApp = "and doc.space=?";
+            values.add(app);
         }
 
         String sqlAuthor = "";
         if (!withTranslator) {
             sqlAuthor =
-                "and rcs.author &lt;&gt; '${TRANSLATOR_FULL_NAME}' and rcs.author &lt;&gt; 'XWiki.Admin' and rcs.author &lt;&gt; 'XWiki.ludovic'";
+                "and rcs.author &lt;&gt; '${TRANSLATOR_FULL_NAME}' and rcs.author &lt;&gt; 'XWiki.Admin' and rcs.author &lt;&gt; 'XWiki.superadmin'";
         }
+
+        String sqlLanguage = "";
+        if (language != null &amp;&amp; language.length() &gt; 0) {
+            sqlFrom += ", StringProperty as proplang";
+            sqlLanguage = "and obj.id=proplang.id.id and proplang.id.name='language' and proplang.value=?";
+            values.add(language);
+        }
+
+        String sqlYear = "";
+        if (year != null) {
+            sqlYear = "and year(rcs.date) = ?";
+            values.add(year);
+        }
+
+        String sqlLowerDateBound = "";
+        if (lowerBound != null) {
+            sqlLowerDateBound = "and rcs.date &gt;= ?";
+            values.add(lowerBound);
+        }
+
+        String sqlUpperDateBound = "";
+        if (upperBound != null) {
+            sqlUpperDateBound = "and rcs.date &lt; ?";
+            values.add(upperBound);
+        }
+
+        List result =
+            (List) getFromCache(countByUserCache, app, name, language, null, limit, offset, withTranslator, values);
+        if (result == null) {
+            String sql =
+                "select count(distinct rcs.id) as contributions, rcs.author from ${sqlFrom} where doc.fullName=obj.name and obj.className='L10NCode.TranslationClass' and rcs.id.docId=doc.id ${sqlName} ${sqlApp} ${sqlAuthor} ${sqlLanguage} ${sqlYear} ${sqlLowerDateBound} ${sqlUpperDateBound} group by rcs.author order by 1 desc";
+
+            Query query = getQueryManager().createQuery(sql, Query.HQL);
+            if (values != null) {
+                query.bindValues((List) values);
+            }
+            query.setOffset(offset);
+            query.setLimit(limit);
+
+            result = query.execute();
+
+            addToCache(countByUserCache, result, app, name, language, null, limit, offset, withTranslator, values);
+        }
+
+        return result;
+    }
+
+    public List countTranslationsByLanguageInHistory(String app, String name, String language, boolean withTranslator,
+        int limit, int offset, Integer year, Date lowerBound, Date upperBound) throws QueryException
+    {
+        List&lt;Object&gt; values = new ArrayList&lt;Object&gt;();
+
+        String sqlFrom = "XWikiDocument as doc, BaseObject as obj, XWikiRCSNodeInfo as rcs, StringProperty as proplang";
 
         String sqlName = "";
         if (name != null &amp;&amp; name.length() &gt; 0) {
             sqlFrom += ", StringProperty as prop";
-            sqlName = "and obj.id=prop.id.id and prop.id.name='name' and prop.value='${name}'";
+            sqlName = "and obj.id=prop.id.id and prop.id.name='name' and prop.value=?";
+            values.add(name);
         }
 
-        List result = (List) getFromCache(countByUserCache, app, name, language, null, nb, start, withTranslator);
+        String sqlApp = "";
+        if (app != null &amp;&amp; app.length() &gt; 0) {
+            sqlApp = "and doc.space=?";
+            values.add(app);
+        }
+
+        String sqlAuthor = "";
+        if (!withTranslator) {
+            sqlAuthor =
+                "and rcs.author &lt;&gt; '${TRANSLATOR_FULL_NAME}' and rcs.author &lt;&gt; 'XWiki.Admin' and rcs.author &lt;&gt; 'XWiki.superadmin'";
+        }
+
+        String sqlLanguage = "";
+        if (language != null &amp;&amp; language.length() &gt; 0) {
+            sqlLanguage = " and proplang.value=?";
+            values.add(language);
+        }
+
+        String sqlYear = "";
+        if (year != null) {
+            sqlYear = "and year(rcs.date) = ?";
+            values.add(year);
+        }
+
+        String sqlLowerDateBound = "";
+        if (lowerBound != null) {
+            sqlLowerDateBound = "and rcs.date &gt;= ?";
+            values.add(lowerBound);
+        }
+
+        String sqlUpperDateBound = "";
+        if (upperBound != null) {
+            sqlUpperDateBound = "and rcs.date &lt; ?";
+            values.add(upperBound);
+        }
+
+        List result =
+            (List) getFromCache(countByLanguageCache, app, name, language, null, limit, offset, withTranslator, values);
         if (result == null) {
             String sql =
-                "select count(distinct rcs.id) as contributions, rcs.author from ${sqlFrom} where doc.fullName=obj.name and obj.className='L10NCode.TranslationClass' and rcs.id.docId=doc.id ${sqlName} ${sqlApp} ${sqlAuthor} ${sqlLanguage} group by rcs.author order by 1 desc";
-            result = this.privateXWiki.search(sql, nb, start, this.privateContext);
-            addToCache(countByUserCache, result, app, name, language, null, nb, start, withTranslator);
+                "select count(distinct rcs.id) as contributions, proplang.value from ${sqlFrom} where doc.fullName=obj.name and obj.className='L10NCode.TranslationClass' and rcs.id.docId=doc.id and obj.id=proplang.id.id and proplang.id.name='language' ${sqlName} ${sqlApp} ${sqlAuthor} ${sqlLanguage} ${sqlYear} ${sqlLowerDateBound} ${sqlUpperDateBound} group by proplang.value order by 1 desc";
+
+            Query query = getQueryManager().createQuery(sql, Query.HQL);
+            if (values != null) {
+                query.bindValues((List) values);
+            }
+            query.setOffset(offset);
+            query.setLimit(limit);
+
+            result = query.execute();
+
+            addToCache(countByLanguageCache, result, app, name, language, null, limit, offset, withTranslator, values);
         }
 
         return result;
@@ -2462,7 +2662,7 @@ public class L10NApp
             sqlApp = "and rcs.author = '${author}'";
         } else if (!withTranslator) {
             sqlAuthor =
-                "and rcs.author &lt;&gt; '${TRANSLATOR_FULL_NAME}' and rcs.author &lt;&gt; 'XWiki.Admin' and rcs.author &lt;&gt; 'XWiki.ludovic'";
+                "and rcs.author &lt;&gt; '${TRANSLATOR_FULL_NAME}' and rcs.author &lt;&gt; 'XWiki.Admin' and rcs.author &lt;&gt; 'XWiki.superadmin'";
         }
 
         String sql =
@@ -2522,23 +2722,23 @@ public class L10NApp
             throw new Exception("Translation [" + sourceTranslation + "] does not exists");
         }
 
+        // Move translations and default language
         Set&lt;String&gt; languages = new HashSet&lt;String&gt;(Arrays.asList(getApplicationLanguages(sourceApp)));
         languages.add(getApplicationDefaultLanguage(sourceApp));
-
-        //for (String language : languages) {
-        String language = "ca_ES";
+        for (String language : languages) {
             Collection&lt;String&gt; keys = getTranslationKeys(sourceApp, sourceTranslation, language);
 
             for (String key : keys) {
                 try {
                     moveTranslationKey(sourceApp, sourceTranslation, key, targetApp, targetTranslation, key, language);
                 } catch (XWikiException e) {
-                    
+
                 }
             }
-        //}
+        }
 
-        //xwiki.renamePage(document, targetTranslation);
+        // Move home page
+        document.rename(targetTranslation);
     }
 
     public void moveTranslationKey(String sourceApp, String sourceTranslation, String sourceKey, String targetApp,
@@ -2561,21 +2761,54 @@ public class L10NApp
             // Make sure pages are created with a generic user
             privateContext.setUser(TRANSLATOR_FULL_NAME);
 
-            Document document = xwiki.getDocument(getPageName(sourceTranslation, sourceKey, language));
-
+            String sourceDocumentName = sourceApp + '.' + getPageName(sourceTranslation, sourceKey, language);
             String targetDocumentName = targetApp + '.' + getPageName(targetTranslation, targetKey, language);
 
-            if (xwiki.renamePage(document, targetDocumentName)) {
-                Document targetDocument = xwiki.getDocument(targetDocumentName);
+            // Make sure target is not teh source
+            if (targetDocumentName == sourceDocumentName) {
+                throw new Exception("Source and target must be different");
+            }
+
+            // Delete existing document
+            Document targetDocument = xwiki.getDocument(targetDocumentName);
+            if (!targetDocument.isNew()) {
+                targetDocument.delete();
+            }
+
+            // Load source document
+            Document sourceDocument = xwiki.getDocument(sourceDocumentName);
+
+            // Rename
+            sourceDocument.rename(targetDocumentName);
+
+            // Fix properties
+            targetDocument = xwiki.getDocument(targetDocumentName);
+            if (!targetDocument.isNew()) {
                 targetDocument.set(T_PROP_NAME, targetTranslation);
                 targetDocument.set(T_PROP_KEY, targetKey);
                 targetDocument.save("Update translation name after move", false);
             } else {
-                throw new Exception("Failed to move [" + document + "] to [" + targetDocumentName + "]");
+                throw new Exception("Failed to move [" + sourceDocument + "] to [" + targetDocumentName + "]");
             }
         } finally {
             privateContext.setUserReference(currentUser);
         }
+    }
+
+    public void moveTranslationKeys(String json) throws Exception
+    {
+      def slurper = new JsonSlurper()
+      def result = slurper.parseText(json)
+      
+      for (def row : result) {
+        def sourceTranslation = row.get("sourceTranslation");
+        def sourceApp  = row.get("sourceApp");
+        def sourceKey  = row.get("sourceKey");
+        def targetTranslation = row.get("targetTranslation");
+        def targetApp  = row.get("targetApp");
+        def targetKey  = row.get("targetKey");
+        moveTranslationKey(sourceApp, sourceTranslation, sourceKey, targetApp, targetTranslation, targetKey);
+      }
     }
 
     public void copyTranslationKey(String sourceApp, String sourceTranslation, String sourceKey, String targetApp,
@@ -2598,21 +2831,47 @@ public class L10NApp
             // Make sure pages are created with a generic user
             privateContext.setUser(TRANSLATOR_FULL_NAME);
 
-            Document document = xwiki.getDocument(getPageName(sourceTranslation, sourceKey, language));
+            Document document =
+                xwiki.getDocument(sourceApp + '.' + getPageName(sourceTranslation, sourceKey, language));
+
+            if (document.isNew()) {
+                throw new Exception("No translation could be found for app:" + sourceApp + ", name:"
+                    + sourceTranslation + " and key:" + sourceKey + " (" + document + ")");
+            }
 
             String targetDocumentName = targetApp + '.' + getPageName(targetTranslation, targetKey, language);
 
-            if (xwiki.copyDocument(document.getFullName(), targetDocumentName)) {
+            if (xwiki.copyDocument(document.getFullName(), targetDocumentName, null, null, null, true, true)) {
                 Document targetDocument = xwiki.getDocument(targetDocumentName);
                 targetDocument.set(T_PROP_NAME, targetTranslation);
                 targetDocument.set(T_PROP_KEY, targetKey);
-                targetDocument.save("Update translation name after move", false);
+                try {
+                    targetDocument.save("Update translation name after copy", false);
+                } catch (Exception e) {
+                    // Some weird bug of copyDocument when the document already exist
+                }
             } else {
-                throw new Exception("Failed to move [" + document + "] to [" + targetDocumentName + "]");
+                throw new Exception("Failed to copy [" + document + "] to [" + targetDocumentName + "]");
             }
         } finally {
             privateContext.setUserReference(currentUser);
         }
+    }
+
+    public void copyTranslationKeys(String json) throws Exception
+    {
+      def slurper = new JsonSlurper()
+      def result = slurper.parseText(json)
+      
+      for (def row : result) {
+        def sourceTranslation = row.get("sourceTranslation");
+        def sourceApp  = row.get("sourceApp");
+        def sourceKey  = row.get("sourceKey");
+        def targetTranslation = row.get("targetTranslation");
+        def targetApp  = row.get("targetApp");
+        def targetKey  = row.get("targetKey");
+        copyTranslationKey(sourceApp, sourceTranslation, sourceKey, targetApp, targetTranslation, targetKey);
+      }
     }
 }
 
@@ -2620,4 +2879,39 @@ public class L10NApp
  * *#
  */
 </content>
+  <object>
+    <name>L10NCode.L10NGroovy</name>
+    <number>0</number>
+    <className>XWiki.TagClass</className>
+    <guid>b0aeb826-774e-48ba-8c2c-e512056e02e2</guid>
+    <class>
+      <name>XWiki.TagClass</name>
+      <customClass/>
+      <customMapping/>
+      <defaultViewSheet/>
+      <defaultEditSheet/>
+      <defaultWeb/>
+      <nameField/>
+      <validationScript/>
+      <tags>
+        <cache>0</cache>
+        <disabled>0</disabled>
+        <displayType>input</displayType>
+        <multiSelect>1</multiSelect>
+        <name>tags</name>
+        <number>1</number>
+        <prettyName>Tags</prettyName>
+        <relationalStorage>1</relationalStorage>
+        <separator>|</separator>
+        <separators>|,</separators>
+        <size>30</size>
+        <unmodifiable>0</unmodifiable>
+        <values/>
+        <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+      </tags>
+    </class>
+    <property>
+      <tags/>
+    </property>
+  </object>
 </xwikidoc>

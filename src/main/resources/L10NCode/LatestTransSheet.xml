@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xwikidoc version="1.3" reference="L10NCode.LatestTransSheet" locale="">
+  <web>L10NCode</web>
+  <name>LatestTransSheet</name>
+  <language/>
+  <defaultLanguage/>
+  <translation>0</translation>
+  <creator>xwiki:XWiki.Admin</creator>
+  <creationDate>1228395852000</creationDate>
+  <author>xwiki:XWiki.Admin</author>
+  <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
+  <date>1267017892000</date>
+  <contentUpdateDate>1267017892000</contentUpdateDate>
+  <version>1.1</version>
+  <title>Latest translations sheet</title>
+  <comment/>
+  <minorEdit>false</minorEdit>
+  <syntaxId>xwiki/1.0</syntaxId>
+  <hidden>true</hidden>
+  <content>#set($trans = $xwiki.parseGroovyFromPage("L10NCode.L10NGroovy"))
+$trans.setContext($context, $xwiki)
+#if(!$request.start)
+ #set($start = 0)
+#else
+ #set($start = $xwiki.parseInt($request.start))
+#end
+#if(!$request.nb)
+ #set($nb = 50)
+#else
+ #set($nb = $xwiki.parseInt($request.nb))
+#end
+#set($start1 = $start - $nb)
+#set($start2 = $start + $nb)
+#if(!$web)
+  #set($web = "")
+#end
+#if(!$showtranslator)
+  #set($showtranslator = false)
+#end
+&lt;div style="text-align: center; margin: auto;"&gt;
+#set($countTrans = $trans.countTranslations($web, null, null, $showtranslator, $transuser))
+#set($pagesNb = $countTrans / $nb)
+#if (($countTrans % $nb) != 0)
+  #set($pagesNb = $pagesNb + 1)
+#end
+#set($pageId = ($start / $nb) + 1)
+#if($start1 &gt;= 0)[Previous&gt;$doc.fullName?start=$start1&amp;nb=$nb] - #end$countTrans - page $pageId on $pagesNb#if($start2 &lt; $countTrans) - [Next&gt;$doc.fullName?start=$start2&amp;nb=$nb]#end
+&lt;/div&gt;
+&lt;table id="changesTable" class="grid sortable filterable doOddEven" cellpadding="0" cellspacing="0" border="0" style="table-layout:fixed;width:100%;overflow:hidden;word-wrap:break-word"&gt;
+  &lt;tr class="sortHeader"&gt;
+    &lt;th width="60px"&gt;App&lt;/th&gt;
+    &lt;th&gt;Key&lt;/th&gt;
+    &lt;th width="10%"&gt;Author&lt;/th&gt;
+    &lt;th width="5%"&gt;Date&lt;/th&gt;
+    &lt;th width="60px"&gt;Lang&lt;/th&gt;
+    &lt;th&gt;English&lt;/th&gt;
+    &lt;th&gt;Translated&lt;/th&gt;
+  &lt;/tr&gt;
+#set($rows = $trans.getLatestTranslations($web, $nb, $start, $showtranslator, $transuser))
+#set($groovyOpen = '&lt;')
+#set($groovyClose = '&gt;')
+#foreach($row in $rows)
+&lt;tr&gt;
+  &lt;td&gt;$row.itemdoc.web&lt;/td&gt;
+  &lt;td&gt;[$row.key&gt;${row.pagename}]&lt;/td&gt;
+  &lt;td&gt;$row.author&lt;/td&gt;
+  &lt;td&gt;$row.date&lt;/td&gt;
+  &lt;td&gt;$row.language&lt;/td&gt;
+  ## FIXME: remove this hacky protection against groovy when the application will be converted to xwiki/2.0 syntax (and will have real generic protection)
+  &lt;td&gt;{pre}$row.origtext.replace("{$groovyOpen}%", '&lt; %').replace("%$groovyClose}",'% &gt;'){/pre}&lt;/td&gt;
+  &lt;td&gt;#if($row.transtext){pre}$row.transtext.replace("{$groovyOpen}%", '&lt; %').replace("%$groovyClose}",'% &gt;'){/pre}#end&lt;/td&gt;
+&lt;/tr&gt;
+#end
+&lt;/table&gt;</content>
+  <object>
+    <name>L10NCode.LatestTransSheet</name>
+    <number>0</number>
+    <className>XWiki.TagClass</className>
+    <guid>3a2927a7-38f1-4c4c-841b-450f4a47a7ed</guid>
+    <class>
+      <name>XWiki.TagClass</name>
+      <customClass/>
+      <customMapping/>
+      <defaultViewSheet/>
+      <defaultEditSheet/>
+      <defaultWeb/>
+      <nameField/>
+      <validationScript/>
+      <tags>
+        <cache>0</cache>
+        <disabled>0</disabled>
+        <displayType>input</displayType>
+        <multiSelect>1</multiSelect>
+        <name>tags</name>
+        <number>1</number>
+        <prettyName>Tags</prettyName>
+        <relationalStorage>1</relationalStorage>
+        <separator>|</separator>
+        <separators>|,</separators>
+        <size>30</size>
+        <unmodifiable>0</unmodifiable>
+        <values/>
+        <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+      </tags>
+    </class>
+    <property>
+      <tags/>
+    </property>
+  </object>
+</xwikidoc>

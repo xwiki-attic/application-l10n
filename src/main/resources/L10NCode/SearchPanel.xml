@@ -1,29 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<xwikidoc>
+<xwikidoc version="1.3" reference="L10NCode.SearchPanel" locale="">
   <web>L10NCode</web>
   <name>SearchPanel</name>
   <language/>
   <defaultLanguage/>
   <translation>0</translation>
-  <parent>Panels.WebHome</parent>
   <creator>xwiki:XWiki.Admin</creator>
+  <creationDate>1250170838000</creationDate>
+  <parent>Panels.WebHome</parent>
   <author>xwiki:XWiki.Admin</author>
-  <customClass/>
   <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
-  <creationDate>1325372400000</creationDate>
-  <date>1325372400000</date>
-  <contentUpdateDate>1325372400000</contentUpdateDate>
+  <date>1487239804000</date>
+  <contentUpdateDate>1487239064000</contentUpdateDate>
   <version>1.1</version>
   <title/>
-  <template/>
-  <defaultTemplate/>
-  <validationScript/>
   <comment/>
   <minorEdit>false</minorEdit>
-  <syntaxId>xwiki/1.0</syntaxId>
+  <syntaxId>xwiki/2.1</syntaxId>
   <hidden>false</hidden>
+  <content/>
   <object>
+    <name>L10NCode.SearchPanel</name>
+    <number>0</number>
+    <className>Panels.PanelClass</className>
+    <guid>77842a3f-7b77-4e41-82e2-fc87f49ff79a</guid>
     <class>
       <name>Panels.PanelClass</name>
       <customClass/>
@@ -39,11 +40,11 @@
         <displayType>select</displayType>
         <multiSelect>0</multiSelect>
         <name>category</name>
-        <number>5</number>
+        <number>1</number>
         <prettyName>Category</prettyName>
         <relationalStorage>0</relationalStorage>
         <separator> </separator>
-        <separators> ,|</separators>
+        <separators>|, </separators>
         <size>1</size>
         <unmodifiable>0</unmodifiable>
         <values>Information|Navigation|Tools|Administration|Other</values>
@@ -53,10 +54,10 @@
         <disabled>0</disabled>
         <editor>Text</editor>
         <name>content</name>
-        <number>4</number>
+        <number>2</number>
         <prettyName>Content</prettyName>
         <rows>25</rows>
-        <size>60</size>
+        <size>120</size>
         <unmodifiable>0</unmodifiable>
         <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
       </content>
@@ -74,7 +75,7 @@
       <name>
         <disabled>0</disabled>
         <name>name</name>
-        <number>1</number>
+        <number>4</number>
         <prettyName>Name</prettyName>
         <size>40</size>
         <unmodifiable>0</unmodifiable>
@@ -86,42 +87,42 @@
         <displayType>select</displayType>
         <multiSelect>0</multiSelect>
         <name>type</name>
-        <number>2</number>
+        <number>5</number>
         <prettyName>Panel type</prettyName>
         <relationalStorage>0</relationalStorage>
         <separator> </separator>
-        <separators> ,|</separators>
+        <separators>|, </separators>
         <size>1</size>
         <unmodifiable>0</unmodifiable>
         <values>view|edit</values>
         <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
       </type>
     </class>
-    <name>L10NCode.SearchPanel</name>
-    <number>0</number>
-    <className>Panels.PanelClass</className>
-    <guid>77842a3f-7b77-4e41-82e2-fc87f49ff79a</guid>
     <property>
       <category>Tools</category>
     </property>
     <property>
-      <content>#set($appDoc = $xwiki.getDocument("${doc.space}.WebHome"))
+      <content>{{velocity}}
+#set($appDoc = $xwiki.getDocument("${doc.space}.WebHome"))
 #if ($appDoc.getObject("L10NCode.L10NApplicationClass"))
 #set($appName = $appDoc.space)
 #end
 ##
 #panelheader($msg.get("Search translation"))
 #includeForm('L10NCode.CommonPanelSheet')
+{{html}}
   &lt;form action="$xwiki.getURL('L10N.Search')"&gt;
     &lt;div id="globalsearch"&gt;
       #if ($appName)
         &lt;input class="hidden" type="hidden" name="application" value="$appName" /&gt;
       #end
       &lt;input id="globalsearchinput" type="text" name="transtext" value="Translated text..." onfocus="if (this.value == 'Translated text...') value=''; this.select();" onblur="if (this.value == '') value='Translated text...'; this.blur()" class="searchInput"/&gt;
-      &lt;input class="button searchButton" value="$msg.get('panels.search.submit')" type="image" src="$xwiki.getSkinFile("icons/xwiki/search.png")"/&gt;
+      &lt;input class="button searchButton" align=center value="$msg.get('panels.search.submit')" type="image" src="$xwiki.getSkinFile("icons/xwiki/search.png")"/&gt;
     &lt;/div&gt;
   &lt;/form&gt;
-#panelfooter()</content>
+{{/html}}
+#panelfooter()
+{{/velocity}}</content>
     </property>
     <property>
       <description>Search Tool.</description>
@@ -133,5 +134,4 @@
       <type>view</type>
     </property>
   </object>
-  <content>#includeForm("Panels.PanelSheet")</content>
 </xwikidoc>
